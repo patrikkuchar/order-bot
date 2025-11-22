@@ -1,0 +1,49 @@
+frontend:
+  image: kuhcorp/moja-firma-frontend
+  tag: latest
+  port: 80
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+backend:
+  image: kuhcorp/moja-firma-backend
+  tag: latest
+  port: 8080
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 400m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  env:
+    SPRING_PROFILES_ACTIVE: prod
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.my-template.svc.cluster.local:5432/app
+    SPRING_DATASOURCE_USERNAME: user
+
+postgres:
+  image: postgres:16
+  port: 5432
+  username: user
+  password: secret
+  database: app
+  storage:
+    size: 1Gi
+  sealedUser: ""
+  sealedPassword: ""
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  className: ""
+  hostname: my-template.local
+  tls: []

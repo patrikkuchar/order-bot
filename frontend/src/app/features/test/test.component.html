@@ -1,0 +1,56 @@
+
+<div class="flex flex-row min-w-full place-content-center gap-4">
+  <app-form [form]="form"
+            [onSubmit]="update"
+            [dataFetcher]="fetch"
+            [resetOnSubmit]="false"
+            [initDataLoadingSubject]="loadingSubject">
+    <div class="flex flex-row gap-6">
+      <div class="flex flex-col gap-4">
+        <form-inputtext id="title"
+                        label="Title"
+                        placeholder="Zadaj title"
+                        [control]="form.controls.title"
+                        [loading$]="loading$"/>
+        <form-inputtextarea id="description"
+                        label="Description"
+                        placeholder="Zadaj description"
+                        [control]="form.controls.description" />
+        <form-select id="category"
+                     label="Category"
+                     placeholder="Placeholder"
+                     [options]="options"
+                     [control]="form.controls.category"
+                     [loading$]="loading$"/>
+        <form-inputnumber id="stockCount"
+                          label="Stock count"
+                          [control]="form.controls.logisticProp.controls.stockCount" />
+        <form-inputnumber id="price"
+                          label="Price"
+                          [isCurrency]="true"
+                          [control]="form.controls.logisticProp.controls.price" />
+        <form-checkbox id="available"
+                       label="Available"
+                       [control]="form.controls.available" />
+      </div>
+
+      <!-- Bind the object array "borrows" to the reusable component. Consumer provides an item template. -->
+      <app-form-object-array [array]="form.controls.borrows">
+        <ng-template #itemTemplate let-group let-index="index">
+          <form-inputtext
+            [control]="group.get('email')"
+            id="borrow-email-{{index}}"
+            label="Email"
+            placeholder="Enter email"></form-inputtext>
+
+          <form-inputtextarea
+            [control]="group.get('note')"
+            id="borrow-note-{{index}}"
+            label="Note"
+            placeholder="Enter note"></form-inputtextarea>
+        </ng-template>
+      </app-form-object-array>
+    </div>
+    <p-button label="Submit" severity="primary" type="submit"></p-button>
+  </app-form>
+</div>

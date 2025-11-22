@@ -1,0 +1,105 @@
+// colors.scss
+
+// General / základné
+$text-color: var(--p-text-color);
+$text-secondary-color: var(--p-text-secondary-color);
+$primary-color: var(--p-primary-color);
+$primary-color-text: var(--p-primary-color-text);
+$font-family: var(--p-font-family);
+$inline-spacing: var(--p-inline-spacing);
+$border-radius: var(--p-border-radius);
+$focus-ring: var(--p-focus-ring);
+$mask-bg: var(--p-mask-bg);
+$highlight-bg: var(--p-highlight-bg);
+$highlight-text-color: var(--p-highlight-text-color);
+
+// Surface farby
+$surface-0: var(--p-surface-0);
+$surface-50: var(--p-surface-50);
+$surface-100: var(--p-surface-100);
+$surface-200: var(--p-surface-200);
+$surface-300: var(--p-surface-300);
+$surface-400: var(--p-surface-400);
+$surface-500: var(--p-surface-500);
+$surface-600: var(--p-surface-600);
+$surface-700: var(--p-surface-700);
+$surface-800: var(--p-surface-800);
+$surface-900: var(--p-surface-900);
+
+$surface-ground: var(--p-surface-ground);
+$surface-section: var(--p-surface-section);
+$surface-card: var(--p-surface-card);
+$surface-overlay: var(--p-surface-overlay);
+$surface-border: var(--p-surface-border);
+$surface-hover: var(--p-surface-hover);
+
+// Paleta / ostatné farby
+// (vybral som niektoré typické - pridaj podľa potreby ďalšie)
+
+$blue-50: var(--p-blue-50);
+$blue-100: var(--p-blue-100);
+$blue-200: var(--p-blue-200);
+$blue-300: var(--p-blue-300);
+$blue-400: var(--p-blue-400);
+$blue-500: var(--p-blue-500);
+$blue-600: var(--p-blue-600);
+$blue-700: var(--p-blue-700);
+$blue-800: var(--p-blue-800);
+$blue-900: var(--p-blue-900);
+
+$green-50: var(--p-green-50);
+$green-100: var(--p-green-100);
+$green-200: var(--p-green-200);
+$green-300: var(--p-green-300);
+$green-400: var(--p-green-400);
+$green-500: var(--p-green-500);
+$green-600: var(--p-green-600);
+$green-700: var(--p-green-700);
+$green-800: var(--p-green-800);
+$green-900: var(--p-green-900);
+
+$orange-50: var(--p-orange-50);
+$orange-100: var(--p-orange-100);
+$orange-200: var(--p-orange-200);
+$orange-300: var(--p-orange-300);
+$orange-400: var(--p-orange-400);
+$orange-500: var(--p-orange-500);
+$orange-600: var(--p-orange-600);
+$orange-700: var(--p-orange-700);
+$orange-800: var(--p-orange-800);
+$orange-900: var(--p-orange-900);
+
+$yellow-50: var(--p-yellow-50);
+$yellow-100: var(--p-yellow-100);
+$yellow-200: var(--p-yellow-200);
+$yellow-300: var(--p-yellow-300);
+$yellow-400: var(--p-yellow-400);
+$yellow-500: var(--p-yellow-500);
+$yellow-600: var(--p-yellow-600);
+$yellow-700: var(--p-yellow-700);
+$yellow-800: var(--p-yellow-800);
+$yellow-900: var(--p-yellow-900);
+
+$cyan-50: var(--p-cyan-50);
+$cyan-100: var(--p-cyan-100);
+$cyan-200: var(--p-cyan-200);
+$cyan-300: var(--p-cyan-300);
+$cyan-400: var(--p-cyan-400);
+$cyan-500: var(--p-cyan-500);
+$cyan-600: var(--p-cyan-600);
+$cyan-700: var(--p-cyan-700);
+$cyan-800: var(--p-cyan-800);
+$cyan-900: var(--p-cyan-900);
+
+$purple-50: var(--p-purple-50);
+$purple-100: var(--p-purple-100);
+$purple-200: var(--p-purple-200);
+$purple-300: var(--p-purple-300);
+$purple-400: var(--p-purple-400);
+$purple-500: var(--p-purple-500);
+$purple-600: var(--p-purple-600);
+$purple-700: var(--p-purple-700);
+$purple-800: var(--p-purple-800);
+$purple-900: var(--p-purple-900);
+
+

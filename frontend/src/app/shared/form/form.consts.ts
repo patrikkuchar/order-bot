@@ -1,0 +1,1 @@
+export const DEFAULT_TEXT_INPUT_DEBOUNCE_MS = 300

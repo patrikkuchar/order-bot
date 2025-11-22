@@ -1,0 +1,18 @@
+{
+  "name": "backend-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:e2e": "vitest run",
+    "test:e2e:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "axios": "^1.7.9",
+    "patch-package": "^6.5.0",
+    "typescript": "^5.8.2",
+    "vitest": "^1.6.0"
+  }
+}

@@ -1,0 +1,182 @@
+<p>component-shows works!</p>
+
+<div class="flex flex-col gap-4">
+  <h1>H1 heading</h1>
+  <p>Paragraph text</p>
+  <h2>H2 heading</h2>
+  <p>Paragraph text</p>
+  <h3>H3 heading</h3>
+  <p>Paragraph text</p>
+  <h4>H4 heading</h4>
+  <p>Paragraph text</p>
+  <h5>H5 heading</h5>
+  <p>Paragraph text</p>
+  <h6>H6 heading</h6>
+  <p>Paragraph text</p>
+</div>
+
+<p-divider />
+
+<!-- Buttons with severities -->
+<h2>Button</h2>
+<div class="flex flex-row gap-5">
+  <p-button label="Primary" severity="primary"></p-button>
+  <p-button label="Secondary" severity="secondary"></p-button>
+  <p-button label="Success" severity="success"></p-button>
+  <p-button label="Info" severity="info"></p-button>
+  <p-button label="Warning" severity="warn"></p-button>
+  <p-button label="Help" severity="help"></p-button>
+  <p-button label="Danger" severity="danger"></p-button>
+  <p-button label="Contrast" severity="contrast"></p-button>
+</div>
+
+<p-divider />
+
+<!-- Tags with severities -->
+<h2>Tag</h2>
+<div class="flex flex-row gap-5">
+  <p-tag value="Primary"></p-tag>
+  <p-tag value="Secondary" severity="secondary"></p-tag>
+  <p-tag value="Success" severity="success"></p-tag>
+  <p-tag value="Info" severity="info"></p-tag>
+  <p-tag value="Warning" severity="warn"></p-tag>
+  <p-tag value="Danger" severity="danger"></p-tag>
+  <p-tag value="Contrast" severity="contrast"></p-tag>
+</div>
+
+<p-divider />
+
+<!-- Badges with severities -->
+<h2>Badge</h2>
+<div class="flex flex-row gap-5">
+  <span pBadge value="1">abc</span>
+  <span pBadge value="1" severity="secondary">abc</span>
+  <span pBadge value="2" severity="success">abc</span>
+  <span pBadge value="3" severity="info">abc</span>
+  <span pBadge value="4" severity="warn">abc</span>
+  <span pBadge value="5" severity="danger">abc</span>
+  <span pBadge value="5" severity="contrast">abc</span>
+</div>
+
+<p-divider />
+
+<!-- Chips with severities -->
+<h2>Chip</h2>
+<div class="flex flex-row gap-5">
+  <p-chip label="Primary" severity="primary"></p-chip>
+</div>
+
+<!-- Messages (inline) -->
+<h2>Messages</h2>
+<div class="flex flex-col gap-2">
+  <p-message>Primary message</p-message>
+  <p-message severity="secondary" text="Primary message"></p-message>
+  <p-message severity="success" text="Success message"></p-message>
+  <p-message severity="info" text="Info message"></p-message>
+  <p-message severity="warn" text="Warning message"></p-message>
+  <p-message severity="error" text="Error message"></p-message>
+</div>
+
+<hr />
+
+<!-- Cards / Panels (surface color preview) -->
+<h2>Cards / Panels</h2>
+<div class="grid grid-cols-2 gap-4">
+  <p-card header="Primary" subheader="Card with primary color">
+    <p>Some content</p>
+    <ng-template pTemplate="footer">
+      <p-button label="Action" severity="primary"></p-button>
+    </ng-template>
+  </p-card>
+  <p-card header="Success" subheader="Card with success color">
+    <p>Some content</p>
+    <ng-template pTemplate="footer">
+      <p-button label="Action" severity="success"></p-button>
+    </ng-template>
+  </p-card>
+</div>
+
+<hr />
+
+<!-- Toast (notifikácie) -->
+<h3>Toast</h3>
+<!-- Trigger buttons -->
+<div class="flex gap-2 flex-wrap">
+  <p-button label="Show Success Toast" severity="success" (onClick)="showToast('success')"></p-button>
+  <p-button label="Show Info Toast" severity="info" (onClick)="showToast('info')"></p-button>
+  <p-button label="Show Warning Toast" severity="warn" (onClick)="showToast('warning')"></p-button>
+  <p-button label="Show Error Toast" severity="danger" (onClick)="showToast('error')"></p-button>
+</div>
+
+<div class="grid gap-4 p-4">
+
+  <!-- Text Input -->
+  <div class="flex flex-col gap-2">
+    <label for="name">Name</label>
+    <input pInputText id="name" type="text" placeholder="Enter your name" aria-describedby="username-help" class="w-full" [fluid]="false"/>
+    <small id="username-help">Enter your username to reset your password.</small>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label for="name">Name</label>
+    <input pInputText id="name" type="text" placeholder="Enter your name" class="w-full" [invalid]="true" />
+    <p-message severity="error" size="small" variant="simple">Username is required.</p-message>
+  </div>
+
+  <form-inputtext id="name" label="Edited form control" [floatLabel]="null" placeholder="Enter your name" [control]="editedControl" />
+
+  <!-- Number Input -->
+  <div class="flex flex-col gap-2">
+    <label for="amount">Amount</label>
+    <p-inputNumber inputId="amount" [min]="0" [max]="1000" placeholder="0" variant="filled"></p-inputNumber>
+  </div>
+
+  <!-- Textarea -->
+  <div class="flex flex-col gap-2">
+    <label for="description">Description</label>
+    <textarea pInputTextarea id="description" rows="3" placeholder="Enter description"></textarea>
+  </div>
+
+  <!-- Password -->
+  <div class="flex flex-col gap-2">
+    <label for="password">Password</label>
+    <p-password id="password" [feedback]="true" placeholder="Enter your password" fluid></p-password> <!-- fluid - full width -->
+  </div>
+
+  <!-- Calendar -->
+  <div class="flex flex-col gap-2">
+    <label for="date">Date</label>
+    <p-datePicker id="date" [showIcon]=true dateFormat="dd/mm/yy"></p-datePicker>
+  </div>
+
+  <p-checkbox [ngModel]="true" [binary]="true" />
+
+  <p-table
+    [value]="products"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5,10,20]"
+    [responsiveLayout]="'scroll'">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.code }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.price }}</td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+
+</div>
+

@@ -1,0 +1,56 @@
+<div
+  class="flex"
+  [class.flex-col]="layout === 'vertical'"
+  [class.flex-row]="layout === 'horizontal'"
+  [style]="layoutGap ? { gap: layoutGap } : null">
+  @for (group of array.controls; track group; let idx = $index) {
+    <div
+      class="flex items-center"
+      [class.flex-col]="itemsLayout === 'vertical'"
+      [class.flex-row]="itemsLayout === 'horizontal'"
+      [style]="itemsGap ? { gap: itemsGap } : null">
+
+      <!-- main content -->
+      <ng-container
+        *ngTemplateOutlet="itemTemplate; context: { $implicit: group, index: idx, addFn: addFn, removeFn: removeFn }">
+      </ng-container>
+
+      <!-- remove button (consumer can provide via <ng-template #removeButton> ) -->
+      @if (showRemoveButton) {
+        @if (removeButtonTemplate) {
+          <ng-container *ngTemplateOutlet="removeButtonTemplate; context: { index: idx, removeFn: removeFn }"></ng-container>
+        } @else {
+          <p-button type="button"
+                    class="ml-2"
+                    icon="pi pi-times"
+                    severity="danger"
+                    rounded
+                    size="small"
+                    (click)="remove(idx)" />
+        }
+      }
+    </div>
+  } @empty {
+    @if (showNoItemsDiv) {
+      @if (noItemsTemplate) {
+        <ng-container *ngTemplateOutlet="noItemsTemplate"></ng-container>
+      } @else {
+        <p class="italic text-gray-500">No items added.</p>
+      }
+    }
+  }
+
+  <!-- add button (consumer can provide via <ng-template #addButton> ) -->
+  @if (addButtonTemplate) {
+    <ng-container *ngTemplateOutlet="addButtonTemplate; context: { add: addFn }"></ng-container>
+  } @else {
+    <p-button type="button"
+              class="mt-2"
+              label="Add"
+              icon="pi pi-plus"
+              severity="success"
+              rounded
+              size="small"
+              (click)="add()" />
+  }
+</div>

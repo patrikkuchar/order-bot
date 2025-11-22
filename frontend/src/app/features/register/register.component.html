@@ -1,0 +1,44 @@
+<div class="flex flex-row min-w-full place-content-center">
+  <p-card [header]="'registration.title' | translate" [subheader]="'registration.subtitle' | translate"
+    class="w-fit p-">
+    <app-form [form]="form" [onSubmit]="register" [redirectOnSuccess]="redirect">
+      <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+        <form-inputtext id="firstName"
+                        label="registration.form.firstName.label"
+                        placeholder="registration.form.firstName.placeholder"
+                        [control]="form.controls.firstName" />
+        <form-inputtext id="lastName"
+                        label="registration.form.lastName.label"
+                        placeholder="registration.form.lastName.placeholder"
+                        [control]="form.controls.lastName" />
+        <app-form-field forId="email"
+                                  class="col-span-2"
+                                  [control]="form.controls.email"
+                                  label="registration.form.email.label"
+                                  floatLabel="on">
+          <input pInputText id="email"
+                 type="email"
+                 [formControl]="form.controls.email"
+                 [placeholder]="'registration.form.email.placeholder' | translate"
+                 fluid />
+          <p-inputgroup-addon after>
+            @if (emailUsed === undefined) {
+              <i class="pi pi-at"></i>
+            }
+            @else if (emailUsed) {
+              <i class="pi pi-times" style="color: red"></i>
+            } @else {
+              <i class="pi pi-check" style="color: green"></i>
+            }
+          </p-inputgroup-addon>
+        </app-form-field>
+        <form-password id="password"
+                       class="col-span-2"
+                       label="registration.form.password.label"
+                       placeholder="registration.form.password.placeholder"
+                       [control]="form.controls.password" />
+        <p-button [label]="'registration.submit' | translate" severity="primary" type="submit"></p-button>
+      </div>
+    </app-form>
+  </p-card>
+</div>

@@ -1,0 +1,19 @@
+<div class="flex flex-row min-w-full place-content-center">
+  <p-card [header]="'login.title' | translate" [subheader]="'login.subtitle' | translate"
+          class="w-fit p-">
+    <app-form [form]="form" [onSubmit]="login" [redirectOnSuccess]="redirect">
+      <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+        <form-inputtext id="email"
+                        class="col-span-2"
+                        type="email"
+                        label="login.form.email.label"
+                        [control]="form.controls.email" />
+        <form-password id="password"
+                       class="col-span-2"
+                       label="login.form.password.label"
+                       [control]="form.controls.password" />
+        <p-button [label]="'login.submit' | translate" severity="primary" type="submit"></p-button>
+      </div>
+    </app-form>
+  </p-card>
+</div>

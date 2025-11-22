@@ -1,0 +1,18 @@
+<div class="w-full flex flex-row justify-between items-center">
+  <h1 [appRedirect]="AppRoutes.home">Template app</h1>
+
+  <div class="flex flex-row gap-2 items-center">
+    <p-toggle-switch
+      (onChange)="toggleDarkMode()"
+      [ngModel]="isEnabled()"/>
+    <label class="ml-2"><strong>{{ isEnabled() ? 'Dark mode' : 'Light mode' }}</strong></label>
+  </div>
+
+  @if (isLoggedIn | async) {
+    <div class="flex flex-row gap-4 items-center">
+      <p>Logged in as <strong>{{userName()}}</strong></p>
+      <p-button label="Logout" severity="contrast" (click)="logout()"></p-button>
+    </div>
+  }
+</div>
+

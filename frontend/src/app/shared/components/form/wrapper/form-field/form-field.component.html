@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-2" [class.is-edited]="valueChanged">
+  @if (label && !inftaLabel && !floatLabel) {
+    <label [for]="forId">{{ label | translate }}{{isRequired ? '*' : ''}}</label>
+  }
+  <p-inputgroup pTooltip="{{ tooltip | translate }}">
+    <ng-content select="[before]" />
+    <ng-container *ngTemplateOutlet="content" />
+    <ng-content select="[after]" />
+  </p-inputgroup>
+  @if (helpText) {
+    <small [id]="`${forId}-help`">{{ helpText | translate }}</small>
+  }
+  @if (errorMessage) {
+    <p-message severity="error" size="small" variant="simple">{{errorMessage | translate: { ctrlName: (label | translate), params: errorParams } }}</p-message>
+  }
+</div>
+
+<ng-template #content>
+  @if (label && floatLabel) {
+    <ng-container *ngTemplateOutlet="floatLabelComponent"/>
+  } @else if (label && inftaLabel) {
+    <ng-container *ngTemplateOutlet="inftaLabelComponent"/>
+  } @else {
+    <ng-container *ngTemplateOutlet="contentAndTooltip"/>
+  }
+</ng-template>
+
+<ng-template #floatLabelComponent>
+  <p-floatlabel [variant]="floatLabel!">
+    <ng-container *ngTemplateOutlet="contentAndTooltip"/>
+    <label [for]="forId">{{ label | translate }}{{isRequired ? '*' : ''}}</label>
+  </p-floatlabel>
+</ng-template>
+
+<ng-template #inftaLabelComponent>
+  <p-iftalabel>
+    <ng-container *ngTemplateOutlet="contentAndTooltip"/>
+    <label [for]="forId">{{ label | translate }}{{isRequired ? '*' : ''}}</label>
+  </p-iftalabel>
+</ng-template>
+
+<ng-template #contentAndTooltip>
+  @if (loading$ | async) {
+    <p-iconfield>
+      <ng-container *ngTemplateOutlet="mainContent"/>
+      <p-inputicon class="pi pi-spinner pi-spin" />
+    </p-iconfield>
+  } @else {
+    <ng-container *ngTemplateOutlet="mainContent"/>
+  }
+</ng-template>
+
+<ng-template #mainContent>
+  <ng-content />
+</ng-template>

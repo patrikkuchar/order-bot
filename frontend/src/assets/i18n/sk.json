@@ -1,0 +1,65 @@
+{
+  "apiErrors": {
+    "ENTITY_NOT_FOUND": {
+      "title": "Entita sa nenašla",
+      "message": "Požadovaná entita nebola nájdená."
+    }
+  },
+  "global": {
+    "error": {
+      "title": "Nastala chyba",
+      "message": "Nastala neočakávaná chyba, skúste to prosím neskôr."
+    }
+  },
+  "password": {
+    "choose": "Zadajte heslo",
+    "weak": "Heslo je slabé",
+    "medium": "Heslo je stredne silné",
+    "strong": "Heslo je silné"
+  },
+  "validation": {
+    "required": "Pole {{ctrlName}} nesmie zostať prázdne",
+    "emailUsed": "E-mailová adresa je už použitá",
+    "email": "Zadajte platnú e-mailovú adresu",
+    "maxlength": "Pole {{ctrlName}} nesmie presiahnuť {{params.maxlength.requiredLength}} znakov",
+    "default": "Pole {{ctrlName}} nie je platné"
+  },
+  "registration": {
+    "title": "Registrácia",
+    "subtitle": "Zadajte svoje meno a heslo",
+    "submit": "Zaregistrovať sa",
+    "form": {
+      "firstName": {
+        "label": "Meno",
+        "placeholder": "Zadajte svoje meno"
+      },
+      "lastName": {
+        "label": "Priezvisko",
+        "placeholder": "Zadajte svoje priezvisko"
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "Zadajte svoj e-mail"
+      },
+      "password": {
+        "label": "Heslo",
+        "placeholder": "Zadajte svoje heslo"
+      }
+    }
+  },
+  "login": {
+    "title": "Prihlásenie",
+    "subtitle": "Zadajte svoj email a heslo",
+    "submit": "Prihlásiť sa",
+    "form": {
+      "email": {
+        "label": "E-mail",
+        "placeholder": "Zadajte svoj e-mail"
+      },
+      "password": {
+        "label": "Heslo",
+        "placeholder": "Zadajte svoje heslo"
+      }
+    }
+  }
+}

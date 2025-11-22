@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
+
+h1, .h1 {
+  @apply text-2xl;
+  font-weight: bold;
+  color: var(--p-text-color);
+}
+
+h2, .h2 {
+  @apply text-xl;
+  font-weight: bold;
+  color: var(--p-text-secondary-color);
+}
+
+h3, .h3 {
+  @apply text-lg;
+  font-weight: bold;
+  color: var(--p-primary-color);
+}
+
+h4, .h4 {
+  @apply text-base;
+}
+
+h5, .h5 {
+  @apply text-sm;
+}
+
+h6, .h6 {
+  @apply text-xs;
+}
+
+body {
+  font-family: var(--p-font-family), sans-serif;
+  color: var(--p-text-color);
+  background-color: var(--p-surface-ground);
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--p-surface-100);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--p-primary-color);
+  border-radius: 4px;
+}
+::selection {
+  background-color: var(--p-primary-color);
+  color: var(--p-primary-color-text);
+}
+
+[appRedirect]:hover {
+  cursor: pointer;
+}
+

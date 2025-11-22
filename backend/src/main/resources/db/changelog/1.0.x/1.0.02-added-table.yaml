@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1760721458853-5
+      author: patrik (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: test_entity_id
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: note
+                  type: VARCHAR(255)
+            tableName: test_entity_borrows
+  - changeSet:
+      id: 1760721458853-6
+      author: patrik (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: test_entity_id
+            baseTableName: test_entity_borrows
+            constraintName: fkfu8iapa0dd1h0sqrp3ou9dvih
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: test_entity
+            validate: true

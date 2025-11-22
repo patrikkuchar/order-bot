@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: demo
+
+auth:
+  secret: secret_local_123456789101112131415
+  session:
+    ttl-seconds: 3600_000_000
+
+encryption:
+  secret: MySuperSecretKey
+  algorithm: AES

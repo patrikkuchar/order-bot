@@ -1,0 +1,551 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "OpenAPI documentation for My API",
+    "title" : "My API",
+    "version" : "59acdd34ea678de65cbe0a25f66df8cefdf5050b"
+  },
+  "servers" : [ {
+    "description" : "Generated server url",
+    "url" : "http://localhost:8080"
+  } ],
+  "paths" : {
+    "/api/p/test/update" : {
+      "post" : {
+        "operationId" : "updateEntity",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestEntityDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    },
+    "/api/auth/unique" : {
+      "post" : {
+        "operationId" : "isEmailUnique",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterUniqueEmailReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RegisterUniqueEmailRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "auth" ]
+      }
+    },
+    "/api/auth/register" : {
+      "post" : {
+        "operationId" : "register",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "auth" ]
+      }
+    },
+    "/api/auth/login" : {
+      "post" : {
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "auth" ]
+      }
+    },
+    "/api/public/test/list-with-page" : {
+      "get" : {
+        "operationId" : "listEntitiesWithPaging",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "query",
+          "name" : "filter",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/TestItemListFilter"
+          },
+          "style" : "form"
+        }, {
+          "explode" : true,
+          "in" : "query",
+          "name" : "req",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/PageReq"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDtoTestItemDto"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    },
+    "/api/public/test/list-top" : {
+      "get" : {
+        "operationId" : "listTopEntities",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TestItemDto"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    },
+    "/api/public/config/" : {
+      "get" : {
+        "operationId" : "getConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConfigurationRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "config" ]
+      }
+    },
+    "/api/p/test/ping" : {
+      "get" : {
+        "operationId" : "ping",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    },
+    "/api/p/test/get" : {
+      "get" : {
+        "operationId" : "getEntity",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestEntityRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    },
+    "/api/admin/test/ping" : {
+      "get" : {
+        "operationId" : "adminPing",
+        "parameters" : [ {
+          "explode" : true,
+          "in" : "query",
+          "name" : "param",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/TestRes"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "test" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "TestEntityDto" : {
+        "properties" : {
+          "title" : {
+            "maxLength" : 150,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "description" : {
+            "maxLength" : 300,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "category" : {
+            "enum" : [ "BOOK", "ELECTRONICS", "CLOTHING", "TOY" ],
+            "type" : "string"
+          },
+          "logisticProp" : {
+            "$ref" : "#/components/schemas/TestEntityLogisticProp"
+          },
+          "available" : {
+            "type" : "boolean"
+          },
+          "borrows" : {
+            "items" : {
+              "$ref" : "#/components/schemas/TestEntityProperty"
+            },
+            "type" : "array",
+            "uniqueItems" : true
+          }
+        },
+        "required" : [ "available", "borrows", "category", "logisticProp", "title" ],
+        "type" : "object"
+      },
+      "TestEntityLogisticProp" : {
+        "properties" : {
+          "stockCount" : {
+            "format" : "int32",
+            "minimum" : 0,
+            "type" : "integer"
+          },
+          "price" : {
+            "exclusiveMinimum" : false,
+            "minimum" : 0.0,
+            "type" : "number"
+          }
+        },
+        "required" : [ "price", "stockCount" ],
+        "type" : "object"
+      },
+      "TestEntityProperty" : {
+        "properties" : {
+          "email" : {
+            "description" : "Is not valid Email",
+            "example" : "email@email.com",
+            "maxLength" : 100,
+            "minLength" : 0,
+            "pattern" : "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,63}$",
+            "type" : "string",
+            "x-localization-key" : "email"
+          },
+          "note" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "note" ],
+        "type" : "object"
+      },
+      "RegisterUniqueEmailReq" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "RegisterUniqueEmailRes" : {
+        "properties" : {
+          "isUnique" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "isUnique" ],
+        "type" : "object"
+      },
+      "RegisterReq" : {
+        "properties" : {
+          "email" : {
+            "description" : "Is not valid Email",
+            "example" : "email@email.com",
+            "pattern" : "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,63}$",
+            "type" : "string",
+            "x-localization-key" : "email"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "firstName", "lastName", "password" ],
+        "type" : "object"
+      },
+      "LoginReq" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "email", "password" ],
+        "type" : "object"
+      },
+      "LoginRes" : {
+        "properties" : {
+          "token" : {
+            "type" : "string"
+          },
+          "userInfo" : {
+            "$ref" : "#/components/schemas/UserInfo"
+          }
+        },
+        "required" : [ "token", "userInfo" ],
+        "type" : "object"
+      },
+      "UserInfo" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "meno" : {
+            "type" : "string"
+          },
+          "priezvisko" : {
+            "type" : "string"
+          },
+          "role" : {
+            "$ref" : "#/components/schemas/UserRole"
+          }
+        },
+        "required" : [ "email", "role" ],
+        "type" : "object"
+      },
+      "UserRole" : {
+        "enum" : [ "USER", "ADMIN" ],
+        "type" : "string"
+      },
+      "DecimalRange" : {
+        "properties" : {
+          "from" : {
+            "type" : "number"
+          },
+          "to" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "TestItemListFilter" : {
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "categories" : {
+            "items" : {
+              "enum" : [ "BOOK", "ELECTRONICS", "CLOTHING", "TOY" ],
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "priceRange" : {
+            "$ref" : "#/components/schemas/DecimalRange"
+          }
+        },
+        "type" : "object"
+      },
+      "PageReq" : {
+        "properties" : {
+          "number" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "size" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "number", "size" ],
+        "type" : "object"
+      },
+      "PageDtoTestItemDto" : {
+        "properties" : {
+          "content" : {
+            "items" : {
+              "$ref" : "#/components/schemas/TestItemDto"
+            },
+            "type" : "array"
+          },
+          "page" : {
+            "$ref" : "#/components/schemas/PageMetadata"
+          }
+        },
+        "required" : [ "content", "page" ],
+        "type" : "object"
+      },
+      "PageMetadata" : {
+        "properties" : {
+          "size" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "number" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "content", "empty", "first", "first", "last", "number", "numberOfElements", "size", "totalElements", "totalPages" ],
+        "type" : "object"
+      },
+      "TestItemDto" : {
+        "properties" : {
+          "title" : {
+            "maxLength" : 150,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "category" : {
+            "enum" : [ "BOOK", "ELECTRONICS", "CLOTHING", "TOY" ],
+            "type" : "string"
+          },
+          "price" : {
+            "exclusiveMinimum" : false,
+            "minimum" : 0.0,
+            "type" : "number"
+          }
+        },
+        "required" : [ "category", "price", "title" ],
+        "type" : "object"
+      },
+      "ConfigurationRes" : {
+        "properties" : {
+          "appVersion" : {
+            "type" : "string"
+          },
+          "reloadIntervalMs" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "enabledDomains" : {
+            "items" : {
+              "enum" : [ "TEST" ],
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "appVersion", "enabledDomains", "reloadIntervalMs" ],
+        "type" : "object"
+      },
+      "TestRes" : {
+        "properties" : {
+          "userFullName" : {
+            "type" : "string"
+          },
+          "isAdmin" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "isAdmin", "userFullName" ],
+        "type" : "object"
+      },
+      "TestEntityRes" : {
+        "properties" : {
+          "entity" : {
+            "$ref" : "#/components/schemas/TestEntityDto"
+          }
+        },
+        "type" : "object"
+      }
+    }
+  }
+}
