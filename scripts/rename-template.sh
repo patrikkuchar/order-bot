@@ -7,8 +7,8 @@ Usage: scripts/rename-template.sh <new-app-name> [<new-backend-package>]
 
 Arguments:
   <new-app-name>          Required. New application name used in Helm charts, namespaces and documentation.
-  <new-backend-package>   Optional. New base package for the Spring Boot backend (replaces `kuhcorp.template`).
-                          Defaults to `kuhcorp.template` if not provided.
+  <new-backend-package>   Optional. New base package for the Spring Boot backend (replaces `kuhcorp.orderbot`).
+                          Defaults to `kuhcorp.orderbot` if not provided.
 USAGE
 }
 
@@ -19,11 +19,11 @@ fi
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 NEW_APP_NAME="$1"
-NEW_PACKAGE_NAME="${2:-kuhcorp.template}"
+NEW_PACKAGE_NAME="${2:-kuhcorp.orderbot}"
 
-CURRENT_APP_NAME="my-template"
-CURRENT_PACKAGE="kuhcorp.template"
-CURRENT_APP_CLASS="DemoApplication"
+CURRENT_APP_NAME="order-bot"
+CURRENT_PACKAGE="kuhcorp.orderbot"
+CURRENT_APP_CLASS="OrderBotApplication"
 
 package_to_path() {
   local package="$1"

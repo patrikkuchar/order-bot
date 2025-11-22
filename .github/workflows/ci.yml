@@ -197,19 +197,19 @@ jobs:
           username: ${{ env.DOCKERHUB_USER }}
           password: ${{ env.DOCKERHUB_PASS }}
       - name: Build backend image
-        run: docker build -t "$DOCKERHUB_USER/my-template-backend:$BACKEND_VERSION" ./backend
+        run: docker build -t "$DOCKERHUB_USER/order-bot-backend:$BACKEND_VERSION" ./backend
       - name: Push backend image
         run: |
-          docker push $DOCKERHUB_USER/my-template-backend:$BACKEND_VERSION
-          docker tag $DOCKERHUB_USER/my-template-backend:$BACKEND_VERSION $DOCKERHUB_USER/my-template-backend:latest
-          docker push $DOCKERHUB_USER/my-template-backend:latest
+          docker push $DOCKERHUB_USER/order-bot-backend:$BACKEND_VERSION
+          docker tag $DOCKERHUB_USER/order-bot-backend:$BACKEND_VERSION $DOCKERHUB_USER/order-bot-backend:latest
+          docker push $DOCKERHUB_USER/order-bot-backend:latest
       - name: Build frontend image
-        run: docker build -t "$DOCKERHUB_USER/my-template-frontend:$FRONTEND_VERSION" ./frontend
+        run: docker build -t "$DOCKERHUB_USER/order-bot-frontend:$FRONTEND_VERSION" ./frontend
       - name: Push frontend image
         run: |
-          docker push $DOCKERHUB_USER/my-template-frontend:$FRONTEND_VERSION
-          docker tag $DOCKERHUB_USER/my-template-frontend:$FRONTEND_VERSION $DOCKERHUB_USER/my-template-frontend:latest
-          docker push $DOCKERHUB_USER/my-template-frontend:latest
+          docker push $DOCKERHUB_USER/order-bot-frontend:$FRONTEND_VERSION
+          docker tag $DOCKERHUB_USER/order-bot-frontend:$FRONTEND_VERSION $DOCKERHUB_USER/order-bot-frontend:latest
+          docker push $DOCKERHUB_USER/order-bot-frontend:latest
       # TODO: dokončiť - https://chatgpt.com/c/691a3340-e6f4-832c-a7ad-e37fc145702e , https://chatgpt.com/c/69217708-4424-8327-9f20-a4d6b54b888b
       #- name: Setup Helm
       #  uses: azure/setup-helm@v4
@@ -219,12 +219,12 @@ jobs:
       #    echo "KUBECONFIG=$KUBECONFIG_FILE" >> $GITHUB_ENV
       #- name: Deploy with Helm
       #  run: |
-      #    helm upgrade --install my-template ./charts/my-template \
-      #      --namespace my-template \
+      #    helm upgrade --install order-bot ./charts/order-bot \
+      #      --namespace order-bot \
       #      --create-namespace \
-      #      --set backend.image=$DOCKERHUB_USER/my-template-backend \
+      #      --set backend.image=$DOCKERHUB_USER/order-bot-backend \
       #      --set backend.tag=$BACKEND_VERSION \
-      #      --set frontend.image=$DOCKERHUB_USER/my-template-frontend \
+      #      --set frontend.image=$DOCKERHUB_USER/order-bot-frontend \
       #      --set frontend.tag=$FRONTEND_VERSION \
       #      --set-string postgres.sealedUser="$SEALED_POSTGRES_USER" \
       #      --set-string postgres.sealedPassword="$SEALED_POSTGRES_PASSWORD"

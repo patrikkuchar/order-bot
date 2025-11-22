@@ -1,4 +1,0 @@
-apiVersion: v2
-name: my-template
-version: 1.0.0
-description: Fullstack Angular + Spring Boot Helm chart

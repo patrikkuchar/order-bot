@@ -11,7 +11,7 @@ Prehľad architektúry, domén a väzieb medzi Angular frontend aplikáciou a Sp
   - [Seedovanie dát a režim CLI](#seedovanie-dát-a-režim-cli)
 
 ## Architektúra a tooling
-- **Backend**: Spring Boot aplikácia s modulmi pre autentifikáciu (JWT tokeny), doménové API a generovanie seedovacích dát. `DemoApplication` rozpozná prepínač `--seed-data` pre spustenie CLI módu namiesto web servera.
+- **Backend**: Spring Boot aplikácia s modulmi pre autentifikáciu (JWT tokeny), doménové API a generovanie seedovacích dát. `OrderBotApplication` rozpozná prepínač `--seed-data` pre spustenie CLI módu namiesto web servera.
 - **Frontend**: Angular 20 s PrimeNG a Tailwind CSS. API klient je generovaný z Backend pomocou Maven scriptu a uložený v `frontend/src/app/api`.
 - **Infra tooling**: `docker-compose.yml` pre Postgres, `scripts/local-k8s.sh` pre rýchly kind/minikube deployment vrátane buildov a port-forwardu。【F:docker-compose.yml†L1-L17】【F:README.md†L74-L101】
 
@@ -36,7 +36,7 @@ Prehľad architektúry, domén a väzieb medzi Angular frontend aplikáciou a Sp
 - **Formulárová vrstva**: komponent `FormComponent` stavia formuláre z OpenAPI špecifikácie cez helper `buildForm`, používa `ApiHandlingService` na jednotné oznamy/redirecty a podporuje `dataFetcher` pre predvyplnenie dát (napr. editácia entity). Custom form controls (`CustomFormGroup`, `CustomFormArray`) sledujú zmeny a vedia aplikovať nové initial values podľa OpenAPI schémy.【F:frontend/src/app/shared/components/form/wrapper/form/form.component.ts†L1-L84】【F:frontend/src/app/shared/form/openapi/openapi-form-builder.ts†L8-L89】【F:frontend/src/app/shared/form/custom/custom-form-array.ts†L11-L99】
 
 ### Seedovanie dát a režim CLI
-- **CLI režim**: spustením backendu s argumentom `--seed-data` sa spustí `DataSeedingApp`, ktorý vytvorí kontext bez web servera a seedne základné datasety. Výsledok vypíše na STDOUT.【F:backend/src/main/java/kuhcorp/template/DemoApplication.java†L12-L29】【F:backend/src/main/java/kuhcorp/dataseeding/DataSeedingApp.java†L17-L34】
+- **CLI režim**: spustením backendu s argumentom `--seed-data` sa spustí `DataSeedingApp`, ktorý vytvorí kontext bez web servera a seedne základné datasety. Výsledok vypíše na STDOUT.【F:backend/src/main/java/kuhcorp/template/OrderBotApplication.java†L12-L29】【F:backend/src/main/java/kuhcorp/dataseeding/DataSeedingApp.java†L17-L34】
 - **Dostupné seedy**: `UserDataSeeder` vytvára adminov, používateľov a testovacích používateľov viazaných na TEST entitu (počet závisí od profilu). Pomocné triedy ako `DataSeedingProfile` a `DatasetVersion` pomáhajú meniť objem dát medzi minimal/full režimom.【F:backend/src/main/java/kuhcorp/dataseeding/domain/user/UserDataSeeder.java†L17-L41】【F:backend/src/main/java/kuhcorp/dataseeding/DataSeedingProfile.java†L5-L20】
 
 ### CI pipeline

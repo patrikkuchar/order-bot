@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-NAMESPACE="my-template"
-RELEASE_NAME="my-template"
-CHART_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/charts/my-template"
+NAMESPACE="order-bot"
+RELEASE_NAME="order-bot"
+CHART_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/charts/order-bot"
 FRONTEND_IMAGE="local/moja-firma-frontend:latest"
 BACKEND_IMAGE="local/moja-firma-backend:latest"
 

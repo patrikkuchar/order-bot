@@ -1,10 +1,10 @@
 package kuhcorp.dataseeding;
 
-import kuhcorp.template.data.EncryptedDataConverter;
-import kuhcorp.template.data.EncryptionEncoder;
-import kuhcorp.template.data.HashEncoder;
-import kuhcorp.template.db.DbConfig;
-import kuhcorp.template.domain.configuration.attributes.AttributesProvider;
+import kuhcorp.orderbot.data.EncryptedDataConverter;
+import kuhcorp.orderbot.data.EncryptionEncoder;
+import kuhcorp.orderbot.data.HashEncoder;
+import kuhcorp.orderbot.db.DbConfig;
+import kuhcorp.orderbot.domain.configuration.attributes.AttributesProvider;
 import org.springframework.boot.ApplicationContextFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;

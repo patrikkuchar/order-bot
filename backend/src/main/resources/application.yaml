@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo
+    name: order-bot
   jpa:
     hibernate:
       ddl-auto: none
@@ -9,10 +9,10 @@ spring:
     enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo
+    url: jdbc:postgresql://localhost:5432/order_bot_db
     driver-class-name: org.postgresql.Driver
     username: admin
-    password: demo
+    password: heslo
 
 auth:
   secret: secret_local_123456789101112131415

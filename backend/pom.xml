@@ -14,10 +14,10 @@
     </parent>
 
     <groupId>kuhcorp</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>order-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
+    <name>order-bot</name>
+    <description>Order Bot project for Spring Boot</description>
 
     <properties>
         <java.version>21</java.version>

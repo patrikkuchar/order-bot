@@ -2,13 +2,13 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CHART_PATH="${ROOT_DIR}/charts/my-template"
+CHART_PATH="${ROOT_DIR}/charts/order-bot"
 BACKEND_DIR="${ROOT_DIR}/backend"
 FRONTEND_DIR="${ROOT_DIR}/frontend"
 
-RELEASE_NAME="${RELEASE_NAME:-my-template}"
-NAMESPACE="${NAMESPACE:-my-template}"
-CLUSTER_NAME="${CLUSTER_NAME:-my-template-local}"
+RELEASE_NAME="${RELEASE_NAME:-order-bot}"
+NAMESPACE="${NAMESPACE:-order-bot}"
+CLUSTER_NAME="${CLUSTER_NAME:-order-bot-local}"
 BACKEND_IMAGE="${BACKEND_IMAGE:-local/moja-firma-backend}"
 FRONTEND_IMAGE="${FRONTEND_IMAGE:-local/moja-firma-frontend}"
 IMAGE_TAG="${IMAGE_TAG:-local}"

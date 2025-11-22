@@ -6,8 +6,8 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=demo
-      - POSTGRES_DB=demo
+      - POSTGRES_PASSWORD=heslo
+      - POSTGRES_DB=order_bot_db
     ports:
       - "5432:5432"
     volumes:

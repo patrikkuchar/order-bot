@@ -1,0 +1,4 @@
+apiVersion: v2
+name: order-bot
+version: 1.0.0
+description: Fullstack Angular + Spring Boot Helm chart

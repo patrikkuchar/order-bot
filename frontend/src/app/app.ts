@@ -18,7 +18,7 @@ import {SpinnerComponent} from './shared/components/spinner.component';
 })
 export class App {
 
-  protected title = 'my-template';
+  protected title = 'order-bot';
   readonly showLoading: Signal<boolean>;
 
   constructor(authSvc: AuthService, toastSvc: ToastService, api: TestApi, loadingSvc: LoadingService) {

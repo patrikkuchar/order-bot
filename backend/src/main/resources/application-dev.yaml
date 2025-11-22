@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo
+    url: jdbc:postgresql://localhost:5432/order_bot_db
     driver-class-name: org.postgresql.Driver
     username: admin
-    password: demo
+    password: heslo
   liquibase:
     enabled: true
 

@@ -1,7 +1,7 @@
 package kuhcorp.dataseeding;
 
-import kuhcorp.template.auth.CurrentUserHolder;
-import kuhcorp.template.auth.userHolder.SystemUserHolder;
+import kuhcorp.orderbot.auth.CurrentUserHolder;
+import kuhcorp.orderbot.auth.userHolder.SystemUserHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

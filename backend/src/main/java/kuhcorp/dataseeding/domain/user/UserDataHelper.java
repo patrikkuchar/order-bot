@@ -1,14 +1,14 @@
 package kuhcorp.dataseeding.domain.user;
 
-import kuhcorp.template.data.HashEncoder;
-import kuhcorp.template.domain.user.User;
-import kuhcorp.template.domain.user.UserRepo;
+import kuhcorp.orderbot.data.HashEncoder;
+import kuhcorp.orderbot.domain.user.User;
+import kuhcorp.orderbot.domain.user.UserRepo;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.stereotype.Component;
 
-import static kuhcorp.template.auth.provider.custom.AuthDtos.*;
+import static kuhcorp.orderbot.auth.provider.custom.AuthDtos.*;
 
 @Component
 @RequiredArgsConstructor

@@ -2,8 +2,8 @@ package kuhcorp.dataseeding.domain.test;
 
 import kuhcorp.dataseeding.DbHelper;
 import kuhcorp.dataseeding.data.DataGenerator;
-import kuhcorp.template.domain.test.*;
-import kuhcorp.template.domain.user.User;
+import kuhcorp.orderbot.domain.test.*;
+import kuhcorp.orderbot.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

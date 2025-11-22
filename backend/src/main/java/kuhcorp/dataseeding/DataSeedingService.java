@@ -2,7 +2,7 @@ package kuhcorp.dataseeding;
 
 import kuhcorp.dataseeding.domain.test.TestDataSeeder;
 import kuhcorp.dataseeding.domain.user.UserDataSeeder;
-import kuhcorp.template.domain.configuration.attributes.AttributesProvider;
+import kuhcorp.orderbot.domain.configuration.attributes.AttributesProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static kuhcorp.template.domain.configuration.attributes.Attributes.AttributeType.SEED_VERSION;
+import static kuhcorp.orderbot.domain.configuration.attributes.Attributes.AttributeType.SEED_VERSION;
 
 @Component
 @RequiredArgsConstructor

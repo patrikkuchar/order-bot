@@ -17,17 +17,17 @@
 
 ## Moduly a balíky
 - `kuhcorp.dataseeding` – CLI aplikácia (`DataSeedingApp`) pre seedovanie dát a služby pre generovanie datasetov. Dataseed sa spustí v prípade že verzia dát definovaná v `DatasetVersion` neodpovedá verzii v DB (tabuľká `config_attributes`).【F:backend/src/main/java/kuhcorp/dataseeding/DataSeedingApp.java†L17-L34】【F:backend/src/main/java/kuhcorp/dataseeding/DatasetVersion.java†L5-L32】
-- `kuhcorp.template` – hlavná Spring Boot aplikácia (`DemoApplication`)
-- `kuhcorp.template.api` - OpenAPI konfigurácia, spoločné DTO (`PageReq`, `PageDto`) a error handling (`ApiExceptionHandler`, `BadRequestApiError`).
-- `kuhcorp.template.auth` – autentifikácia a správa prihláseného používateľa.
-- `kuhcorp.template.db` – JPA repository a audit metadata. Taktiež implemntácia QueryDSL helperov a vlasnej `Repo` triedy.
-- `kuhcorp.template.data` – utility pre šifrovanie a hash
-- `kuhcorp.template.domain` – doménové API moduly (napr. `configuration`, `test`).
+- `kuhcorp.orderbot` – hlavná Spring Boot aplikácia (`OrderBotApplication`)
+- `kuhcorp.orderbot.api` - OpenAPI konfigurácia, spoločné DTO (`PageReq`, `PageDto`) a error handling (`ApiExceptionHandler`, `BadRequestApiError`).
+- `kuhcorp.orderbot.auth` – autentifikácia a správa prihláseného používateľa.
+- `kuhcorp.orderbot.db` – JPA repository a audit metadata. Taktiež implemntácia QueryDSL helperov a vlasnej `Repo` triedy.
+- `kuhcorp.orderbot.data` – utility pre šifrovanie a hash
+- `kuhcorp.orderbot.domain` – doménové API moduly (napr. `configuration`, `test`).
 - `resources` - konfigurácia aplikácie (DB pripojenie, tajné kľúče), Liquibase migrácie.
 
 ## Konfigurácia a spúšťanie
 - Základná konfigurácia je v `backend/src/main/resources/application.yaml` (DB pripojenie, `auth.secret`, `auth.session.ttl-seconds`, šifrovací kľúč).【F:backend/src/main/resources/application.yaml†L1-L22】
-- Lokálne spustenie: `./mvnw spring-boot:run` s bežiacim Postgresom (pozri `docker-compose.yml`). CLI režim pre seedovanie: `./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed-data` (spustí `DataSeedingApp`).【F:backend/src/main/java/kuhcorp/template/DemoApplication.java†L12-L29】【F:docker-compose.yml†L1-L17】
+- Lokálne spustenie: `./mvnw spring-boot:run` s bežiacim Postgresom (pozri `docker-compose.yml`). CLI režim pre seedovanie: `./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed-data` (spustí `DataSeedingApp`).【F:backend/src/main/java/kuhcorp/template/OrderBotApplication.java†L12-L29】【F:docker-compose.yml†L1-L17】
 - OpenAPI generovanie je konfigurované v `openapitools.json` a `OpenApiConfig`; výstup sa používa na generovanie Angular klienta a e2e axios klienta. Spusti `./mvnw -Popenapi -DskipTests generate-sources` na aktualizáciu po zmenách kontraktu.【F:backend/src/main/java/kuhcorp/template/api/OpenApiConfig.java†L17-L80】【F:backend/openapitools.json†L1-L45】
 
 ## Autentifikácia
@@ -43,9 +43,9 @@
 - **OpenAPI konfigurácia**: `OpenApiConfig` nastavuje základné informácie o API, generuje OpenAPI špecifikáciu a mapuje vlastné validátory (napr. `@Email`) do schémy (pattern, example, lokalizačný kľúč).【F:backend/src/main/java/kuhcorp/template/api/OpenApiConfig.java†L17-L80】
 
 ## Dáta a persistencia
-- `kuhcorp.template.db` poskytuje základ pre JPA repository (`Repo` s QueryDSL helpermi) a entity s auditnými metadátmi (`EntityWithMetadata`, `EntityWithStatus`).【F:backend/src/main/java/kuhcorp/template/db/Repo.java†L9-L63】【F:backend/src/main/java/kuhcorp/template/db/EntityWithMetadata.java†L6-L36】
+- `kuhcorp.orderbot.db` poskytuje základ pre JPA repository (`Repo` s QueryDSL helpermi) a entity s auditnými metadátmi (`EntityWithMetadata`, `EntityWithStatus`).【F:backend/src/main/java/kuhcorp/template/db/Repo.java†L9-L63】【F:backend/src/main/java/kuhcorp/template/db/EntityWithMetadata.java†L6-L36】
 - QueryDSL obsahuje metamodely generované počas build procesu (napr. `QTestEntity` pre `TestEntity`). Test sa používa pri tvorbe typovo bezpečných dotazov v Repo triedach.
-- Funkcia filtrovania: `kuhcorp.template.db.filter` poskytuje základ pre filtrované dotazy v Repo vrstvách. Pre aplikovanie filtra je potrebné vytvoriť DTO triedu s požadovanými poľami, ktorá extenduje `ListtFilter`. V triede okrem polí, ktoré budú zobrezené v API schéme je potrebné definovať `Fields` - query dsl types, ktoré budú mapované na polia v DTO. Taktiež je potrebné overridnuť metodu `apply` v ktorej premapuješ DTO polia na query dsl polia pomocou potrebnej logiky (napr. like, equals, in, atď.) - tieto metódu sú definované v `ListFilter`. V Repo triede je potom možné injectnuť tento filter do *where* pomocou `filter.toPredicate(builder)`.【F:backend/src/main/java/kuhcorp/template/db/filter/ListFilter.java†L7-L78】【F:backend/src/main/java/kuhcorp/template/db/filter/Field.java†L6-L26】
+- Funkcia filtrovania: `kuhcorp.orderbot.db.filter` poskytuje základ pre filtrované dotazy v Repo vrstvách. Pre aplikovanie filtra je potrebné vytvoriť DTO triedu s požadovanými poľami, ktorá extenduje `ListtFilter`. V triede okrem polí, ktoré budú zobrezené v API schéme je potrebné definovať `Fields` - query dsl types, ktoré budú mapované na polia v DTO. Taktiež je potrebné overridnuť metodu `apply` v ktorej premapuješ DTO polia na query dsl polia pomocou potrebnej logiky (napr. like, equals, in, atď.) - tieto metódu sú definované v `ListFilter`. V Repo triede je potom možné injectnuť tento filter do *where* pomocou `filter.toPredicate(builder)`.【F:backend/src/main/java/kuhcorp/template/db/filter/ListFilter.java†L7-L78】【F:backend/src/main/java/kuhcorp/template/db/filter/Field.java†L6-L26】
 - Funkcia stránkovania: `PageReq` DTO obsahuje polia pre stránkovanie (page, size, sort) a `Repo` trieda poskytuje metódu `getPage` na získanie stránkovaných výsledkov z dotazu. Výsledok je zabalený v `Page`, ktorý obsahuje zoznam výsledkov a metadáta o stránkovaní (totalElements, totalPages).【F:backend/src/main/java/kuhcorp/template/api/dto/PageReq.java†L6-L26】【F:backend/src/main/java/kuhcorp/template/api/dto/PageDto.java†L6-L30】【F:backend/src/main/java/kuhcorp/template/db/Repo.java†L9-L63】
 - Šifrovanie/hashe: `HashEncoder` pre heslá, `EncryptedDataConverter` + `EncryptionEncoder` pre stĺpce šifrované v DB (kľúč v `encryption.secret`).【F:backend/src/main/java/kuhcorp/template/data/HashEncoder.java†L5-L26】【F:backend/src/main/java/kuhcorp/template/data/EncryptedDataConverter.java†L7-L44】
 - Seedovanie: `UserDataSeeder` generuje demo používateľov a TEST dáta; `DataGenerator`/`DatasetVersion` riešia opakovateľné datasety a verziu seedov pre CI alebo lokálne prostredie.【F:backend/src/main/java/kuhcorp/dataseeding/domain/user/UserDataSeeder.java†L17-L41】【F:backend/src/main/java/kuhcorp/dataseeding/DatasetVersion.java†L5-L32】
