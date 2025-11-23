@@ -20,8 +20,12 @@ export class ProjectService {
 
   projects = this._projects.asReadonly();
 
-  constructor(api: TemplateManagerApi) {
-    api.listTemplates()
+  constructor(private api: TemplateManagerApi) {
+    this.reloadProjects();
+  }
+
+  reloadProjects(): void {
+    this.api.listTemplates()
       .subscribe(templates => {
         this._projects.set(templates.map(t => ({
           id: t.id,
@@ -34,5 +38,9 @@ export class ProjectService {
   selectProject(code: string): void {
     const project = this._projects().find(p => p.code === code) || null;
     this._selectedProject.set(project);
+  }
+
+  clearSelectedProject(): void {
+    this._selectedProject.set(null);
   }
 }

@@ -3,7 +3,7 @@
 
   <p-divider layout="vertical" />
 
-  <app-project-select [projects]="projects()" [selectedProject]="selectedProject()" (projectSelected)="selectProject($event)"/>
+  <app-project-select [projects]="projects()" [selectedProject]="selectedProject()" (projectSelected)="selectProject($event)" (addProject)="newProject()"/>
 
   @for (item of menuItems(); track item.routeVal) {
     <app-header-item [label]="item.label" [selected]="selectedMenuItem() === item" [route]="item.route" [icon]="item.icon"/>

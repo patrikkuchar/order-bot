@@ -45,7 +45,7 @@ export class Header {
               private authSvc: AuthService,
               private redirectSvc: RedirectService,
               userProfileSvc: UserProfileService,
-              projectSvc: ProjectService,
+              private projectSvc: ProjectService,
               router: Router) {
     this.isEnabled = this.svc.isDarkModeEnabled;
     this.isLoggedIn = authSvc.isLoggedIn;
@@ -101,6 +101,11 @@ export class Header {
   selectProject(project: ProjectShortInfo) {
     const route = ProjectRoutes.of(project.code);
     this.redirectSvc.to(route.overview);
+  }
+
+  newProject() {
+    this.projectSvc.clearSelectedProject();
+    this.redirectSvc.to(ProjectRoutes.new);
   }
 
   toggleDarkMode() {

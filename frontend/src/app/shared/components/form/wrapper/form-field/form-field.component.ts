@@ -74,7 +74,10 @@ export class FormFieldComponent implements OnInit {
   constructor(private destroyRef: DestroyRef) {}
 
   ngOnInit() {
-    this.isRequired = this.control.validator?.({} as any)?.["required"];
+    this.isRequired = false;
+    if (!!this.control?.validator) {
+      this.isRequired = !!this.control.validator({} as any)?.["required"];
+    }
     if (this.showErrors || this.showChanges) {
         this.control.statusChanges
         .pipe(takeUntilDestroyed(this.destroyRef))
