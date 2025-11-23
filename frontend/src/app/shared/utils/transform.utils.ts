@@ -27,4 +27,12 @@ export class TransformUtils {
   static removeWhitespaceFromString(inputString: string): string {
     return inputString?.replace(/\s/g, '');
   }
+
+  static toSlug(inputString: string): string {
+    return inputString
+      .toLowerCase()
+      .trim()
+      .replaceAll(/[\s\W-]+/g, '-') // Nahradí medzery a nealfanumerické znaky pomlčkami
+      .replaceAll(/^-+|-+$/g, '');  // Odstráni vedúce a koncové pomlčky
+  }
 }

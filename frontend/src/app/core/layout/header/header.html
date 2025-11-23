@@ -1,5 +1,13 @@
 <div class="w-full flex flex-row justify-between items-center">
-  <h1 [appRedirect]="AppRoutes.home">Template app</h1>
+  <h1 [appRedirect]="AppRoutes.home">Order BOT Templater</h1>
+
+  <p-divider layout="vertical" />
+
+  <app-project-select [projects]="projects()" [selectedProject]="selectedProject()" (projectSelected)="selectProject($event)"/>
+
+  @for (item of menuItems(); track item.routeVal) {
+    <app-header-item [label]="item.label" [selected]="selectedMenuItem() === item" [route]="item.route" [icon]="item.icon"/>
+  }
 
   <div class="flex flex-row gap-2 items-center">
     <p-toggle-switch
@@ -15,4 +23,3 @@
     </div>
   }
 </div>
-

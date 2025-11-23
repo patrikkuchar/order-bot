@@ -5,6 +5,7 @@ import {RegisterComponent} from './features/register/register.component';
 import {LoginComponent} from './features/login/login.component';
 import {TestRoutes, TestRoutesContext, testRouting} from './features/test/test.routes';
 import {BoxVisualizerDemoComponent} from './features/box-visualizer-demo/box-visualizer-demo.component';
+import {ProjectRoutes, ProjectRoutesContext, projectRouting} from './features/project/project.routes';
 
 const home = {
   path: '',
@@ -31,7 +32,7 @@ const boxVisualizerDemo = {
   to: () => ['/box-visualizer-demo']
 }
 
-const submodules = [TestRoutesContext];
+const submodules = [TestRoutesContext, ProjectRoutesContext];
 submodules.forEach((s) => s(['/']));
 
 export const AppRoutes = {
@@ -41,12 +42,14 @@ export const AppRoutes = {
   register: register.to,
   boxVisualizerDemo: boxVisualizerDemo.to,
   test: TestRoutes,
+  project: ProjectRoutes
 } as const;
 
 export type RouteKeys = keyof typeof AppRoutes;
 
 export const routes: Routes = [
   ...testRouting,
+  ...projectRouting,
   {
     path: home.path,
     component: HomeComponent
