@@ -32,6 +32,7 @@ h6, .h6 {
 }
 
 body {
+  @apply m-0 p-0;
   font-family: var(--p-font-family), sans-serif;
   color: var(--p-text-color);
   background-color: var(--p-surface-ground);
