@@ -21,8 +21,8 @@ public class UserDataHelper {
 
     public User createAndPersist(SeedUserReq req) {
         var passwordHash = encoder.encode(PASSWORD);
-        var u = User.create(createReq(req), passwordHash, req.getIsAdmin());
-        repo.save(u);
+        var u = User.create(req.getId(), createReq(req), passwordHash, req.getIsAdmin());
+        repo.saveAndFlush(u);
         return u;
     }
 
@@ -38,6 +38,8 @@ public class UserDataHelper {
     @Builder
     @Value
     public static class SeedUserReq {
+
+        String id;
 
         String email;
 

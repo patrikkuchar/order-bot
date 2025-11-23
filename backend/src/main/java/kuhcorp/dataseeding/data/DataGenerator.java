@@ -11,6 +11,10 @@ public class DataGenerator {
 
     private final Faker faker = new Faker(Locale.of("sk"));
 
+    public String uuid() {
+        return faker.internet().uuid();
+    }
+
     public String firstName() {
         return faker.name().firstName();
     }

@@ -9,15 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserRole } from './userRole';
 
 
-export interface UserInfo { 
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    role: UserRole;
+export interface TemplateStepDto { 
+    stepNumber: number;
+    question: string;
+    nextStepNumber: number;
 }
-
-
 

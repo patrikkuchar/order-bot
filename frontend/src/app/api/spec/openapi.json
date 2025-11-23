@@ -31,6 +31,27 @@
         "tags" : [ "test" ]
       }
     },
+    "/api/p/template/manager/create" : {
+      "post" : {
+        "operationId" : "createTemplate",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TemplateCreateReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "templateManager" ]
+      }
+    },
     "/api/auth/unique" : {
       "post" : {
         "operationId" : "isEmailUnique",
@@ -220,6 +241,55 @@
         "tags" : [ "test" ]
       }
     },
+    "/api/p/template/manager/list" : {
+      "get" : {
+        "operationId" : "listTemplates",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TemplateListRes"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "templateManager" ]
+      }
+    },
+    "/api/p/template/manager/detail/{id}" : {
+      "get" : {
+        "operationId" : "getTemplateById",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TemplateDetail"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "templateManager" ]
+      }
+    },
     "/api/admin/test/ping" : {
       "get" : {
         "operationId" : "adminPing",
@@ -320,6 +390,41 @@
         "required" : [ "email", "note" ],
         "type" : "object"
       },
+      "TemplateCreateReq" : {
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "steps" : {
+            "items" : {
+              "$ref" : "#/components/schemas/TemplateStepDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "name", "steps" ],
+        "type" : "object"
+      },
+      "TemplateStepDto" : {
+        "properties" : {
+          "stepNumber" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "question" : {
+            "type" : "string"
+          },
+          "nextStepNumber" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "nextStepNumber", "question", "stepNumber" ],
+        "type" : "object"
+      },
       "RegisterUniqueEmailReq" : {
         "properties" : {
           "email" : {
@@ -389,10 +494,10 @@
           "email" : {
             "type" : "string"
           },
-          "meno" : {
+          "firstName" : {
             "type" : "string"
           },
-          "priezvisko" : {
+          "lastName" : {
             "type" : "string"
           },
           "role" : {
@@ -544,6 +649,36 @@
             "$ref" : "#/components/schemas/TestEntityDto"
           }
         },
+        "type" : "object"
+      },
+      "TemplateListRes" : {
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "id", "name" ],
+        "type" : "object"
+      },
+      "TemplateDetail" : {
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "steps" : {
+            "items" : {
+              "$ref" : "#/components/schemas/TemplateStepDto"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "name", "steps" ],
         "type" : "object"
       }
     }

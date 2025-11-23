@@ -9,15 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserRole } from './userRole';
 
 
-export interface UserInfo { 
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    role: UserRole;
+export interface TemplateListRes { 
+    id: string;
+    name: string;
 }
-
-
 

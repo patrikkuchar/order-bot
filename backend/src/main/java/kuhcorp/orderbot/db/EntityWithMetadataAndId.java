@@ -1,7 +1,6 @@
 package kuhcorp.orderbot.db;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,22 +21,11 @@ import java.time.Instant;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 @ToString(onlyExplicitlyIncluded = true)
-public abstract class EntityWithMetadata {
+public abstract class EntityWithMetadataAndId extends EntityWithMetadata {
 
-    @NotNull
-    @CreatedDate
-    private Instant createdAt;
-
-    @NotEmpty
-    @CreatedBy
-    private String createdBy;
-
-    @LastModifiedDate
-    private Instant lastModifiedAt;
-
-    @LastModifiedBy
-    @NotEmpty
-    private String lastModifiedBy;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
+    private String id;
 }

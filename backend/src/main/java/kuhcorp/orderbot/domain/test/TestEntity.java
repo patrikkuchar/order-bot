@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import kuhcorp.orderbot.data.EncryptedDataConverter;
-import kuhcorp.orderbot.db.EntityWithMetadata;
+import kuhcorp.orderbot.db.EntityWithMetadataAndId;
 import kuhcorp.orderbot.db.EntityWithStatus;
 import kuhcorp.orderbot.domain.test.TestDtos.TestEntityDto;
 import kuhcorp.orderbot.domain.user.User;
@@ -17,7 +17,7 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
-public class TestEntity extends EntityWithMetadata implements EntityWithStatus {
+public class TestEntity extends EntityWithMetadataAndId implements EntityWithStatus {
 
     @NotNull
     @OneToOne(fetch = LAZY)
