@@ -4,17 +4,17 @@ import Lara from '@primeuix/themes/lara';
 export const MyPreset = definePreset(Lara, {
   semantic: {
     primary: {
-      50: '{purple.50}',
-      100: '{purple.100}',
-      200: '{purple.200}',
-      300: '{purple.300}',
-      400: '{purple.400}',
-      500: '{purple.500}',
-      600: '{purple.600}',
-      700: '{purple.700}',
-      800: '{purple.800}',
-      900: '{purple.900}',
-      950: '{purple.950}',
+      50: '#f6ff99',
+      100: '#e8f7a8',
+      200: '#d2f0a6',
+      300: '#bbe9a2',
+      400: '#a7e399',
+      500: '#66c9a8',
+      600: '#48b3af',
+      700: '#489caf',
+      800: '#4785ae',
+      900: '#476eae',
+      950: '#36508a',
     },
     colorScheme: {
       light: {
@@ -30,6 +30,15 @@ export const MyPreset = definePreset(Lara, {
           color: '#ffffff',
           focusColor: '#ffffff',
         },
+        surface: {
+          // Sets the base page background; tune section/card/overlay if needed
+          ground: '#F5F7FA',
+          section: '#ffffff',
+          card: '#ffffff',
+          overlay: '#ffffff',
+          border: '#dfe7c0',
+          focusRing: 'color-mix(in srgb, {primary.color} 60%, transparent)',
+        },
       },
       dark: {
         primary: {
@@ -43,6 +52,15 @@ export const MyPreset = definePreset(Lara, {
           focusBackground: 'rgba(250, 250, 250, .24)',
           color: 'rgba(255,255,255,.87)',
           focusColor: 'rgba(255,255,255,.87)',
+        },
+        surface: {
+          // Sets the base page background; tune section/card/overlay if needed
+          ground: '#111827',
+          section: '#000000',
+          card: '#000000',
+          overlay: '#000000',
+          border: '#1c2f5e',
+          focusRing: 'color-mix(in srgb, {primary.color} 60%, transparent)',
         },
       },
     },
