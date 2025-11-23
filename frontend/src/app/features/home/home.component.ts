@@ -13,6 +13,7 @@ import {ConfigurationResEnabledDomainsEnum} from '../../api';
       <a [appRedirect]="AppRoutes.components">Link to components</a>
       <a [appRedirect]="AppRoutes.login">Link to login</a>
       <a [appRedirect]="AppRoutes.register">Link to register</a>
+      <a [appRedirect]="AppRoutes.boxVisualizerDemo">Link to box visualizer demo</a>
       @if (testEnabled()) {
         <a [appRedirect]="AppRoutes.test.root">Link to tests</a>
       }
