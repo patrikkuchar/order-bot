@@ -73,14 +73,24 @@ export interface BoxGraph {
     <div #container class="rete-container"></div>
   `,
   styles: [`
+    :root {
+      min-height: 100%;
+      height: 100%;
+    }
     .rete-container {
       position: relative;
       width: 100%;
-      min-height: 400px;
-      border: 1px solid #dcdcdc;
+      min-height: 100%;
+      height: 100%;
+      border: 1px solid var(--p-surface-border, #dcdcdc);
       border-radius: 10px;
-      background: #f5f6fa;
+      background: var(--visualizer-bg, var(--p-surface-50, #f5f6fa));
       overflow: hidden;
+    }
+
+    :host-context(.dark-mode-toggle) .rete-container {
+      --visualizer-bg: var(--p-surface-800, #1b1e26);
+      border-color: var(--p-surface-600, #525766);
     }
 
     .rete-container .selected-node {

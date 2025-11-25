@@ -2,3 +2,104 @@
   padding: 1rem;
   background-color: var(--p-surface-menu);
 }
+
+.theme-toggle {
+  --toggle-height: 2.15rem;
+  --toggle-width: 4.35rem;
+  --thumb-size: 1.6rem;
+  --toggle-padding: 0.4rem;
+
+  position: relative;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--toggle-padding);
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--p-surface-menu) 75%, rgba(0, 0, 0, 0.15));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--p-surface-menu) 88%, #ffffff 12%), var(--p-surface-menu));
+  color: var(--p-text-color, #111827);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--p-primary-color, #6366f1);
+    outline-offset: 3px;
+  }
+
+  &.is-dark {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--p-surface-800) 90%, #0b1221 10%), var(--p-surface-700));
+    border-color: color-mix(in srgb, var(--p-surface-700) 70%, rgba(255, 255, 255, 0.25));
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .thumb {
+    position: absolute;
+    top: 50%;
+    left: var(--toggle-padding);
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: 999px;
+    background: var(--p-surface-0, #ffffff);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    transform: translate(0, -50%);
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  &.is-dark .thumb {
+    transform: translate(calc(var(--toggle-width) - var(--thumb-size) - (var(--toggle-padding) * 2)), -50%);
+    background: var(--p-surface-50, #e2e8f0);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  .icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    opacity: 0.55;
+    transition: color 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
+
+    i {
+      line-height: 1;
+      font-size: 1rem;
+    }
+  }
+
+  &:not(.is-dark) .icon.sun {
+    opacity: 1;
+    color: #f59e0b;
+    transform: translateX(2px);
+  }
+
+  &:not(.is-dark) .icon.moon {
+    color: color-mix(in srgb, var(--p-text-color) 70%, #6b7280);
+  }
+
+  &.is-dark .icon.sun {
+    color: color-mix(in srgb, #cbd5e1 70%, #ffffff 30%);
+  }
+
+  &.is-dark .icon.moon {
+    opacity: 1;
+    color: #a855f7;
+    transform: translateX(-1px);
+  }
+}
+
+.mode-label {
+  color: var(--p-text-color, #111827);
+  display: inline-flex;
+  align-items: center;
+}
