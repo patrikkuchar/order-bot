@@ -1,12 +1,14 @@
-import {Component, Signal, signal} from '@angular/core';
+import {Component, effect, Signal, signal} from '@angular/core';
 import {Card} from 'primeng/card';
 import {ConnectionPanelComponent} from './panels/connection-panel.component';
 import {ManagerPanelComponent} from './panels/manager-panel.component';
 import {Button} from 'primeng/button';
 import {BoxGraph, BoxVisualizerComponent} from '../../../shared/components/box-visualizer/box-visualizer.component';
-import {ToastService} from '../../../core/services/toast.service';
 import {NgClass} from '@angular/common';
 import {DesignerService} from './designer.service';
+import {BaseRouteDirective} from '../../../shared/directives/base-route.directive';
+import {ProjectRoutes} from '../project.routes';
+import {RedirectService} from '../../../core/services/redirect.service';
 
 @Component({
   imports: [
@@ -14,8 +16,7 @@ import {DesignerService} from './designer.service';
     ConnectionPanelComponent,
     ManagerPanelComponent,
     Button,
-    BoxVisualizerComponent,
-    NgClass
+    BoxVisualizerComponent
   ],
   styles: [`
     :host {
@@ -63,7 +64,7 @@ import {DesignerService} from './designer.service';
                 class="h-full block"
                 [graph]="graph()"
                 [selectedNodeId]="selectedNodeId()"
-                (graphChange)="graph.set($event)"
+                (graphChange)="onGraphChange($event)"
                 (selectedNodeIdChange)="onNodeSelected($event)"
               ></app-box-visualizer>
             </div>
@@ -81,17 +82,17 @@ import {DesignerService} from './designer.service';
 
   `
 })
-export class DesignerComponent {
+export class DesignerComponent extends BaseRouteDirective {
   private readonly initialGraph: BoxGraph = {
     nodes: [
       {
-        id: 'ingress',
+        id: 'n1',
         label: 'Ingress',
         position: {x: 80, y: 100},
         outputs: [{key: 'next', label: 'Next'}]
       },
       {
-        id: 'prepare',
+        id: 'n2',
         label: 'Prepare order',
         position: {x: 320, y: 140},
         inputs: [{key: 'input', label: 'Input'}],
@@ -106,13 +107,15 @@ export class DesignerComponent {
       }
     ],
     connections: [
-      {id: 'c1', source: 'ingress', sourceOutput: 'next', target: 'prepare', targetInput: 'input'},
-      {id: 'c2', source: 'prepare', sourceOutput: 'out', target: 'payment', targetInput: 'in'}
+      {id: 'c1', source: 'n1', sourceOutput: 'next', target: 'n2', targetInput: 'input'},
+      {id: 'c2', source: 'n2', sourceOutput: 'out', target: 'payment', targetInput: 'in'}
     ]
   };
 
   graph = signal<BoxGraph>(this.initialGraph);
   selectedNodeId: Signal<string | null>;
+  private readonly projectId = this.param('projectId');
+  private readonly routeNodeId = this.param('nodeId');
 
   reset(): void {
     // Deep-ish copy to avoid reference reuse
@@ -125,26 +128,52 @@ export class DesignerComponent {
       })),
       connections: this.initialGraph.connections.map(conn => ({...conn}))
     });
+    const graph = this.graph();
+    this.svc.setGraph(graph);
     this.updateSelectedNode(null);
   }
 
   onNodeSelected(nodeId: string | null): void {
+    console.log('Node selected:', nodeId);
     this.updateSelectedNode(nodeId);
 
     if (!nodeId) {
+      this.navigateToNode(null);
       return;
     }
 
-    const found = this.graph().nodes.find(n => n.id === nodeId);
-    const label = found?.label ?? nodeId;
+    this.navigateToNode(nodeId);
+  }
+
+  onGraphChange(updatedGraph: BoxGraph): void {
+    this.graph.set(updatedGraph);
+    this.svc.setGraph(updatedGraph);
   }
 
   private updateSelectedNode(nodeId: string | null): void {
-    this.svc.selectedNodeId.set(nodeId);
+    const currentGraph = this.graph();
+    const hasNode = nodeId ? currentGraph.nodes.some(node => node.id === nodeId) : false;
+    this.svc.selectedNodeId.set(hasNode ? nodeId : null);
   }
 
-  constructor(private svc: DesignerService) {
+  private navigateToNode(nodeId: string | null): void {
+    const pid = this.projectId();
+    if (!pid) {
+      return;
+    }
+
+    this.redirectSvc.to(ProjectRoutes.of(pid).designer, undefined, nodeId ?? undefined);
+  }
+
+  constructor(private svc: DesignerService,
+              private redirectSvc: RedirectService) {
+    super();
     this.selectedNodeId = this.svc.selectedNodeId.asReadonly();
     this.reset();
+
+    effect(() => {
+      const nodeId = this.routeNodeId();
+      this.updateSelectedNode(nodeId);
+    });
   }
 }

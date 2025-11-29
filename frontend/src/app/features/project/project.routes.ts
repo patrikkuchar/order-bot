@@ -21,7 +21,14 @@ const overview = {
 
 const designer = {
   path: `designer`,
-  to: (projectId: string) => () => [...context, rootPath, projectId, 'designer'],
+  withNodeParam: `designer/:nodeId`,
+  to: (projectId: string) => (nodeId?: string) => [
+    ...context,
+    rootPath,
+    projectId,
+    'designer',
+    ...(nodeId ? [nodeId] : [])
+  ],
 }
 
 const settings = {
@@ -41,6 +48,7 @@ export const ProjectRoutes = {
   of: (projectId: string) => ({
     overview: overview.to(projectId),
     designer: designer.to(projectId),
+    designerAndNode: (nodeId: string) => designer.to(projectId),
     settings: settings.to(projectId)
   })
 }
@@ -59,6 +67,7 @@ export const projectRouting: Routes = [
     component: ProjectComponent,
     children: [
       { path: overview.path, component: OverviewComponent },
+      { path: designer.withNodeParam, component: DesignerComponent },
       { path: designer.path, component: DesignerComponent },
       { path: settings.path, component: SettingsComponent },
       { path: '**', redirectTo: overview.path }

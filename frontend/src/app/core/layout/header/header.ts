@@ -94,7 +94,10 @@ export class Header {
 
     this.selectedMenuItem = computed(() => {
       const url = currentUrl();
-      return this.menuItems().find(item => url?.endsWith(item.routeVal));
+      return this.menuItems().find(item => {
+        if (!url) return false;
+        return url.endsWith(item.routeVal) || url.includes(`${item.routeVal}/`);
+      });
     });
   }
 
