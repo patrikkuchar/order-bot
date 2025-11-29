@@ -1,77 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1760721458853-1
-    author: patrik (generated)
-    changes:
-    - createTable:
-        columns:
-        - column:
-            constraints:
-              nullable: false
-            name: available
-            type: BOOLEAN
-        - column:
-            name: price
-            type: numeric(38, 2)
-        - column:
-            constraints:
-              nullable: false
-            name: stock_count
-            type: INTEGER
-        - column:
-            constraints:
-              nullable: false
-            name: created_at
-            type: TIMESTAMP WITH TIME ZONE
-        - column:
-            name: last_modified_at
-            type: TIMESTAMP WITH TIME ZONE
-        - column:
-            constraints:
-              nullable: false
-            name: title
-            type: VARCHAR(150)
-        - column:
-            name: description
-            type: VARCHAR(500)
-        - column:
-            constraints:
-              nullable: false
-            name: category
-            type: VARCHAR(255)
-        - column:
-            constraints:
-              nullable: false
-            name: created_by
-            type: VARCHAR(255)
-        - column:
-            constraints:
-              nullable: false
-              primaryKey: true
-              primaryKeyName: test_entity_pkey
-            name: id
-            type: VARCHAR(255)
-        - column:
-            constraints:
-              nullable: false
-            name: last_modified_by
-            type: VARCHAR(255)
-        - column:
-            constraints:
-              nullable: false
-            name: owner_id
-            type: VARCHAR(255)
-        tableName: test_entity
-- changeSet:
-    id: 1760721458853-2
-    author: patrik (generated)
-    changes:
-    - addUniqueConstraint:
-        columnNames: owner_id
-        constraintName: test_entity_owner_id_key
-        tableName: test_entity
-- changeSet:
-    id: 1760721458853-3
+    id: 1763890914151-1
     author: patrik (generated)
     changes:
     - createTable:
@@ -90,8 +19,6 @@ databaseChangeLog:
             name: last_modified_at
             type: TIMESTAMP WITH TIME ZONE
         - column:
-            constraints:
-              nullable: false
             name: created_by
             type: VARCHAR(255)
         - column:
@@ -110,8 +37,6 @@ databaseChangeLog:
             name: id
             type: VARCHAR(255)
         - column:
-            constraints:
-              nullable: false
             name: last_modified_by
             type: VARCHAR(255)
         - column:
@@ -129,7 +54,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: app_user
 - changeSet:
-    id: 1760721458853-4
+    id: 1763890914151-2
     author: patrik (generated)
     changes:
     - createTable:
@@ -148,7 +73,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: config_attributes
 - changeSet:
-    id: 1760721458853-5
+    id: 1763890914151-3
     author: patrik (generated)
     changes:
     - createTable:
@@ -156,17 +81,188 @@ databaseChangeLog:
         - column:
             constraints:
               nullable: false
-            name: test_entity_id
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: created_by
             type: VARCHAR(255)
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: template_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: VARCHAR(255)
+        tableName: template
+- changeSet:
+    id: 1763890914151-4
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: available
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: price
+            type: numeric(38, 2)
+        - column:
+            constraints:
+              nullable: false
+            name: stock_count
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: title
+            type: VARCHAR(150)
+        - column:
+            name: description
+            type: VARCHAR(500)
+        - column:
+            constraints:
+              nullable: false
+            name: category
+            type: VARCHAR(255)
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: test_entity_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: owner_id
+            type: VARCHAR(255)
+        tableName: test_entity
+- changeSet:
+    id: 1763890914151-5
+    author: patrik (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: owner_id
+        constraintName: test_entity_owner_id_key
+        tableName: test_entity
+- changeSet:
+    id: 1763890914151-6
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: next_step_number
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: step_number
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: template_step_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: question
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: template_id
+            type: VARCHAR(255)
+        tableName: template_step
+- changeSet:
+    id: 1763890914151-7
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
         - column:
             name: email
             type: VARCHAR(255)
         - column:
             name: note
             type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: test_entity_id
+            type: VARCHAR(255)
         tableName: test_entity_borrows
 - changeSet:
-    id: 1760721458853-6
+    id: 1763890914151-8
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: template_id
+        baseTableName: template_step
+        constraintName: fk8xonpqtwbwdkrt152182ttdeq
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: template
+        validate: true
+- changeSet:
+    id: 1763890914151-9
     author: patrik (generated)
     changes:
     - addForeignKeyConstraint:
@@ -181,7 +277,7 @@ databaseChangeLog:
         referencedTableName: test_entity
         validate: true
 - changeSet:
-    id: 1760721458853-7
+    id: 1763890914151-10
     author: patrik (generated)
     changes:
     - addForeignKeyConstraint:

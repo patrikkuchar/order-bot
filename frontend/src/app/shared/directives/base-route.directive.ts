@@ -1,6 +1,6 @@
 import {Directive, inject} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {toSignal} from '@angular/core/rxjs-interop';
 
@@ -10,9 +10,17 @@ export abstract class BaseRouteDirective {
 
   // Jednotlivý param podľa key (path param)
   param<T = string>(key: string) {
+    const maps = this.route.pathFromRoot.map(r => r.paramMap);
     return toSignal(
-      this.route.paramMap.pipe(
-        map(params => (params.get(key) as unknown as T) ?? null)
+      combineLatest(maps).pipe(
+        map(arr => {
+          console.log('arr', arr.map(a => a.keys));
+          for (const m of arr) {
+            const v = m.get(key);
+            if (v !== null) return v as unknown as T;
+          }
+          return null;
+        })
       ),
       { initialValue: null }
     );

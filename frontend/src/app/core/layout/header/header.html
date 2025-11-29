@@ -1,11 +1,28 @@
 <div class="w-full flex flex-row justify-between items-center">
-  <h1 [appRedirect]="AppRoutes.home">Template app</h1>
+  <h1 [appRedirect]="AppRoutes.home">Order BOT Templater</h1>
+
+  <p-divider layout="vertical" />
+
+  <app-project-select [projects]="projects()" [selectedProject]="selectedProject()" (projectSelected)="selectProject($event)" (addProject)="newProject()"/>
+
+  @for (item of menuItems(); track item.routeVal) {
+    <app-header-item [label]="item.label" [selected]="selectedMenuItem() === item" [route]="item.route" [icon]="item.icon"/>
+  }
 
   <div class="flex flex-row gap-2 items-center">
-    <p-toggle-switch
-      (onChange)="toggleDarkMode()"
-      [ngModel]="isEnabled()"/>
-    <label class="ml-2"><strong>{{ isEnabled() ? 'Dark mode' : 'Light mode' }}</strong></label>
+    <button
+      type="button"
+      class="theme-toggle"
+      role="switch"
+      aria-label="Toggle dark mode"
+      [attr.aria-checked]="isEnabled()"
+      [class.is-dark]="isEnabled()"
+      (click)="toggleDarkMode()">
+      <span class="icon sun" aria-hidden="true"><i class="pi pi-sun"></i></span>
+      <span class="thumb" aria-hidden="true"></span>
+      <span class="icon moon" aria-hidden="true"><i class="pi pi-moon"></i></span>
+    </button>
+    <label class="ml-2 mode-label"><strong>{{ isEnabled() ? 'Dark mode' : 'Light mode' }}</strong></label>
   </div>
 
   @if (isLoggedIn | async) {
@@ -15,4 +32,3 @@
     </div>
   }
 </div>
-

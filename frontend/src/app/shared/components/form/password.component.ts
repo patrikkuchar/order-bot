@@ -14,6 +14,14 @@ export interface PasswordOptions {
   strongRegex?: string;
 }
 
+export const DEFAULT_PASSWORD_WEAKNESS_OVERLAY: PasswordOptions = {
+  prompt: 'password.choose',
+  weak: 'password.weak',
+  medium: 'password.medium',
+  strong: 'password.strong'
+}
+
+//TODO: TEMPLATE update password field
 @Component({
   selector: 'form-password',
   imports: [
@@ -35,18 +43,28 @@ export interface PasswordOptions {
                               [showChanges]="showChanges"
                               [showErrors]="showErrors"
                               [loading$]="loading$">
-      <p-password [id] = id
-                  [formControl]="control"
-                  [placeholder]="placeholder | translate"
-                  [toggleMask]="toggleMask"
-                  [promptLabel]="passwordLabel.prompt | translate"
-                  [weakLabel]="passwordLabel.weak | translate"
-                  [mediumLabel]="passwordLabel.medium | translate"
-                  [strongLabel]="passwordLabel.strong | translate"
-                  [attr.mediumRegex]="passwordLabel.mediumRegex || null"
-                  [attr.strongRegex]="passwordLabel.strongRegex || null"
-                  fluid
-                    />
+      @if (passwordWeaknessOverlay) {
+        <p-password [id] = id
+                    [formControl]="control"
+                    [placeholder]="placeholder | translate"
+                    [toggleMask]="toggleMask"
+                    [promptLabel]="passwordWeaknessOverlay.prompt | translate"
+                    [weakLabel]="passwordWeaknessOverlay.weak | translate"
+                    [mediumLabel]="passwordWeaknessOverlay.medium | translate"
+                    [strongLabel]="passwordWeaknessOverlay.strong | translate"
+                    [attr.mediumRegex]="passwordWeaknessOverlay.mediumRegex || null"
+                    [attr.strongRegex]="passwordWeaknessOverlay.strongRegex || null"
+                    fluid
+        />
+      } @else {
+        <p-password [id] = id
+                    [formControl]="control"
+                    [placeholder]="placeholder | translate"
+                    [toggleMask]="toggleMask"
+                    [feedback]="false"
+                    fluid
+        />
+      }
     </app-form-field>
   `
 })
@@ -54,10 +72,5 @@ export class PasswordComponent extends BaseFormInput<string> {
 
   @Input() toggleMask = true;
 
-  @Input() passwordLabel: PasswordOptions = {
-    prompt: 'password.choose',
-    weak: 'password.weak',
-    medium: 'password.medium',
-    strong: 'password.strong'
-  };
+  @Input() passwordWeaknessOverlay?: PasswordOptions;
 }

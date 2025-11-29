@@ -50,6 +50,12 @@ export class RedirectService {
     }
   }
 
+  buildHref<T extends RoutePath>(pathFn: T, extras?: NavigationExtras, ...args: Parameters<T>): string {
+    const pathArray = this.getPathArray(pathFn, ...args);
+    const urlTree = this.router.createUrlTree(pathArray, extras);
+    return this.router.serializeUrl(urlTree);
+  }
+
   private navigate(cmd: NavigationCmd): void {
     this.router.navigate(cmd.path, cmd.extras);
   }

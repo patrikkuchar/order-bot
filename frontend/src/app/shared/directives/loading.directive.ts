@@ -13,7 +13,7 @@ import {
   inject,
   ChangeDetectorRef
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import {debounceTime, Observable, Subscription} from 'rxjs';
 import {SpinnerComponent} from '../components/spinner.component';
 import {Button} from 'primeng/button';
 
@@ -47,7 +47,9 @@ export class LoadingDirective implements OnInit, OnDestroy {
       return;
     }
 
-    this.sub = this.loading$.subscribe((loading) => {
+    this.sub = this.loading$
+      .pipe(debounceTime(100))
+      .subscribe((loading) => {
       console.log('[appLoading] loading state:', loading);
       if (this.buttonLoading && this.pButton) {
         console.log('[appLoading] Setting PrimeNG button loading state:', loading);

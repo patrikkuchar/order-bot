@@ -1,4 +1,9 @@
 spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   datasource:
     url: jdbc:postgresql://localhost:5432/order_bot_db
     driver-class-name: org.postgresql.Driver
@@ -7,6 +12,14 @@ spring:
   liquibase:
     enabled: true
 
+logging:
+  level:
+    org:
+      springframework:
+        transaction: debug
+        orm:
+          jpa: debug
+      hibernate: debug
 auth:
   secret: secret_local_123456789101112131415
   session:

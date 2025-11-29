@@ -12,10 +12,10 @@ export class UserProfileService {
   user: Signal<UserInfo | null> = this._user.asReadonly();
   userName: Signal<string | null> = computed(() => {
     const user = this.user();
-    if (!user || (!user.meno && !user.priezvisko)) {
+    if (!user || (!user.firstName && !user.lastName)) {
       return null;
     }
-    return `${user.meno} ${user.priezvisko}`;
+    return `${user.firstName} ${user.lastName}`;
   });
 
   constructor(authSvc: AuthService) {

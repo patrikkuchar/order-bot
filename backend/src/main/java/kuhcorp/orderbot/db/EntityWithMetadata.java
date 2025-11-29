@@ -1,6 +1,7 @@
 package kuhcorp.orderbot.db;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -15,7 +16,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -25,11 +25,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @ToString(onlyExplicitlyIncluded = true)
 public abstract class EntityWithMetadata {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
-    private String id;
 
     @NotNull
     @CreatedDate

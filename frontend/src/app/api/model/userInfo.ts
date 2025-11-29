@@ -14,8 +14,8 @@ import { UserRole } from './userRole';
 
 export interface UserInfo { 
     email: string;
-    meno?: string;
-    priezvisko?: string;
+    firstName?: string;
+    lastName?: string;
     role: UserRole;
 }
 

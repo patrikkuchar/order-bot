@@ -241,6 +241,100 @@ export interface RegisterUniqueEmailRes {
 /**
  * 
  * @export
+ * @interface TemplateCreateReq
+ */
+export interface TemplateCreateReq {
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateCreateReq
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateCreateReq
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<TemplateStepDto>}
+     * @memberof TemplateCreateReq
+     */
+    'steps': Array<TemplateStepDto>;
+}
+/**
+ * 
+ * @export
+ * @interface TemplateDetail
+ */
+export interface TemplateDetail {
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateDetail
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateDetail
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<TemplateStepDto>}
+     * @memberof TemplateDetail
+     */
+    'steps': Array<TemplateStepDto>;
+}
+/**
+ * 
+ * @export
+ * @interface TemplateListRes
+ */
+export interface TemplateListRes {
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateListRes
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateListRes
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TemplateStepDto
+ */
+export interface TemplateStepDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof TemplateStepDto
+     */
+    'stepNumber': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TemplateStepDto
+     */
+    'question': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TemplateStepDto
+     */
+    'nextStepNumber': number;
+}
+/**
+ * 
+ * @export
  * @interface TestEntityDto
  */
 export interface TestEntityDto {
@@ -448,13 +542,13 @@ export interface UserInfo {
      * @type {string}
      * @memberof UserInfo
      */
-    'meno'?: string;
+    'firstName'?: string;
     /**
      * 
      * @type {string}
      * @memberof UserInfo
      */
-    'priezvisko'?: string;
+    'lastName'?: string;
     /**
      * 
      * @type {UserRole}
@@ -811,6 +905,235 @@ export class ConfigApi extends BaseAPI {
      */
     public getConfig(options?: RawAxiosRequestConfig) {
         return ConfigApiFp(this.configuration).getConfig(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TemplateManagerApi - axios parameter creator
+ * @export
+ */
+export const TemplateManagerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {TemplateCreateReq} templateCreateReq 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createTemplate: async (templateCreateReq: TemplateCreateReq, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'templateCreateReq' is not null or undefined
+            assertParamExists('createTemplate', 'templateCreateReq', templateCreateReq)
+            const localVarPath = `/api/p/template/manager/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(templateCreateReq, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTemplateById: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getTemplateById', 'id', id)
+            const localVarPath = `/api/p/template/manager/detail/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listTemplates: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/p/template/manager/list`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TemplateManagerApi - functional programming interface
+ * @export
+ */
+export const TemplateManagerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TemplateManagerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {TemplateCreateReq} templateCreateReq 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createTemplate(templateCreateReq: TemplateCreateReq, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createTemplate(templateCreateReq, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TemplateManagerApi.createTemplate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTemplateById(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateDetail>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTemplateById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TemplateManagerApi.getTemplateById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listTemplates(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TemplateListRes>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.listTemplates(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TemplateManagerApi.listTemplates']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TemplateManagerApi - factory interface
+ * @export
+ */
+export const TemplateManagerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TemplateManagerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {TemplateCreateReq} templateCreateReq 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createTemplate(templateCreateReq: TemplateCreateReq, options?: any): AxiosPromise<void> {
+            return localVarFp.createTemplate(templateCreateReq, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTemplateById(id: string, options?: any): AxiosPromise<TemplateDetail> {
+            return localVarFp.getTemplateById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listTemplates(options?: any): AxiosPromise<Array<TemplateListRes>> {
+            return localVarFp.listTemplates(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TemplateManagerApi - object-oriented interface
+ * @export
+ * @class TemplateManagerApi
+ * @extends {BaseAPI}
+ */
+export class TemplateManagerApi extends BaseAPI {
+    /**
+     * 
+     * @param {TemplateCreateReq} templateCreateReq 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TemplateManagerApi
+     */
+    public createTemplate(templateCreateReq: TemplateCreateReq, options?: RawAxiosRequestConfig) {
+        return TemplateManagerApiFp(this.configuration).createTemplate(templateCreateReq, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TemplateManagerApi
+     */
+    public getTemplateById(id: string, options?: RawAxiosRequestConfig) {
+        return TemplateManagerApiFp(this.configuration).getTemplateById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TemplateManagerApi
+     */
+    public listTemplates(options?: RawAxiosRequestConfig) {
+        return TemplateManagerApiFp(this.configuration).listTemplates(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

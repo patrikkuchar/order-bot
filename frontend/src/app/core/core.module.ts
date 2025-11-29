@@ -6,6 +6,9 @@ import {RedirectDirective} from '../shared/directives/redirect.directive';
 import {ToggleSwitch} from 'primeng/toggleswitch';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe} from '@angular/common';
+import {Divider} from "primeng/divider";
+import {HeaderItemComponent} from './layout/header/header-item/header-item.component';
+import {ProjectSelectComponent} from './layout/header/project-select/project-select.component';
 
 @NgModule({
   imports: [
@@ -14,11 +17,15 @@ import {AsyncPipe} from '@angular/common';
     RedirectDirective,
     ToggleSwitch,
     FormsModule,
-    AsyncPipe
+    AsyncPipe,
+    Divider,
+    HeaderItemComponent,
+    ProjectSelectComponent
   ],
   declarations: [Header],
   exports: [
-    Header
+    Header,
+    ProjectSelectComponent
   ]
 })
 export class CoreModule {}

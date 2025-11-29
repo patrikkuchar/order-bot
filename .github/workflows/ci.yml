@@ -57,11 +57,11 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: demo
+          POSTGRES_DB: order_bot_db
           POSTGRES_USER: admin
-          POSTGRES_PASSWORD: demo
+          POSTGRES_PASSWORD: heslo
         options: >-
-          --health-cmd "pg_isready -U admin -d demo"
+          --health-cmd "pg_isready -U admin -d heslo"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -82,7 +82,7 @@ jobs:
         run: npm ci
       - name: Wait for PostgreSQL
         env:
-          PGPASSWORD: demo
+          PGPASSWORD: heslo
         run: |
           for _ in {1..30}; do
             if pg_isready -h 127.0.0.1 -p 5432 -U admin >/dev/null 2>&1; then

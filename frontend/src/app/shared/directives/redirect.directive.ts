@@ -1,36 +1,49 @@
-import {Directive, HostListener, inject, Input} from '@angular/core';
+import {Directive, inject, Input, OnChanges, SimpleChange, SimpleChanges} from '@angular/core';
+import {RouterLink} from '@angular/router';
 import {RedirectService} from '../../core/services/redirect.service';
 import {RouteArgs, RoutePath} from '../../app/routes/types';
 
 @Directive({
   selector: '[appRedirect]', // pouzitie: <button [appRedirect]="'/home'"></button>
-  standalone: true
+  standalone: true,
+  hostDirectives: [RouterLink]
 })
-export class RedirectDirective {
+export class RedirectDirective implements OnChanges {
   private redirect = inject(RedirectService);
+  private routerLinkDirective = inject(RouterLink);
 
   @Input('appRedirect') routeArgs!: RouteArgs<RoutePath> | RoutePath;
 
-  @HostListener('mouseenter', ['$event'])
-  onMouseEnter(event: Event) {
-    const el = event.currentTarget as HTMLElement | null;
-    if (el) el.style.cursor = 'pointer';
+  private lastValue?: string;
+
+  ngOnChanges(_: SimpleChanges): void {
+    this.setRouterLink();
   }
 
-  @HostListener('mouseleave', ['$event'])
-  onMouseLeave(event: Event) {
-    const el = event.currentTarget as HTMLElement | null;
-    if (el) el.style.cursor = '';
-  }
-
-  @HostListener('click')
-  onClick() {
-    if (this.routeArgs) {
-      if (typeof this.routeArgs === 'function') {
-        this.redirect.to(this.routeArgs, undefined);
-      } else {
-        this.redirect.to(this.routeArgs.pathFn, undefined, ...(this.routeArgs.args ?? []));
-      }
+  private setRouterLink(): void {
+    if (!this.routeArgs) {
+      this.routerLinkDirective.routerLink = [];
+      this.routerLinkDirective.ngOnChanges({
+        routerLink: new SimpleChange(this.lastValue, [], this.lastValue === undefined)
+      });
+      this.lastValue = undefined;
+      return;
     }
+
+    const {pathFn, args} = this.normalizeRouteArgs(this.routeArgs);
+    const href = this.redirect.buildHref(pathFn, undefined, ...(args as Parameters<typeof pathFn>));
+    this.routerLinkDirective.routerLink = href;
+    this.routerLinkDirective.ngOnChanges({
+      routerLink: new SimpleChange(this.lastValue, href, this.lastValue === undefined)
+    });
+    this.lastValue = href;
+  }
+
+  private normalizeRouteArgs(route: RouteArgs<RoutePath> | RoutePath): { pathFn: RoutePath; args: unknown[] } {
+    if (typeof route === 'function') {
+      return { pathFn: route, args: [] };
+    }
+
+    return { pathFn: route.pathFn, args: route.args ?? [] };
   }
 }

@@ -37,8 +37,8 @@ public class AuthService {
 
         return LoginRes.of(token, LoginRes.UserInfo.builder()
                 .email(user.getEmail())
-                .meno(user.getFirstName())
-                .priezvisko(user.getLastName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .role(getRole(user))
                 .build());
     }

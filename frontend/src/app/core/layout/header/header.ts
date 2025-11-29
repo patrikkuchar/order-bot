@@ -1,9 +1,26 @@
-import {Component, Signal} from '@angular/core';
+import {Component, computed, effect, Signal, signal} from '@angular/core';
 import {DarkModeService} from '../../services/dark-mode.service';
 import {AppRoutes} from '../../../app.routes';
 import {AuthService} from '../../services/auth.service';
-import {Observable} from 'rxjs';
+import {filter, map, Observable, startWith} from 'rxjs';
 import {UserProfileService} from '../../services/user-profile.service';
+import {RouteArgs, RoutePath} from '../../../app/routes/types';
+import {ProjectService, ProjectShortInfo} from '../../../features/project/project.service';
+import {ProjectRelativeRoutes, ProjectRoutes} from '../../../features/project/project.routes';
+import {NavigationEnd, Router} from '@angular/router';
+import {RedirectService} from '../../services/redirect.service';
+import {toSignal} from '@angular/core/rxjs-interop';
+
+export type MenuItem = {
+  route: RouteArgs<RoutePath> | RoutePath
+  routeVal: string
+  label: string
+  icon?: string
+}
+
+const overviewPath = ProjectRelativeRoutes.overview()[0];
+const designerPath = ProjectRelativeRoutes.designer()[0];
+const settingsPath = ProjectRelativeRoutes.settings()[0];
 
 @Component({
   selector: 'app-header',
@@ -13,6 +30,12 @@ import {UserProfileService} from '../../services/user-profile.service';
 })
 export class Header {
 
+  projects: Signal<ProjectShortInfo[]>;
+  selectedProject: Signal<ProjectShortInfo | null>;
+
+  menuItems = signal<MenuItem[]>([]);
+  selectedMenuItem: Signal<MenuItem | undefined>;
+
   isEnabled: Signal<boolean>;
 
   isLoggedIn: Observable<boolean>;
@@ -20,10 +43,72 @@ export class Header {
 
   constructor(private svc: DarkModeService,
               private authSvc: AuthService,
-              userProfileSvc: UserProfileService) {
+              private redirectSvc: RedirectService,
+              userProfileSvc: UserProfileService,
+              private projectSvc: ProjectService,
+              router: Router) {
     this.isEnabled = this.svc.isDarkModeEnabled;
     this.isLoggedIn = authSvc.isLoggedIn;
     this.userName = userProfileSvc.userName;
+
+    this.projects = projectSvc.projects;
+    this.selectedProject = projectSvc.selectedProject;
+
+    effect(() => {
+      const sel = this.selectedProject();
+      if (!sel) {
+        this.menuItems.set([]);
+        return;
+      }
+      const route = ProjectRoutes.of(sel.code);
+      this.menuItems.set([
+        {
+          label: 'Overview',
+          route: route.overview,
+          routeVal: overviewPath,
+          icon: 'pi pi-fw pi-home'
+        },
+        {
+          label: 'Designer',
+          route: route.designer,
+          routeVal: designerPath,
+          icon: 'pi pi-fw pi-pencil'
+        },
+        {
+          label: 'Settings',
+          route: route.settings,
+          routeVal: settingsPath,
+          icon: 'pi pi-fw pi-cog'
+        }
+      ]);
+    }, { allowSignalWrites: true });
+
+    const currentUrl = toSignal(
+      router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        map(e => (e as NavigationEnd).urlAfterRedirects),
+        startWith(router.url)
+      ),
+      { initialValue: router.url }
+    );
+
+    this.selectedMenuItem = computed(() => {
+      const url = currentUrl();
+      return this.menuItems().find(item => {
+        if (!url) return false;
+        return url.endsWith(item.routeVal) || url.includes(`${item.routeVal}/`);
+      });
+    });
+  }
+
+  selectProject(project: ProjectShortInfo) {
+    const route = ProjectRoutes.of(project.code);
+    this.redirectSvc.to(route.overview);
+  }
+
+  newProject() {
+    this.projectSvc.clearSelectedProject();
+    this.redirectSvc.to(ProjectRoutes.new);
   }
 
   toggleDarkMode() {

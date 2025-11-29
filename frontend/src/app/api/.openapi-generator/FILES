@@ -4,6 +4,7 @@ api.module.ts
 api/api.ts
 api/auth.service.ts
 api/config.service.ts
+api/templateManager.service.ts
 api/test.service.ts
 configuration.ts
 encoder.ts
@@ -20,6 +21,10 @@ model/pageReq.ts
 model/registerReq.ts
 model/registerUniqueEmailReq.ts
 model/registerUniqueEmailRes.ts
+model/templateCreateReq.ts
+model/templateDetail.ts
+model/templateListRes.ts
+model/templateStepDto.ts
 model/testEntityDto.ts
 model/testEntityLogisticProp.ts
 model/testEntityProperty.ts

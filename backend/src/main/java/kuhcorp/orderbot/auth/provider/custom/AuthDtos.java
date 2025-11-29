@@ -39,9 +39,9 @@ public class AuthDtos {
             @NonNull
             String email;
 
-            String meno;
+            String firstName;
 
-            String priezvisko;
+            String lastName;
 
             @NotNull
             @NonNull

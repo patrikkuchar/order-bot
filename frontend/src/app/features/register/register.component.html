@@ -36,7 +36,8 @@
                        class="col-span-2"
                        label="registration.form.password.label"
                        placeholder="registration.form.password.placeholder"
-                       [control]="form.controls.password" />
+                       [control]="form.controls.password"
+                       [passwordWeaknessOverlay]="DEFAULT_PASSWORD_WEAKNESS_OVERLAY"/>
         <p-button [label]="'registration.submit' | translate" severity="primary" type="submit"></p-button>
       </div>
     </app-form>

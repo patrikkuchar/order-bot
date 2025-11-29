@@ -7,7 +7,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {FormComponent} from '../../shared/components/form/wrapper/form/form.component';
 import {Observable} from 'rxjs';
 import {InputTextComponent} from '../../shared/components/form/inputtext.component';
-import {PasswordComponent} from '../../shared/components/form/password.component';
+import {DEFAULT_PASSWORD_WEAKNESS_OVERLAY, PasswordComponent} from '../../shared/components/form/password.component';
 import {FormFieldComponent} from '../../shared/components/form/wrapper/form-field/form-field.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {InputText} from 'primeng/inputtext';
@@ -73,4 +73,6 @@ export class RegisterComponent {
 //
     //this.form.controls.email.registerFnOnValueChange(checkEmailUnique);
   }
+
+  protected readonly DEFAULT_PASSWORD_WEAKNESS_OVERLAY = DEFAULT_PASSWORD_WEAKNESS_OVERLAY;
 }

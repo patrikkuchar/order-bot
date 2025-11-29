@@ -1,5 +1,19 @@
 // colors.scss
 
+:root {
+  --p-surface-0: #FFFFFF !important;
+  --p-surface-50: #F8F9FB !important;
+  --p-surface-100: #F0F1F5 !important;
+  --p-surface-200: #E5E7EB !important;
+  --p-surface-300: #D0D3DA !important;
+  --p-surface-400: #A8ADB9 !important;
+  --p-surface-500: #7C8291 !important;
+  --p-surface-600: #525766 !important;
+  --p-surface-700: #2E323E !important;
+  --p-surface-800: #1B1E26 !important;
+  --p-surface-900: #111317 !important;
+}
+
 // General / základné
 $text-color: var(--p-text-color);
 $text-secondary-color: var(--p-text-secondary-color);
@@ -12,6 +26,19 @@ $focus-ring: var(--p-focus-ring);
 $mask-bg: var(--p-mask-bg);
 $highlight-bg: var(--p-highlight-bg);
 $highlight-text-color: var(--p-highlight-text-color);
+
+// Primary semantic palette (added to mirror MyPreset)
+$primary-50:  var(--p-primary-50);
+$primary-100: var(--p-primary-100);
+$primary-200: var(--p-primary-200);
+$primary-300: var(--p-primary-300);
+$primary-400: var(--p-primary-400);
+$primary-500: var(--p-primary-500);
+$primary-600: var(--p-primary-600);
+$primary-700: var(--p-primary-700);
+$primary-800: var(--p-primary-800);
+$primary-900: var(--p-primary-900);
+$primary-950: var(--p-primary-950);
 
 // Surface farby
 $surface-0: var(--p-surface-0);
@@ -101,5 +128,3 @@ $purple-600: var(--p-purple-600);
 $purple-700: var(--p-purple-700);
 $purple-800: var(--p-purple-800);
 $purple-900: var(--p-purple-900);
-
-

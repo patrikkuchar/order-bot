@@ -25,12 +25,12 @@ export class CustomFormArray<T> extends FormArray<ControlOf<T>> implements Custo
     return array;
   }
 
-  private _createControl: (item?: T) => CustomFormType<T> = (item?: T) =>
-    CustomFormControl.create(item as any, undefined, this._trackChanges) as unknown as CustomFormType<T>;
+  private _createControl: (item?: T) => CustomFormType<T>;
   private _itemSchema?: OpenApiSchema;
 
   add(item?: T): void {
     const control = this._createControl(item);
+    console.log('Adding control to CustomFormArray:', control);
     this.push(control as ControlOf<T>);
   }
 
