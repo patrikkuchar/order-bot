@@ -1,12 +1,15 @@
 package kuhcorp.orderbot.domain.template.step;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import kuhcorp.orderbot.db.EntityWithMetadata;
-import kuhcorp.orderbot.domain.template.Template;
 import kuhcorp.orderbot.domain.template.TemplateInstance;
-import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepDto;
+import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepCreateData;
 import lombok.Getter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import static org.hibernate.type.SqlTypes.JSON;
 
 @Entity
 public class TemplateStep extends EntityWithMetadata {
@@ -21,31 +24,47 @@ public class TemplateStep extends EntityWithMetadata {
 
     @Getter
     @NotNull
-    private Integer stepNumber;
-
-    @Getter
-    @NotNull
+    @Column(length = 5000)
     private String question;
 
-    //temp
+    @NotNull
+    private Boolean isFirstStep;
+
+    @NotNull
+    private Boolean isLastStep;
+
     @Getter
     @NotNull
-    private Integer nextStepNumber;
+    @Embedded
+    @Valid
+    private TemplateStepData data;
 
-    //@NotNull
-    //@Embedded
-    //private OrderTemplateStepEmbeddedData data;
+    @NotNull
+    @Valid
+    @JdbcTypeCode(JSON)
+    @Column(columnDefinition = "json")
+    private TemplateStepDesignerData designerData;
 
-    //@NotNull
-    //private Boolean isFirstStep;
-
-    public static TemplateStep create(TemplateStepDto req, TemplateInstance template, String id) {
+    public static TemplateStep create(TemplateStepCreateData req, TemplateInstance template) {
         var step = new TemplateStep();
-        step.id = id;
+        step.id = req.getId();
         step.template = template;
-        step.stepNumber = req.getStepNumber();
         step.question = req.getQuestion();
-        step.nextStepNumber = req.getNextStepNumber();
+        step.isFirstStep = req.getIsFirstStep();
+        step.isLastStep = req.getIsLastStep();
+        step.data = req.getData();
+        step.designerData = req.getDesignerData();
         return step;
+    }
+
+    public TemplateStepCreateData toData() {
+        return TemplateStepCreateData.builder()
+                .id(id)
+                .question(question)
+                .isFirstStep(isFirstStep)
+                .isLastStep(isLastStep)
+                .data(data)
+                .designerData(designerData)
+                .build();
     }
 }

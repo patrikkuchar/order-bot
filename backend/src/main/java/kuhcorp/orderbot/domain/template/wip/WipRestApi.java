@@ -66,6 +66,6 @@ public class WipRestApi {
 
     @PostMapping("/{sessionId}/complete")
     public void completeTemplate(@PathVariable String sessionId) {
-
+        sessionSvc.saveWipSession(sessionId);
     }
 }

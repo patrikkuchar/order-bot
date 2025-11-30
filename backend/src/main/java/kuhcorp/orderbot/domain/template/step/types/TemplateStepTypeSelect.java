@@ -1,4 +1,4 @@
-package kuhcorp.orderbot.domain.template.step;
+package kuhcorp.orderbot.domain.template.step.types;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WipStepTypeSelect {
+public class TemplateStepTypeSelect {
 
     @NotNull
     @NonNull
@@ -21,8 +21,11 @@ public class WipStepTypeSelect {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class WipStepTypeSelectOption {
+        @NotNull
         private String label;
+        @NotNull
         private String value;
+        @NotNull
         private String nextStepId;
     }
 }

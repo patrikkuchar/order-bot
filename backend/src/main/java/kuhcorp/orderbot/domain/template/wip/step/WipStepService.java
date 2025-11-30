@@ -1,5 +1,8 @@
 package kuhcorp.orderbot.domain.template.wip.step;
 
+import jakarta.validation.constraints.NotNull;
+import kuhcorp.orderbot.domain.template.step.TemplateStepData;
+import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepCreateData;
 import kuhcorp.orderbot.domain.template.step.TemplateStepPosition;
 import kuhcorp.orderbot.domain.template.wip.WipSession;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
@@ -7,8 +10,10 @@ import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnection;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.INPUT_NODE;
@@ -94,6 +99,40 @@ public class WipStepService {
         connectionRepo.delete(conn);
     }
 
+    public List<WipStep> getStepsForSession(String sessionId) {
+        return repo.getAllBySessionId(sessionId);
+    }
+
+    public void loadForkedData(List<TemplateStepCreateData> data, WipSession session) {
+        var stepMap = data.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        TemplateStepCreateData::getId,
+                        stepData -> WipStep.create(stepData, session)
+                ));
+
+        repo.saveAllAndFlush(stepMap.values());
+
+        var connections = new ArrayList<WipStepConnection>();
+        for (var stepData : data) {
+            var sourceStep = stepMap.get(stepData.getId());
+            var connData = getConnectionNodes(stepData.getData());
+            if (connData.isEmpty())
+                continue;
+            for (var connNode : connData) {
+                var targetStep = stepMap.get(connNode.getStepId());
+                var conn = WipStepConnection.create(sourceStep, targetStep, connNode.nodeKey, INPUT_NODE.getKey());
+                connections.add(conn);
+            }
+        }
+
+        connectionRepo.saveAllAndFlush(connections);
+    }
+
+    public void removeAllForSession(WipSession session) {
+        var steps = repo.getAllBySessionId(session.getId());
+        repo.deleteAll(steps);
+    }
+
     private String newStepNumberForSession(String sessionId) {
         var stepNumbers = repo.getStepNumbersForSession(sessionId).stream()
                 .map(num -> Integer.parseInt(num.replace(STEP_NUMBER_PREFIX, "")))
@@ -114,5 +153,22 @@ public class WipStepService {
         return connections.stream()
                 .map(conn -> conn.getSource().getStepNumber())
                 .toList();
+    }
+
+    private List<ConnectionNode> getConnectionNodes(TemplateStepData stepData) {
+        return switch(stepData.getType()) {
+            case TEXT -> List.of(ConnectionNode.of(stepData.getTextTypeData().getNextStepId(), TEXT_OUTPUT_NODE.getKey()));
+            case SELECT -> stepData.getSelectTypeData().getOptions().stream()
+                    .map(option -> ConnectionNode.of(option.getNextStepId(), option.getValue()))
+                    .toList();
+        };
+    }
+
+    @Value(staticConstructor = "of")
+    private static class ConnectionNode {
+        @NotNull
+        String stepId;
+        @NotNull
+        String nodeKey;
     }
 }

@@ -17,4 +17,8 @@ public class WipStepPosition {
     @NotNull
     @NonNull
     private Double y;
+
+    public static WipStepPosition of(Double x, Double y) {
+        return new WipStepPosition(x, y);
+    }
 }

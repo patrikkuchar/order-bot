@@ -6,17 +6,19 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
+import kuhcorp.orderbot.domain.template.step.TemplateStepData;
 import kuhcorp.orderbot.domain.template.step.TemplateStepType;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepListConnectionNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.util.List;
+import java.util.Optional;
 
 import static jakarta.persistence.EnumType.STRING;
+import static kuhcorp.orderbot.domain.template.step.TemplateStepType.TEXT;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.TEXT_OUTPUT_NODE;
 import static org.hibernate.type.SqlTypes.JSON;
 
@@ -24,7 +26,7 @@ import static org.hibernate.type.SqlTypes.JSON;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class WipStepData {
+public class WipStepData implements WipStepTypeValidators {
 
     @NotNull
     @Enumerated(STRING)
@@ -33,6 +35,16 @@ public class WipStepData {
     @JdbcTypeCode(JSON)
     @Column(columnDefinition = "json")
     private WipStepTypeSelect selectTypeData;
+
+    @JsonIgnore
+    public static WipStepData of(TemplateStepData data) {
+        var d = new WipStepData();
+        d.setType(data.getType());
+        if (TemplateStepType.SELECT.equals(data.getType())) {
+            d.selectTypeData = WipStepTypeSelect.of(data.getSelectTypeData());
+        }
+        return d;
+    }
 
     @JsonIgnore
     public List<WipStepListConnectionNode> getOutputNodes() {
@@ -47,10 +59,40 @@ public class WipStepData {
         };
     }
 
+    @JsonIgnore
     public static final WipStepData DEFAULT = new WipStepData(
-            TemplateStepType.TEXT,
+            TEXT,
             null
     );
+
+    @Override
+    @JsonIgnore
+    public Optional<String> missingField() {
+        var validator = getValidator();
+        return validator.missingField();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean requiredLength() {
+        var validator = getValidator();
+        return validator.requiredLength();
+    }
+
+    @Override
+    @JsonIgnore
+    public Optional<String> notFilledConnectionNodes(List<String> connectedKeys) {
+        var validator = getValidator();
+        return validator.notFilledConnectionNodes(connectedKeys);
+    }
+
+    @JsonIgnore
+    private WipStepTypeValidators getValidator() {
+        return switch (type) {
+            case TEXT -> textValidator();
+            case SELECT -> selectTypeData;
+        };
+    }
 
     @JsonIgnore
     @AssertTrue
@@ -66,5 +108,30 @@ public class WipStepData {
             default:
                 return false;
         }
+    }
+
+    @JsonIgnore
+    private static WipStepTypeValidators textValidator() {
+        return new WipStepTypeValidators() {
+            @Override
+            public Optional<String> missingField() {
+                return Optional.empty();
+            }
+
+            @Override
+            public boolean requiredLength() {
+                return true;
+            }
+
+            @Override
+            public Optional<String> notFilledConnectionNodes(List<String> connectedKeys) {
+                if (connectedKeys.size() != 1)
+                    return Optional.of("TEXT step must have exactly one output connection");
+                var key = connectedKeys.get(0);
+                if (!TEXT_OUTPUT_NODE.getKey().equals(key))
+                    return Optional.of(String.format("TEXT step output connection key must be '%s'", TEXT_OUTPUT_NODE.getKey()));
+                return Optional.empty();
+            }
+        };
     }
 }

@@ -3,6 +3,8 @@ package kuhcorp.orderbot.domain.template.wip.step;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import kuhcorp.orderbot.db.EntityWithMetadata;
+import kuhcorp.orderbot.domain.template.step.TemplateStepDtos;
+import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepCreateData;
 import kuhcorp.orderbot.domain.template.step.TemplateStepPosition;
 import kuhcorp.orderbot.domain.template.wip.WipSession;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.WipStepCreateData;
@@ -30,6 +32,12 @@ public class WipStep extends EntityWithMetadata {
     private WipSession session;
 
     @Getter
+    @Id
+    @Column(name = "step_number")
+    @NotNull
+    private String stepNumber;
+
+    @Getter
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL, orphanRemoval = true, fetch = LAZY)
     private List<WipStepConnection> incomingConnections = new ArrayList<>();
 
@@ -42,15 +50,10 @@ public class WipStep extends EntityWithMetadata {
     private String title;
 
     @Getter
-    @Id
-    @Column(name = "step_number")
-    @NotNull
-    private String stepNumber;
-
-    @Getter
     @Column(length = 5000)
     private String question;
 
+    @Getter
     @NotNull
     @Embedded
     private WipStepPosition gridPosition;
@@ -74,6 +77,21 @@ public class WipStep extends EntityWithMetadata {
         s.orderPosition = data.getOrderPosition();
         s.data = data.getData();
         s.gridPosition = data.getGridPosition();
+        return s;
+    }
+
+    public static WipStep create(TemplateStepCreateData data, WipSession session) {
+        var s = new WipStep();
+        s.session = session;
+        s.stepNumber = data.getDesignerData().getStepNumber();
+        s.title = data.getDesignerData().getTitle();
+        s.question = data.getQuestion();
+        s.orderPosition = TemplateStepPosition.of(data.getIsFirstStep(), data.getIsLastStep());
+        s.data = WipStepData.of(data.getData());
+        s.gridPosition = WipStepPosition.of(
+                data.getDesignerData().getPosition().getX(),
+                data.getDesignerData().getPosition().getY()
+        );
         return s;
     }
 

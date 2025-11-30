@@ -4,8 +4,10 @@ import kuhcorp.orderbot.api.BadRequestApiError;
 import kuhcorp.orderbot.auth.userHolder.RequestUserHolder;
 import kuhcorp.orderbot.domain.template.TemplateInstance;
 import kuhcorp.orderbot.domain.template.TemplateManagerService;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepsBuilder;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepId;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepService;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
 import kuhcorp.orderbot.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,9 @@ public class WipSessionService {
     private final WipStepService stepSvc;
     private final RequestUserHolder userHolder;
 
+    private final WipStepsBuilder builder;
+    private final WipStepsValidator validator;
+
     @Transactional
     public String getSessionIdForTemplate(String templateId) {
         var user = userHolder.getUserOrThrow();
@@ -38,6 +43,7 @@ public class WipSessionService {
 
         if (session.isUpdateNeeded(instance.getId())) {
             session.update(instance);
+            deleteAndForkForSession(session);
         }
 
         return session.getId();
@@ -95,6 +101,15 @@ public class WipSessionService {
     public void saveWipSession(String sessionId) {
         var session = ensureSessionForUserAndStart(sessionId);
         ensureSessionOfNewestTemplateInstance(session);
+
+        if (!validator.isValid(sessionId)) {
+            throw new IllegalStateException("WIP session steps are not valid.");
+        }
+
+        var stepData = builder.build(sessionId);
+        managerSvc.save(stepData, session.getOfTemplateInstance().getId());
+
+        session.complete();
     }
 
     private void ensureSessionOfNewestTemplateInstance(WipSession session) {
@@ -125,7 +140,19 @@ public class WipSessionService {
     private WipSession createNewSession(TemplateInstance instance, User user) {
         var newSession = WipSession.create(user, instance);
         repo.saveAndFlush(newSession);
+        forkDataForSession(newSession);
         return newSession;
+    }
+
+    private void deleteAndForkForSession(WipSession session) {
+        stepSvc.removeAllForSession(session);
+        forkDataForSession(session);
+    }
+
+    private void forkDataForSession(WipSession session) {
+        var templateInstance = session.getOfTemplateInstance();
+        var stepsData = managerSvc.getForDuplication(templateInstance.getParent().getId());
+        stepSvc.loadForkedData(stepsData, session);
     }
 
     @BadRequestApiError("WipSession/not-of-newest-template-instance")

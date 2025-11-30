@@ -45,4 +45,6 @@ public interface WipStepRepo extends Repo<WipStep, WipStepId> {
                 .where(wipStep.session.id.eq(sessionId))
                 .fetch();
     }
+
+    List<WipStep> getAllBySessionId(String sessionId);
 }
