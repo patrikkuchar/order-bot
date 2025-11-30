@@ -4,13 +4,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    hibernate:
+      ddl-auto: create
   datasource:
     url: jdbc:postgresql://localhost:5432/order_bot_db
     driver-class-name: org.postgresql.Driver
     username: admin
     password: heslo
   liquibase:
-    enabled: true
+    enabled: false
 
 logging:
   level:

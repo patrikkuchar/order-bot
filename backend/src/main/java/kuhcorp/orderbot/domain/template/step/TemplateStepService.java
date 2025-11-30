@@ -1,6 +1,7 @@
 package kuhcorp.orderbot.domain.template.step;
 
 import kuhcorp.orderbot.domain.template.Template;
+import kuhcorp.orderbot.domain.template.TemplateInstance;
 import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepDto;
 import kuhcorp.orderbot.etc.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ public class TemplateStepService {
 
     private final TemplateStepRepo repo;
 
-    public void create(List<TemplateStepDto> steps, Template template) {
+    public void create(List<TemplateStepDto> steps, TemplateInstance template) {
         var toSave = steps.stream()
                 .map(s -> {
                     var id = UuidUtils.gen();

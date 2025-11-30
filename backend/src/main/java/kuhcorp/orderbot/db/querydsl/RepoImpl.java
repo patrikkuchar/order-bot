@@ -51,6 +51,12 @@ public class RepoImpl<ENTITY, ID> extends SimpleJpaRepository<ENTITY, ID> implem
     }
 
     @Override
+    public ENTITY fetchActive(Predicate pred) {
+        return fetchOneOptionalActive(pred)
+                .orElseThrow(() -> dbEntityNotFound(meta.getJavaType().toString()));
+    }
+
+    @Override
     public Optional<ENTITY> fetchOneOptionalActive(JPAQuery<ENTITY> q) {
         var res = q.fetchOne();
         if (res == null || !isActive(res)) {
@@ -113,6 +119,6 @@ public class RepoImpl<ENTITY, ID> extends SimpleJpaRepository<ENTITY, ID> implem
     }
 
     private boolean isActive(ENTITY e) {
-        return (e instanceof EntityWithStatus) && ((EntityWithStatus) e).isActive();
+        return (e instanceof EntityWithStatus status) && status.isActive();
     }
 }

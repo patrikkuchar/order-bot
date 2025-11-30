@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import kuhcorp.orderbot.db.EntityWithMetadata;
 import kuhcorp.orderbot.domain.template.Template;
+import kuhcorp.orderbot.domain.template.TemplateInstance;
 import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepDto;
 import lombok.Getter;
 
@@ -16,7 +17,7 @@ public class TemplateStep extends EntityWithMetadata {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    private Template template;
+    private TemplateInstance template;
 
     @Getter
     @NotNull
@@ -38,7 +39,7 @@ public class TemplateStep extends EntityWithMetadata {
     //@NotNull
     //private Boolean isFirstStep;
 
-    public static TemplateStep create(TemplateStepDto req, Template template, String id) {
+    public static TemplateStep create(TemplateStepDto req, TemplateInstance template, String id) {
         var step = new TemplateStep();
         step.id = id;
         step.template = template;

@@ -15,6 +15,7 @@ import java.util.List;
 public class TemplateManagerService {
 
     private final TemplateRepo repo;
+    private final TemplateInstanceRepo instanceRepo;
     private final TemplateStepService stepSvc;
 
     @Transactional
@@ -22,7 +23,10 @@ public class TemplateManagerService {
         var template = Template.create(req);
         repo.saveAndFlush(template);
 
-        stepSvc.create(req.getSteps(), template);
+        var instance = TemplateInstance.create(template);
+        instanceRepo.saveAndFlush(instance);
+
+        stepSvc.create(req.getSteps(), instance);
     }
 
     @Transactional
@@ -39,5 +43,9 @@ public class TemplateManagerService {
                 .description(template.getDescription())
                 .steps(steps)
                 .build();
+    }
+
+    public TemplateInstance getInstanceByTemplateId(String templateId) {
+        return instanceRepo.activeInstanceIdForTemplate(templateId);
     }
 }

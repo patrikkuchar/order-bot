@@ -22,6 +22,8 @@ public interface Repo<ENTITY, ID> extends JpaRepository<ENTITY, ID> {
 
     ENTITY fetchExisting(JPAQuery<ENTITY> q);
 
+    ENTITY fetchActive(Predicate pred);
+
     Optional<ENTITY> fetchOneOptionalActive(JPAQuery<ENTITY> q);
 
     default Optional<ENTITY> fetchOneOptionalActive(Predicate pred) {

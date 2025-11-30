@@ -1,0 +1,137 @@
+package kuhcorp.orderbot.domain.template.wip;
+
+import kuhcorp.orderbot.api.BadRequestApiError;
+import kuhcorp.orderbot.auth.userHolder.RequestUserHolder;
+import kuhcorp.orderbot.domain.template.TemplateInstance;
+import kuhcorp.orderbot.domain.template.TemplateManagerService;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepId;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepService;
+import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
+import kuhcorp.orderbot.domain.user.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import static kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
+
+@Component
+@RequiredArgsConstructor
+public class WipSessionService {
+
+    private final WipSessionRepo repo;
+    private final TemplateManagerService managerSvc;
+    private final WipStepService stepSvc;
+    private final RequestUserHolder userHolder;
+
+    @Transactional
+    public String getSessionIdForTemplate(String templateId) {
+        var user = userHolder.getUserOrThrow();
+
+        var instance = managerSvc.getInstanceByTemplateId(templateId);
+
+        var session = repo.getSessionForTemplate(templateId, user.getId())
+                .orElseGet(() -> createNewSession(instance, user));
+
+        if (session.isCompleted()) {
+            session = createNewSession(instance, user);
+        }
+
+        if (session.isUpdateNeeded(instance.getId())) {
+            session.update(instance);
+        }
+
+        return session.getId();
+    }
+
+    @Transactional
+    public WipStepListRes getSteps(String sessionId) {
+        ensureSessionForUser(sessionId);
+        return stepSvc.getList(sessionId);
+    }
+
+    @Transactional
+    public WipStepDetailRes getStep(String sessionId, String stepId) {
+        ensureSessionForUser(sessionId);
+        return stepSvc.get(WipStepId.of(sessionId, stepId));
+    }
+
+    @Transactional
+    public WipStepCreateData createStep(String sessionId) {
+        var session = ensureSessionForUserAndStart(sessionId);
+        return stepSvc.create(session);
+    }
+
+    @Transactional
+    public void updateStep(String sessionId, String stepId, WipStepUpdateReq req) {
+        ensureSessionForUserAndStart(sessionId);
+        stepSvc.update(WipStepId.of(sessionId, stepId), req);
+    }
+
+    @Transactional
+    public void updateStepLocation(String sessionId, String stepId, WipStepUpdatePositionReq req) {
+        ensureSessionForUserAndStart(sessionId);
+        stepSvc.updatePosition(WipStepId.of(sessionId, stepId), req);
+    }
+
+    @Transactional
+    public void deleteStep(String sessionId, String stepId) {
+        ensureSessionForUserAndStart(sessionId);
+        stepSvc.delete(WipStepId.of(sessionId, stepId));
+    }
+
+    @Transactional
+    public String createConnection(String sessionId, WipStepConnectionData req) {
+        ensureSessionForUserAndStart(sessionId);
+        return stepSvc.createConnection(sessionId, req);
+    }
+
+    @Transactional
+    public void deleteConnection(String sessionId, String connectionId) {
+        ensureSessionForUserAndStart(sessionId);
+        stepSvc.deleteConnection(sessionId, connectionId);
+    }
+
+    @Transactional
+    public void saveWipSession(String sessionId) {
+        var session = ensureSessionForUserAndStart(sessionId);
+        ensureSessionOfNewestTemplateInstance(session);
+    }
+
+    private void ensureSessionOfNewestTemplateInstance(WipSession session) {
+        var templateInstance = session.getOfTemplateInstance();
+        var newestTemplateInstance = managerSvc.getInstanceByTemplateId(templateInstance.getParent().getId());
+        if (!templateInstance.getId().equals(newestTemplateInstance.getId())) {
+            throw new WipSessionIsNotOfNewestTemplateInstance();
+        }
+    }
+
+    private WipSession ensureSessionForUserAndStart(String sessionId) {
+        var session = ensureSessionForUser(sessionId);
+        session.start();
+        return session;
+    }
+
+    private WipSession ensureSessionForUser(String sessionId) {
+        var userId = userHolder.getUserId();
+
+        var session = repo.getActiveById(sessionId);
+        if (!session.isOwner(userId)) {
+            throw new IllegalStateException("User does not own this WIP session.");
+        }
+
+        return session;
+    }
+
+    private WipSession createNewSession(TemplateInstance instance, User user) {
+        var newSession = WipSession.create(user, instance);
+        repo.saveAndFlush(newSession);
+        return newSession;
+    }
+
+    @BadRequestApiError("WipSession/not-of-newest-template-instance")
+    public static class WipSessionIsNotOfNewestTemplateInstance extends IllegalStateException {
+        public WipSessionIsNotOfNewestTemplateInstance() {
+            super("WIP session is not of the newest template instance.");
+        }
+    }
+}
