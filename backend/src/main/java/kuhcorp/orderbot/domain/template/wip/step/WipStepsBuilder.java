@@ -73,6 +73,7 @@ public class WipStepsBuilder {
                 ));
             }
         }
+        return d;
     }
 
     private List<ConnectionInfo> getConnections(WipStep step, Map<String, String> stepNumberToIdMap) {
