@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { WipStepPosition } from './wipStepPosition';
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepUpdatePositionReq { 
+    position: WipStepPosition;
 }
 

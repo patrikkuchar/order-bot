@@ -1,6 +1,5 @@
 package kuhcorp.orderbot.db;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import kuhcorp.orderbot.api.PageReq;

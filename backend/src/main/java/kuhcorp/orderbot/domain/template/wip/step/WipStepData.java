@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static jakarta.persistence.EnumType.STRING;
 import static kuhcorp.orderbot.domain.template.step.TemplateStepType.TEXT;
+import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.INPUT_NODE;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.TEXT_OUTPUT_NODE;
 import static org.hibernate.type.SqlTypes.JSON;
 
@@ -44,6 +45,11 @@ public class WipStepData implements WipStepTypeValidators {
             d.selectTypeData = WipStepTypeSelect.of(data.getSelectTypeData());
         }
         return d;
+    }
+
+    @JsonIgnore
+    public List<WipStepListConnectionNode> getInputNodes() {
+        return List.of(INPUT_NODE);
     }
 
     @JsonIgnore
@@ -84,6 +90,25 @@ public class WipStepData implements WipStepTypeValidators {
     public Optional<String> notFilledConnectionNodes(List<String> connectedKeys) {
         var validator = getValidator();
         return validator.notFilledConnectionNodes(connectedKeys);
+    }
+
+    @Override
+    @JsonIgnore
+    public int getNumberOfOutputNodes() {
+        var validator = getValidator();
+        return validator.getNumberOfOutputNodes();
+    }
+
+    @JsonIgnore
+    public boolean containsInputNode(String key) {
+        return INPUT_NODE.getKey().equals(key);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean containsOutputNode(String key) {
+        var validator = getValidator();
+        return validator.containsOutputNode(key);
     }
 
     @JsonIgnore
@@ -131,6 +156,16 @@ public class WipStepData implements WipStepTypeValidators {
                 if (!TEXT_OUTPUT_NODE.getKey().equals(key))
                     return Optional.of(String.format("TEXT step output connection key must be '%s'", TEXT_OUTPUT_NODE.getKey()));
                 return Optional.empty();
+            }
+
+            @Override
+            public int getNumberOfOutputNodes() {
+                return 1;
+            }
+
+            @Override
+            public boolean containsOutputNode(String key) {
+                return TEXT_OUTPUT_NODE.getKey().equals(key);
             }
         };
     }

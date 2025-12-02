@@ -33,11 +33,20 @@ public class WipStepDtos {
         private String stepNumber;
 
         @NotNull
-        private String title;
+        @Valid
+        private WipStepPosition nodePosition;
 
         @NotNull
         @Valid
-        private WipStepPosition gridPosition;
+        private WipStepNodeData nodeData;
+    }
+
+    @Builder
+    @Data
+    public static class WipStepNodeData {
+
+        @NotNull
+        private String title;
 
         @NotNull
         @Size(min = 1)
@@ -52,17 +61,14 @@ public class WipStepDtos {
     @SuperBuilder
     @Data
     public static class WipStepCreateData extends WipStepDetailRes {
+
         @NotNull
         @Valid
         private WipStepPosition gridPosition;
 
         @NotNull
-        @Size(min = 1)
-        private List<@Valid WipStepListConnectionNode> inputs;
-
-        @NotNull
-        @Size(min = 1)
-        private List<@Valid WipStepListConnectionNode> outputs;
+        @Valid
+        private WipStepNodeData nodeData;
     }
 
     @SuperBuilder

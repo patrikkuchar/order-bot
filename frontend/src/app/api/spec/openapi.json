@@ -10,6 +10,156 @@
     "url" : "http://localhost:8080"
   } ],
   "paths" : {
+    "/api/p/template/manager/wip/{sessionId}/step/{stepId}" : {
+      "delete" : {
+        "operationId" : "deleteStep",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "stepId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      },
+      "get" : {
+        "operationId" : "getStep",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "stepId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WipStepDetailRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      },
+      "put" : {
+        "operationId" : "updateStep",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "stepId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WipStepUpdateReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WipStepNodeData"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/step/{stepId}/location" : {
+      "put" : {
+        "operationId" : "updateStepLocation",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "stepId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WipStepUpdatePositionReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
     "/api/p/test/update" : {
       "post" : {
         "operationId" : "updateEntity",
@@ -29,6 +179,121 @@
           }
         },
         "tags" : [ "test" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/steps/connection" : {
+      "post" : {
+        "operationId" : "createConnection",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WipStepConnectionCreateReq"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StringDto"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/step" : {
+      "post" : {
+        "operationId" : "createStep",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WipStepCreateData"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/complete" : {
+      "post" : {
+        "operationId" : "completeTemplate",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/session/{templateId}" : {
+      "post" : {
+        "operationId" : "getSession",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "templateId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StringDto"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
       }
     },
     "/api/p/template/manager/create" : {
@@ -241,6 +506,62 @@
         "tags" : [ "test" ]
       }
     },
+    "/api/p/template/manager/wip/{sessionId}/validate" : {
+      "get" : {
+        "operationId" : "validateSteps",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WipStepValidationRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/steps" : {
+      "get" : {
+        "operationId" : "getSteps",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/WipStepListRes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
     "/api/p/template/manager/list" : {
       "get" : {
         "operationId" : "listTemplates",
@@ -317,10 +638,163 @@
         },
         "tags" : [ "test" ]
       }
+    },
+    "/api/p/template/manager/wip/{sessionId}/steps/connection/{connectionId}" : {
+      "delete" : {
+        "operationId" : "deleteConnection",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        }, {
+          "explode" : false,
+          "in" : "path",
+          "name" : "connectionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "TemplateStepPosition" : {
+        "enum" : [ "FIRST", "MIDDLE", "LAST" ],
+        "type" : "string"
+      },
+      "TemplateStepType" : {
+        "enum" : [ "TEXT", "SELECT" ],
+        "type" : "string"
+      },
+      "WipStepData" : {
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/TemplateStepType"
+          },
+          "selectTypeData" : {
+            "$ref" : "#/components/schemas/WipStepTypeSelect"
+          }
+        },
+        "required" : [ "type" ],
+        "type" : "object"
+      },
+      "WipStepTypeSelect" : {
+        "properties" : {
+          "options" : {
+            "items" : {
+              "$ref" : "#/components/schemas/WipStepTypeSelectOption"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "options" ],
+        "type" : "object"
+      },
+      "WipStepTypeSelectOption" : {
+        "properties" : {
+          "label" : {
+            "type" : "string"
+          },
+          "value" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "WipStepUpdateReq" : {
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "question" : {
+            "maxLength" : 5000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "orderPosition" : {
+            "$ref" : "#/components/schemas/TemplateStepPosition"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/WipStepData"
+          }
+        },
+        "required" : [ "data", "orderPosition", "title" ],
+        "type" : "object"
+      },
+      "WipStepListConnectionNode" : {
+        "properties" : {
+          "key" : {
+            "type" : "string"
+          },
+          "label" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "key", "label" ],
+        "type" : "object"
+      },
+      "WipStepNodeData" : {
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "inputs" : {
+            "items" : {
+              "$ref" : "#/components/schemas/WipStepListConnectionNode"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array"
+          },
+          "outputs" : {
+            "items" : {
+              "$ref" : "#/components/schemas/WipStepListConnectionNode"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array"
+          }
+        },
+        "required" : [ "inputs", "outputs", "title" ],
+        "type" : "object"
+      },
+      "WipStepPosition" : {
+        "properties" : {
+          "x" : {
+            "format" : "double",
+            "type" : "number"
+          },
+          "y" : {
+            "format" : "double",
+            "type" : "number"
+          }
+        },
+        "required" : [ "x", "y" ],
+        "type" : "object"
+      },
+      "WipStepUpdatePositionReq" : {
+        "properties" : {
+          "position" : {
+            "$ref" : "#/components/schemas/WipStepPosition"
+          }
+        },
+        "required" : [ "position" ],
+        "type" : "object"
+      },
       "TestEntityDto" : {
         "properties" : {
           "title" : {
@@ -390,6 +864,72 @@
         "required" : [ "email", "note" ],
         "type" : "object"
       },
+      "WipStepConnectionCreateReq" : {
+        "properties" : {
+          "sourceStepNumber" : {
+            "type" : "string"
+          },
+          "targetStepNumber" : {
+            "type" : "string"
+          },
+          "sourceOutput" : {
+            "type" : "string"
+          },
+          "targetInput" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "sourceOutput", "sourceStepNumber", "targetInput", "targetStepNumber" ],
+        "type" : "object"
+      },
+      "StringDto" : {
+        "properties" : {
+          "value" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "value" ],
+        "type" : "object"
+      },
+      "WipStepCreateData" : {
+        "properties" : {
+          "stepNumber" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "question" : {
+            "type" : "string"
+          },
+          "orderPosition" : {
+            "$ref" : "#/components/schemas/TemplateStepPosition"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/WipStepData"
+          },
+          "incomingConnections" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "outgoingConnections" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "gridPosition" : {
+            "$ref" : "#/components/schemas/WipStepPosition"
+          },
+          "nodeData" : {
+            "$ref" : "#/components/schemas/WipStepNodeData"
+          }
+        },
+        "required" : [ "data", "gridPosition", "incomingConnections", "nodeData", "orderPosition", "outgoingConnections", "stepNumber", "title" ],
+        "type" : "object"
+      },
       "TemplateCreateReq" : {
         "properties" : {
           "name" : {
@@ -397,32 +937,9 @@
           },
           "description" : {
             "type" : "string"
-          },
-          "steps" : {
-            "items" : {
-              "$ref" : "#/components/schemas/TemplateStepDto"
-            },
-            "type" : "array"
           }
         },
-        "required" : [ "name", "steps" ],
-        "type" : "object"
-      },
-      "TemplateStepDto" : {
-        "properties" : {
-          "stepNumber" : {
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "question" : {
-            "type" : "string"
-          },
-          "nextStepNumber" : {
-            "format" : "int32",
-            "type" : "integer"
-          }
-        },
-        "required" : [ "nextStepNumber", "question", "stepNumber" ],
+        "required" : [ "name" ],
         "type" : "object"
       },
       "RegisterUniqueEmailReq" : {
@@ -651,6 +1168,111 @@
         },
         "type" : "object"
       },
+      "WipStepValidationRes" : {
+        "properties" : {
+          "isValid" : {
+            "type" : "boolean"
+          },
+          "errorType" : {
+            "enum" : [ "MISSING_STEPS", "MISSING_REQUIRED_FIELDS", "ONLY_ONE_FIRST_STEP_REQUIRED", "AT_LEAST_ONE_LAST_STEP_REQUIRED", "INVALID_STEP_CONNECTIONS" ],
+            "type" : "string"
+          },
+          "errorMessage" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "isValid" ],
+        "type" : "object"
+      },
+      "WipStepConnectionData" : {
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "sourceStepNumber" : {
+            "type" : "string"
+          },
+          "targetStepNumber" : {
+            "type" : "string"
+          },
+          "sourceOutput" : {
+            "type" : "string"
+          },
+          "targetInput" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "id", "sourceOutput", "sourceStepNumber", "targetInput", "targetStepNumber" ],
+        "type" : "object"
+      },
+      "WipStepListRes" : {
+        "properties" : {
+          "steps" : {
+            "items" : {
+              "$ref" : "#/components/schemas/WipStepListStep"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array"
+          },
+          "connections" : {
+            "items" : {
+              "$ref" : "#/components/schemas/WipStepConnectionData"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "connections", "steps" ],
+        "type" : "object"
+      },
+      "WipStepListStep" : {
+        "properties" : {
+          "stepNumber" : {
+            "type" : "string"
+          },
+          "nodePosition" : {
+            "$ref" : "#/components/schemas/WipStepPosition"
+          },
+          "nodeData" : {
+            "$ref" : "#/components/schemas/WipStepNodeData"
+          }
+        },
+        "required" : [ "nodeData", "nodePosition", "stepNumber" ],
+        "type" : "object"
+      },
+      "WipStepDetailRes" : {
+        "properties" : {
+          "stepNumber" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "question" : {
+            "type" : "string"
+          },
+          "orderPosition" : {
+            "$ref" : "#/components/schemas/TemplateStepPosition"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/WipStepData"
+          },
+          "incomingConnections" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "outgoingConnections" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "data", "incomingConnections", "orderPosition", "outgoingConnections", "stepNumber", "title" ],
+        "type" : "object"
+      },
       "TemplateListRes" : {
         "properties" : {
           "id" : {
@@ -670,15 +1292,9 @@
           },
           "description" : {
             "type" : "string"
-          },
-          "steps" : {
-            "items" : {
-              "$ref" : "#/components/schemas/TemplateStepDto"
-            },
-            "type" : "array"
           }
         },
-        "required" : [ "name", "steps" ],
+        "required" : [ "name" ],
         "type" : "object"
       }
     }

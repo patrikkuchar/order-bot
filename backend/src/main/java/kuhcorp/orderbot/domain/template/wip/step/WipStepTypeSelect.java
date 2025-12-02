@@ -74,6 +74,19 @@ public class WipStepTypeSelect implements WipStepTypeValidators {
         return Optional.empty();
     }
 
+    @Override
+    @JsonIgnore
+    public int getNumberOfOutputNodes() {
+        return options.size();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean containsOutputNode(String key) {
+        return options.stream()
+                .anyMatch(option -> option.getValue().equals(key));
+    }
+
     @JsonIgnore
     private boolean isValid(String fieldName) {
         return fieldName != null && !fieldName.isEmpty();

@@ -6,4 +6,6 @@ export * from './templateManager.service';
 import { TemplateManagerApi } from './templateManager.service';
 export * from './test.service';
 import { TestApi } from './test.service';
-export const APIS = [AuthApi, ConfigApi, TemplateManagerApi, TestApi];
+export * from './wipTemplateMng.service';
+import { WipTemplateMngApi } from './wipTemplateMng.service';
+export const APIS = [AuthApi, ConfigApi, TemplateManagerApi, TestApi, WipTemplateMngApi];

@@ -19,6 +19,7 @@ import java.util.List;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.*;
+import static kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.INPUT_NODE;
 
 @Entity
@@ -109,10 +110,12 @@ public class WipStep extends EntityWithMetadata {
     public WipStepListStep toListDetail() {
         return WipStepListStep.builder()
                 .stepNumber(stepNumber)
-                .title(title)
-                .gridPosition(gridPosition)
-                .inputs(List.of(INPUT_NODE))
-                .outputs(data.getOutputNodes())
+                .nodePosition(gridPosition)
+                .nodeData(WipStepNodeData.builder()
+                        .title(title)
+                        .inputs(List.of(INPUT_NODE))
+                        .outputs(data.getOutputNodes())
+                        .build())
                 .build();
     }
 }

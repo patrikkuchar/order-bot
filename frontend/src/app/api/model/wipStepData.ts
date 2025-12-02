@@ -9,10 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TemplateStepType } from './templateStepType';
+import { WipStepTypeSelect } from './wipStepTypeSelect';
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepData { 
+    type: TemplateStepType;
+    selectTypeData?: WipStepTypeSelect;
 }
+
+
 

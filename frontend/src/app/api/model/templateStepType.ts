@@ -11,8 +11,8 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export enum TemplateStepType {
+    TEXT = 'TEXT',
+    SELECT = 'SELECT'
 }
 

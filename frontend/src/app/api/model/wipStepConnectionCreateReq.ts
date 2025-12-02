@@ -11,8 +11,10 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepConnectionCreateReq { 
+    sourceStepNumber: string;
+    targetStepNumber: string;
+    sourceOutput: string;
+    targetInput: string;
 }
 

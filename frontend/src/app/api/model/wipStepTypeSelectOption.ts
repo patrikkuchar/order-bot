@@ -11,8 +11,8 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepTypeSelectOption { 
+    label?: string;
+    value?: string;
 }
 

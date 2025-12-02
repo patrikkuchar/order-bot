@@ -18,7 +18,7 @@ public class WipStepsValidator {
     private final WipStepService stepSvc;
 
     public boolean isValid(String sessionId) {
-        return validate(sessionId).getValid();
+        return validate(sessionId).getIsValid();
     }
 
     public WipStepValidationRes validate(String sessionId) {
@@ -31,7 +31,7 @@ public class WipStepsValidator {
         return validSteps(steps).or(() ->
                onlyOneFirstStep(steps).or(() ->
                atLeastOneLastStep(steps).or(() ->
-               allInputAndOutputHaveConnections(steps)))).orElseGet(WipStepValidationRes::valid);
+               allInputAndOutputHaveConnections(steps)))).orElseGet(WipStepValidationRes::validValue);
     }
 
     private Optional<WipStepValidationRes> validSteps(List<WipStep> steps) {
@@ -94,6 +94,10 @@ public class WipStepsValidator {
                 var notFilledConnNodes = s.getData().notFilledConnectionNodes(outputKeys);
                 if (notFilledConnNodes.isPresent())
                     return Optional.of(WipStepValidationRes.of(errorType, String.format("Step %s invalid connection: %s", s.getStepNumber(), notFilledConnNodes.get())));
+
+                var outputNodeCount = s.getData().getNumberOfOutputNodes();
+                if (outputKeys.size() != outputNodeCount)
+                    return Optional.of(WipStepValidationRes.of(errorType, String.format("Step %s has %d output nodes but %d output connections", s.getStepNumber(), outputNodeCount, outputKeys.size())));
             }
         }
         return Optional.empty();
@@ -105,11 +109,11 @@ public class WipStepsValidator {
     public static class WipStepValidationRes {
 
         @NotNull
-        private Boolean valid;
+        private Boolean isValid;
         private ErrorType errorType;
         private String errorMessage;
 
-        public static WipStepValidationRes valid() {
+        public static WipStepValidationRes validValue() {
             return new WipStepValidationRes(true, null, null);
         }
         public static WipStepValidationRes of(ErrorType errorType) {
@@ -121,9 +125,9 @@ public class WipStepsValidator {
 
         @JsonIgnore
         @AssertTrue
-        public boolean isValid() {
-            return (valid && errorType == null && errorMessage == null) ||
-                   (!valid && errorType != null);
+        public boolean valid() {
+            return (isValid && errorType == null && errorMessage == null) ||
+                   (!isValid && errorType != null);
         }
     }
 

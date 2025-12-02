@@ -5,7 +5,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
   datasource:
     url: jdbc:postgresql://localhost:5432/order_bot_db
     driver-class-name: org.postgresql.Driver

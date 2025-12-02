@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { WipStepTypeSelectOption } from './wipStepTypeSelectOption';
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepTypeSelect { 
+    options: Array<WipStepTypeSelectOption>;
 }
 

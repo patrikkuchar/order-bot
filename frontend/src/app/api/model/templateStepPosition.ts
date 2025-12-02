@@ -11,8 +11,9 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export enum TemplateStepPosition {
+    FIRST = 'FIRST',
+    MIDDLE = 'MIDDLE',
+    LAST = 'LAST'
 }
 

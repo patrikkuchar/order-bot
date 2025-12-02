@@ -8,7 +8,8 @@ import kuhcorp.orderbot.domain.template.wip.step.WipStepsBuilder;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepId;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepService;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator;
-import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator.WipStepValidationRes;
+import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionCreateReq;
 import kuhcorp.orderbot.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -68,9 +69,9 @@ public class WipSessionService {
     }
 
     @Transactional
-    public void updateStep(String sessionId, String stepId, WipStepUpdateReq req) {
+    public WipStepNodeData updateStep(String sessionId, String stepId, WipStepUpdateReq req) {
         ensureSessionForUserAndStart(sessionId);
-        stepSvc.update(WipStepId.of(sessionId, stepId), req);
+        return stepSvc.update(WipStepId.of(sessionId, stepId), req);
     }
 
     @Transactional
@@ -86,7 +87,7 @@ public class WipSessionService {
     }
 
     @Transactional
-    public String createConnection(String sessionId, WipStepConnectionData req) {
+    public String createConnection(String sessionId, WipStepConnectionCreateReq req) {
         ensureSessionForUserAndStart(sessionId);
         return stepSvc.createConnection(sessionId, req);
     }
@@ -95,6 +96,12 @@ public class WipSessionService {
     public void deleteConnection(String sessionId, String connectionId) {
         ensureSessionForUserAndStart(sessionId);
         stepSvc.deleteConnection(sessionId, connectionId);
+    }
+
+    @Transactional
+    public WipStepValidationRes validateSession(String sessionId) {
+        ensureSessionForUser(sessionId);
+        return validator.validate(sessionId);
     }
 
     @Transactional

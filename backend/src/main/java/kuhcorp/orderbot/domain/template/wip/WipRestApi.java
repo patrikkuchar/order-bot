@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kuhcorp.orderbot.api.CommonDtos.StringDto;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
-import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator;
+import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator.WipStepValidationRes;
+import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionCreateReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +42,8 @@ public class WipRestApi {
     }
 
     @PutMapping("/{sessionId}/step/{stepId}")
-    public void updateStep(@PathVariable String sessionId, @PathVariable String stepId, @RequestBody WipStepUpdateReq req) {
-        sessionSvc.updateStep(sessionId, stepId, req);
+    public WipStepNodeData updateStep(@PathVariable String sessionId, @PathVariable String stepId, @RequestBody WipStepUpdateReq req) {
+        return sessionSvc.updateStep(sessionId, stepId, req);
     }
 
     @PutMapping("/{sessionId}/step/{stepId}/location")
@@ -55,13 +57,18 @@ public class WipRestApi {
     }
 
     @PostMapping("/{sessionId}/steps/connection")
-    public StringDto createConnection(@PathVariable String sessionId, @RequestBody @Valid WipStepConnectionData req) {
+    public StringDto createConnection(@PathVariable String sessionId, @RequestBody @Valid WipStepConnectionCreateReq req) {
         return StringDto.of(sessionSvc.createConnection(sessionId, req));
     }
 
     @DeleteMapping("/{sessionId}/steps/connection/{connectionId}")
     public void deleteConnection(@PathVariable String sessionId, @PathVariable String connectionId) {
         sessionSvc.deleteConnection(sessionId, connectionId);
+    }
+
+    @GetMapping("/{sessionId}/validate")
+    public WipStepValidationRes validateSteps(@PathVariable String sessionId) {
+        return sessionSvc.validateSession(sessionId);
     }
 
     @PostMapping("/{sessionId}/complete")

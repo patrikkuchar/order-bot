@@ -11,8 +11,7 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface StringDto { 
+    value: string;
 }
 

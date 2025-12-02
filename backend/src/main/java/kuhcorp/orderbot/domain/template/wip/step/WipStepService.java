@@ -7,6 +7,7 @@ import kuhcorp.orderbot.domain.template.step.TemplateStepPosition;
 import kuhcorp.orderbot.domain.template.wip.WipSession;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnection;
+import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionCreateReq;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionRepo;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +57,12 @@ public class WipStepService {
                 .data(WipStepData.DEFAULT)
                 .incomingConnections(List.of())
                 .outgoingConnections(List.of())
+                .nodeData(WipStepNodeData.builder()
+                        .title("New Step")
+                        .inputs(List.of(INPUT_NODE))
+                        .outputs(List.of(TEXT_OUTPUT_NODE))
+                        .build())
                 .gridPosition(DEFAULT_STEP_POSITION)
-                .inputs(List.of(INPUT_NODE))
-                .outputs(List.of(TEXT_OUTPUT_NODE))
                 .build();
 
         var step = WipStep.create(data, session);
@@ -67,9 +71,14 @@ public class WipStepService {
         return data;
     }
 
-    public void update(WipStepId stepId, WipStepUpdateReq req) {
+    public WipStepNodeData update(WipStepId stepId, WipStepUpdateReq req) {
         var step = repo.getExistingById(stepId);
         step.update(req);
+        return WipStepNodeData.builder()
+                .title(step.getTitle())
+                .inputs(step.getData().getInputNodes())
+                .outputs(step.getData().getOutputNodes())
+                .build();
     }
 
     public void updatePosition(WipStepId stepId, WipStepUpdatePositionReq req) {
@@ -81,9 +90,14 @@ public class WipStepService {
         repo.deleteById(stepId);
     }
 
-    public String createConnection(String sessionId, WipStepConnectionData req) {
+    public String createConnection(String sessionId, WipStepConnectionCreateReq req) {
         var sourceStep = repo.getExistingById(WipStepId.of(sessionId, req.getSourceStepNumber()));
         var targetStep = repo.getExistingById(WipStepId.of(sessionId, req.getTargetStepNumber()));
+
+        if (!sourceStep.getData().containsOutputNode(req.getSourceOutput()) ||
+            !targetStep.getData().containsInputNode(req.getTargetInput())) {
+            throw new IllegalStateException("Invalid source output or target input node.");
+        }
 
         var conn = WipStepConnection.create(sourceStep, targetStep, req.getSourceOutput(), req.getTargetInput());
         connectionRepo.saveAndFlush(conn);

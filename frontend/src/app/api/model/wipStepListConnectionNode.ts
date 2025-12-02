@@ -11,8 +11,8 @@
  */
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepListConnectionNode { 
+    key: string;
+    label: string;
 }
 

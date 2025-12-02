@@ -11,22 +11,7 @@ public interface WipStepTypeValidators {
 
     Optional<String> notFilledConnectionNodes(List<String> connectedKeys);
 
-    static WipStepTypeValidators anonymous() {
-        return new WipStepTypeValidators() {
-            @Override
-            public Optional<String> missingField() {
-                return Optional.empty();
-            }
+    int getNumberOfOutputNodes();
 
-            @Override
-            public boolean requiredLength() {
-                return true;
-            }
-
-            @Override
-            public Optional<String> notFilledConnectionNodes(List<String> connectedKeys) {
-                return Optional.empty();
-            }
-        };
-    }
+    boolean containsOutputNode(String key);
 }

@@ -9,10 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { WipStepListStep } from './wipStepListStep';
+import { WipStepConnectionData } from './wipStepConnectionData';
 
 
-export interface TemplateCreateReq { 
-    name: string;
-    description?: string;
+export interface WipStepListRes { 
+    steps: Array<WipStepListStep>;
+    connections: Array<WipStepConnectionData>;
 }
 
