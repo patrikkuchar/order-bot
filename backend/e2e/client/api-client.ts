@@ -1,5 +1,5 @@
 import axios, { isAxiosError, type AxiosInstance } from "axios";
-import {AuthApi, TemplateManagerApi, TestApi, Configuration} from "./generated";
+import {AuthApi, TemplateManagerApi, TestApi, Configuration, WipTemplateMngApi} from "./generated";
 
 const basePath = process.env.BACKEND_BASE_URL ?? "http://localhost:8080";
 
@@ -46,10 +46,11 @@ const makeHttpClient = (token?: string): AxiosInstance => {
     return instance;
 }
 
-type Api = {
+export type Api = {
     authApi: AuthApi,
     testApi: TestApi,
-    templateManagerApi: TemplateManagerApi
+    templateManagerApi: TemplateManagerApi,
+    wipTemplateApi: WipTemplateMngApi
 }
 
 const makeClient = (token?: string): Api => {
@@ -62,7 +63,8 @@ const makeClient = (token?: string): Api => {
     return {
         authApi: new AuthApi(cfg, basePath, http),
         testApi: new TestApi(cfg, basePath, http),
-        templateManagerApi: new TemplateManagerApi(cfg, basePath, http)
+        templateManagerApi: new TemplateManagerApi(cfg, basePath, http),
+        wipTemplateApi: new WipTemplateMngApi(cfg, basePath, http)
     };
 }
 

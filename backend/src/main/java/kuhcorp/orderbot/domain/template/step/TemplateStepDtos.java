@@ -1,25 +1,37 @@
 package kuhcorp.orderbot.domain.template.step;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
 
 public class TemplateStepDtos {
 
-    @Value
+    @Getter
     @Builder
-    public static class TemplateStepDto {
+    public static class TemplateStepCreateData {
         @NotNull
-        @NonNull
-        Integer stepNumber;
+        private String id;
 
         @NotNull
-        @NonNull
-        String question;
+        @Size(max = 5000)
+        private String question;
 
         @NotNull
-        @NonNull
-        Integer nextStepNumber;
+        private Boolean isFirstStep;
+
+        @NotNull
+        private Boolean isLastStep;
+
+        @NotNull
+        @Valid
+        private TemplateStepData data;
+
+        @NotNull
+        @Valid
+        private TemplateStepDesignerData designerData;
     }
 }

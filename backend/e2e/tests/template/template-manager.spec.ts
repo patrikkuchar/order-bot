@@ -7,15 +7,10 @@ describe('template manager', () => {
 
     const getReq = (): TemplateCreateReq => ({
         name: dataGen.str(),
-        description: dataGen.str(50),
-        steps: Array.from({ length: dataGen.int(2, 5) }, (_, i: number) => ({
-            stepNumber: i + 1,
-            question: dataGen.str(30),
-            nextStepNumber: i + 2,
-        }))
+        description: dataGen.str(50)
     })
 
-    it('create template, fetch templates list, get template by id', async () => {
+    it('template create and fetch', async () => {
         const req = getReq();
 
         await alice.templateManagerApi.createTemplate(req);
@@ -29,8 +24,7 @@ describe('template manager', () => {
         const detail = await alice.templateManagerApi.getTemplateById(myTemplate!.id);
         expect(detail.data).toMatchObject({
             name: req.name,
-            description: req.description,
-            steps: req.steps
+            description: req.description
         })
     })
 })

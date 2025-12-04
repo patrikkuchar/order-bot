@@ -9,12 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TemplateStepDto } from './templateStepDto';
 
 
 export interface TemplateDetail { 
     name: string;
     description?: string;
-    steps: Array<TemplateStepDto>;
 }
 

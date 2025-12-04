@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TemplateStepRepo extends Repo<TemplateStep, String> {
 
-    List<TemplateStep> findAllByTemplate(Template template);
+    List<TemplateStep> getAllByTemplateId(String templateId);
 }

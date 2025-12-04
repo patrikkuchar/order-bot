@@ -63,6 +63,10 @@ public class RequestUserHolder implements CurrentUserHolder {
         return Optional.of(getUser());
     }
 
+    public User getUserOrThrow() {
+        return getMaybeUser().orElseThrow(() -> new IllegalStateException("No user present in context"));
+    }
+
     public boolean isAdmin() {
         if (authSvc.isAnonymous())
             return false;
