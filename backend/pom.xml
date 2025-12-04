@@ -69,6 +69,12 @@
             <version>3.18.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-63</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+
         <!-- Thymeleaf extras for Spring Security -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>

@@ -1,5 +1,6 @@
 package kuhcorp.orderbot.domain.template.step;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -8,8 +9,8 @@ import kuhcorp.orderbot.domain.template.TemplateInstance;
 import kuhcorp.orderbot.domain.template.step.TemplateStepDtos.TemplateStepCreateData;
 import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
-
-import static org.hibernate.type.SqlTypes.JSON;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 public class TemplateStep extends EntityWithMetadata {
@@ -34,15 +35,15 @@ public class TemplateStep extends EntityWithMetadata {
     private Boolean isLastStep;
 
     @Getter
-    @NotNull
     @Embedded
     @Valid
     private TemplateStepData data;
 
     @NotNull
     @Valid
-    @JdbcTypeCode(JSON)
-    @Column(columnDefinition = "json")
+    @Type(JsonType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private TemplateStepDesignerData designerData;
 
     public static TemplateStep create(TemplateStepCreateData req, TemplateInstance template) {

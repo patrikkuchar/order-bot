@@ -127,5 +127,6 @@ describe('template designer', () => {
         const validationRes = await alice.wipTemplateApi.validateSteps(sessionId)
         console.log(validationRes.data)
         expect(validationRes.data.isValid).toBe(true)
+        await alice.wipTemplateApi.completeTemplate(sessionId)
     })
 })

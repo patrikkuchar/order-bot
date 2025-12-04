@@ -40,7 +40,7 @@ public class WipStepsBuilder {
                             .question(s.getQuestion())
                             .isFirstStep(s.getOrderPosition().isFirstStep())
                             .isLastStep(s.getOrderPosition().isLastStep())
-                            .data(buildTemplateStepData(s.getData(), outgoingConnections))
+                            .data(buildTemplateStepData(s.getData(), outgoingConnections, s.isLastStep()))
                             .designerData(buildDesignerData(s))
                             .build();
                 })
@@ -58,7 +58,11 @@ public class WipStepsBuilder {
         return d;
     }
 
-    private TemplateStepData buildTemplateStepData(WipStepData stepData, List<ConnectionInfo> connections) {
+    private TemplateStepData buildTemplateStepData(WipStepData stepData, List<ConnectionInfo> connections, boolean isLastStep) {
+        if (isLastStep) {
+            return null;
+        }
+
         var d = new TemplateStepData();
         d.setType(stepData.getType());
         switch (stepData.getType()) {

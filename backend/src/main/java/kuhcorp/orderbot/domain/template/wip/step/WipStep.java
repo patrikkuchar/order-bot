@@ -1,6 +1,7 @@
 package kuhcorp.orderbot.domain.template.wip.step;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import kuhcorp.orderbot.db.EntityWithMetadata;
 import kuhcorp.orderbot.domain.template.step.TemplateStepDtos;
@@ -65,7 +66,6 @@ public class WipStep extends EntityWithMetadata {
     private TemplateStepPosition orderPosition;
 
     @Getter
-    @NotNull
     @Embedded
     private WipStepData data;
 
@@ -96,6 +96,10 @@ public class WipStep extends EntityWithMetadata {
         return s;
     }
 
+    public boolean isLastStep() {
+        return TemplateStepPosition.LAST.equals(orderPosition);
+    }
+
     public void update(WipStepUpdateReq req) {
         this.title = req.getTitle();
         this.question = req.getQuestion();
@@ -117,5 +121,10 @@ public class WipStep extends EntityWithMetadata {
                         .outputs(data.getOutputNodes())
                         .build())
                 .build();
+    }
+
+    @AssertTrue
+    public boolean hasDataIfNotLast() {
+        return isLastStep() || data != null;
     }
 }

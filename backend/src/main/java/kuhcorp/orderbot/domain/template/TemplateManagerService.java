@@ -35,8 +35,8 @@ public class TemplateManagerService {
 
         stepSvc.create(req, newInstance);
 
-        instance.deprecate();
-        template.activateIfNotDesignedStatus();
+        //instance.deprecate();
+        //template.activateIfNotDesignedStatus();
     }
 
     public List<TemplateStepCreateData> getForDuplication(String templateId) {

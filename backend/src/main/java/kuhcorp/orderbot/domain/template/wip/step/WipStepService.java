@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toMap;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.INPUT_NODE;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.TEXT_OUTPUT_NODE;
 
@@ -119,7 +120,7 @@ public class WipStepService {
 
     public void loadForkedData(List<TemplateStepCreateData> data, WipSession session) {
         var stepMap = data.stream()
-                .collect(java.util.stream.Collectors.toMap(
+                .collect(toMap(
                         TemplateStepCreateData::getId,
                         stepData -> WipStep.create(stepData, session)
                 ));

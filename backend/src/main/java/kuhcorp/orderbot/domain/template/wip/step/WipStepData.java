@@ -1,6 +1,7 @@
 package kuhcorp.orderbot.domain.template.wip.step;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Enumerated;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +24,6 @@ import static jakarta.persistence.EnumType.STRING;
 import static kuhcorp.orderbot.domain.template.step.TemplateStepType.TEXT;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.INPUT_NODE;
 import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionConsts.TEXT_OUTPUT_NODE;
-import static org.hibernate.type.SqlTypes.JSON;
 
 @Data
 @Embeddable
@@ -33,8 +35,9 @@ public class WipStepData implements WipStepTypeValidators {
     @Enumerated(STRING)
     private TemplateStepType type;
 
-    @JdbcTypeCode(JSON)
-    @Column(columnDefinition = "json")
+    @Type(JsonType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private WipStepTypeSelect selectTypeData;
 
     @JsonIgnore

@@ -1,6 +1,7 @@
 package kuhcorp.orderbot.domain.template.step;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Enumerated;
@@ -12,9 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import static jakarta.persistence.EnumType.STRING;
-import static org.hibernate.type.SqlTypes.JSON;
 
 @Data
 @Embeddable
@@ -26,12 +28,14 @@ public class TemplateStepData {
     @Enumerated(STRING)
     private TemplateStepType type;
 
-    @JdbcTypeCode(JSON)
-    @Column(columnDefinition = "json")
+    @Type(JsonType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private TemplateStepTypeSelect selectTypeData;
 
-    @JdbcTypeCode(JSON)
-    @Column(columnDefinition = "json")
+    @Type(JsonType.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private TemplateStepTypeText textTypeData;
 
     @JsonIgnore
