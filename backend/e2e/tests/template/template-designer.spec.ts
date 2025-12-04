@@ -2,7 +2,13 @@ import { it, expect, describe } from 'vitest'
 import { Api } from "../../client/api-client";
 import {dataGen} from "../../datagen/datagen";
 import {alice} from "../../client/users";
-import {WipStepCreateData, WipStepDetailRes, WipStepTypeSelectOption, WipStepUpdateReq} from "../../client/generated";
+import {
+    WipStepCreateData,
+    WipStepDetailRes,
+    WipStepListStep,
+    WipStepTypeSelectOption,
+    WipStepUpdateReq
+} from "../../client/generated";
 
 const template = async (api: Api): Promise<string> => {
     const projectName = dataGen.str()
@@ -33,10 +39,12 @@ describe('template designer', () => {
                 }
             }
         )
+        const x = dataGen.int(100, 500)
+        const y = dataGen.int(100, 500)
         await api.wipTemplateApi.updateStepLocation(sessionId, stepNubmer, {
             position: {
-                x: dataGen.int(100, 500),
-                y: dataGen.int(100, 500)
+                x,
+                y
             }
         })
         const { data: detail } = await api.wipTemplateApi.getStep(sessionId, stepNubmer)
@@ -44,6 +52,9 @@ describe('template designer', () => {
         return {
             ...res.data,
             nodeData: updateRes.data,
+            gridPosition: {
+                x, y
+            },
             ...detail
         }
     }
@@ -54,6 +65,32 @@ describe('template designer', () => {
         orderPosition: data.orderPosition,
         data: data.data
     })
+
+    const verifyStep = (nodes: WipStepListStep[], expectedNode: WipStepListStep) => {
+        const found = nodes.find(n => n.stepNumber === expectedNode.stepNumber)
+        expect(found).toBeDefined()
+        expect(found).toMatchObject({
+            nodePosition: {
+                x: expectedNode.nodePosition.x,
+                y: expectedNode.nodePosition.y
+            },
+            nodeData: {
+                title: expectedNode.nodeData.title
+            }
+        })
+        if (expectedNode.nodeData.inputs.length > 0) {
+            expect(found!.nodeData.inputs.length).toBe(expectedNode.nodeData.inputs.length)
+            for (let i = 0; i < expectedNode.nodeData.inputs.length; i++) {
+                expect(found!.nodeData.inputs[i].key).toBe(expectedNode.nodeData.inputs[i].key)
+            }
+        }
+        if (expectedNode.nodeData.outputs.length > 0) {
+            expect(found!.nodeData.outputs.length).toBe(expectedNode.nodeData.outputs.length)
+            for (let i = 0; i < expectedNode.nodeData.outputs.length; i++) {
+                expect(found!.nodeData.outputs[i].key).toBe(expectedNode.nodeData.outputs[i].key)
+            }
+        }
+    }
 
     it('designing a template lifecycle', async () => {
         const templateId = await template(alice)
@@ -128,5 +165,63 @@ describe('template designer', () => {
         console.log(validationRes.data)
         expect(validationRes.data.isValid).toBe(true)
         await alice.wipTemplateApi.completeTemplate(sessionId)
+
+        // new session
+        const newSessionRes = await alice.wipTemplateApi.getSession(templateId)
+        const newSessionId = newSessionRes.data.value
+        expect(newSessionId).not.toBe(sessionId)
+
+        // old session fetch should fail
+        await expect(
+            alice.wipTemplateApi.getSteps(sessionId)
+        ).rejects.toThrow()
+
+        const nodesRes = await alice.wipTemplateApi.getSteps(newSessionId)
+        expect(nodesRes.data.steps.length).toBe(4)
+        verifyStep(nodesRes.data.steps, {
+            stepNumber: stepA.stepNumber,
+            nodePosition: stepA.gridPosition,
+            nodeData: {
+                title: stepA.title,
+                inputs: [],
+                outputs: [
+                    {
+                        key: optionA.value!,
+                        label: optionA.label!
+                    },
+                    {
+                        key: optionB.value!,
+                        label: optionB.label!
+                    }
+                ]
+            }
+        })
+        verifyStep(nodesRes.data.steps, {
+            stepNumber: stepB.stepNumber,
+            nodePosition: stepB.gridPosition,
+            nodeData: {
+                title: stepB.title,
+                inputs: stepB.nodeData.inputs,
+                outputs: stepB.nodeData.outputs
+            }
+        })
+        verifyStep(nodesRes.data.steps, {
+            stepNumber: stepC.stepNumber,
+            nodePosition: stepC.gridPosition,
+            nodeData: {
+                title: stepC.title,
+                inputs: stepC.nodeData.inputs,
+                outputs: stepC.nodeData.outputs
+            }
+        })
+        verifyStep(nodesRes.data.steps, {
+            stepNumber: stepD.stepNumber,
+            nodePosition: stepD.gridPosition,
+            nodeData: {
+                title: stepD.title,
+                inputs: stepD.nodeData.inputs,
+                outputs: stepD.nodeData.outputs
+            }
+        })
     })
 })

@@ -88,7 +88,7 @@ public class WipStep extends EntityWithMetadata {
         s.title = data.getDesignerData().getTitle();
         s.question = data.getQuestion();
         s.orderPosition = TemplateStepPosition.of(data.getIsFirstStep(), data.getIsLastStep());
-        s.data = WipStepData.of(data.getData());
+        s.data = data.getIsLastStep() ? WipStepData.DEFAULT : WipStepData.of(data.getData());
         s.gridPosition = WipStepPosition.of(
                 data.getDesignerData().getPosition().getX(),
                 data.getDesignerData().getPosition().getY()

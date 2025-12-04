@@ -129,6 +129,7 @@ public class WipStepService {
 
         var connections = new ArrayList<WipStepConnection>();
         for (var stepData : data) {
+            if (stepData.getIsLastStep()) continue;
             var sourceStep = stepMap.get(stepData.getId());
             var connData = getConnectionNodes(stepData.getData());
             if (connData.isEmpty())

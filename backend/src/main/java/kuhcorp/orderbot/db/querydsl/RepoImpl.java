@@ -58,11 +58,17 @@ public class RepoImpl<ENTITY, ID> extends SimpleJpaRepository<ENTITY, ID> implem
 
     @Override
     public Optional<ENTITY> fetchOneOptionalActive(JPAQuery<ENTITY> q) {
-        var res = q.fetchOne();
-        if (res == null || !isActive(res)) {
+        var res = q.fetch();
+        var activeRes = res.stream()
+                .filter(this::isActive)
+                .toList();
+        if (activeRes.size() > 1) {
+            throw new IllegalStateException("More than one active entity found for query: " + q);
+        }
+        if (activeRes.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(res);
+        return Optional.of(activeRes.getFirst());
     }
 
     @Override
