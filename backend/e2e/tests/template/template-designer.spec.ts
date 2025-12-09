@@ -181,6 +181,7 @@ describe('template designer', () => {
         verifyStep(nodesRes.data.steps, {
             stepNumber: stepA.stepNumber,
             nodePosition: stepA.gridPosition,
+            orderPosition: 'FIRST',
             nodeData: {
                 title: stepA.title,
                 inputs: [],
@@ -199,28 +200,31 @@ describe('template designer', () => {
         verifyStep(nodesRes.data.steps, {
             stepNumber: stepB.stepNumber,
             nodePosition: stepB.gridPosition,
+            orderPosition: 'MIDDLE',
             nodeData: {
                 title: stepB.title,
-                inputs: stepB.nodeData.inputs,
+                inputs: [],
                 outputs: stepB.nodeData.outputs
             }
         })
         verifyStep(nodesRes.data.steps, {
             stepNumber: stepC.stepNumber,
             nodePosition: stepC.gridPosition,
+            orderPosition: 'LAST',
             nodeData: {
                 title: stepC.title,
                 inputs: stepC.nodeData.inputs,
-                outputs: stepC.nodeData.outputs
+                outputs: []
             }
         })
         verifyStep(nodesRes.data.steps, {
             stepNumber: stepD.stepNumber,
             nodePosition: stepD.gridPosition,
+            orderPosition: 'LAST',
             nodeData: {
                 title: stepD.title,
                 inputs: stepD.nodeData.inputs,
-                outputs: stepD.nodeData.outputs
+                outputs: []
             }
         })
     })
