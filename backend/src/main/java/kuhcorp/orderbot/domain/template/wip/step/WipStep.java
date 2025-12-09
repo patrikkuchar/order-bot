@@ -100,6 +100,10 @@ public class WipStep extends EntityWithMetadata {
         return TemplateStepPosition.LAST.equals(orderPosition);
     }
 
+    public boolean isFirstStep() {
+        return TemplateStepPosition.FIRST.equals(orderPosition);
+    }
+
     public void update(WipStepUpdateReq req) {
         this.title = req.getTitle();
         this.question = req.getQuestion();
@@ -114,11 +118,12 @@ public class WipStep extends EntityWithMetadata {
     public WipStepListStep toListDetail() {
         return WipStepListStep.builder()
                 .stepNumber(stepNumber)
+                .orderPosition(orderPosition)
                 .nodePosition(gridPosition)
                 .nodeData(WipStepNodeData.builder()
                         .title(title)
-                        .inputs(List.of(INPUT_NODE))
-                        .outputs(data.getOutputNodes())
+                        .inputs(isFirstStep() ? List.of() : List.of(INPUT_NODE))
+                        .outputs(isLastStep() ? List.of() : data.getOutputNodes())
                         .build())
                 .build();
     }

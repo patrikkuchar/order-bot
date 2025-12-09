@@ -756,16 +756,12 @@
             "items" : {
               "$ref" : "#/components/schemas/WipStepListConnectionNode"
             },
-            "maxItems" : 2147483647,
-            "minItems" : 1,
             "type" : "array"
           },
           "outputs" : {
             "items" : {
               "$ref" : "#/components/schemas/WipStepListConnectionNode"
             },
-            "maxItems" : 2147483647,
-            "minItems" : 1,
             "type" : "array"
           }
         },
@@ -1230,6 +1226,9 @@
           "stepNumber" : {
             "type" : "string"
           },
+          "orderPosition" : {
+            "$ref" : "#/components/schemas/TemplateStepPosition"
+          },
           "nodePosition" : {
             "$ref" : "#/components/schemas/WipStepPosition"
           },
@@ -1237,7 +1236,7 @@
             "$ref" : "#/components/schemas/WipStepNodeData"
           }
         },
-        "required" : [ "nodeData", "nodePosition", "stepNumber" ],
+        "required" : [ "nodeData", "nodePosition", "orderPosition", "stepNumber" ],
         "type" : "object"
       },
       "WipStepDetailRes" : {

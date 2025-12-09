@@ -17,6 +17,7 @@ export class ProjectService {
   private readonly _projects = signal<ProjectShortInfo[]>([]);
 
   selectedProject: Signal<ProjectShortInfo | null> = this._selectedProject.asReadonly();
+  projectCode = computed<string | null>(() => this._selectedProject()?.code || null);
 
   projects = this._projects.asReadonly();
 
@@ -36,6 +37,9 @@ export class ProjectService {
   }
 
   selectProject(code: string): void {
+    if (code === this._selectedProject()?.code) {
+      return;
+    }
     const project = this._projects().find(p => p.code === code) || null;
     this._selectedProject.set(project);
   }

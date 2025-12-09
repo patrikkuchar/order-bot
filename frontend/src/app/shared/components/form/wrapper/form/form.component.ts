@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormUtils} from '../../../../utils/form.utils';
-import {BehaviorSubject, from, Observable, Observer} from 'rxjs';
+import {BehaviorSubject, debounceTime, filter, from, Observable, Observer} from 'rxjs';
 import {ApiHandlingService} from '../../../../../core/services/api-handling.service';
 import {RouteArgs, RoutePath} from '../../../../../app/routes/types';
 import {CustomFormGroup} from '../../../../form/custom/custom-form-group';
@@ -22,12 +22,14 @@ import {LoadingService} from '../../../../../core/services/loading.service';
     </form>
   `
 })
-export class FormComponent<T = any, R = any> implements OnInit {
+export class FormComponent<T = any, R = any> implements OnInit, OnChanges {
 
   @Input({required: true}) form: CustomFormGroup<T>;
   @Input({required: true}) onSubmit: (formData: T) => Observable<R> | Promise<R>;
   @Input() submitHandler?: Observer<R>;
   @Input() redirectOnSuccess?: (data: R) => RouteArgs<RoutePath> | RoutePath;
+
+  @Input() submitStrategy: 'onButtonClick' | 'onFormChange' = 'onButtonClick';
 
   @Input() dataFetcher?: () => Observable<T>;
 
@@ -70,6 +72,21 @@ export class FormComponent<T = any, R = any> implements OnInit {
         this.initDataLoading.emit(isLoading);
         this.initDataLoadingSubject?.next(isLoading);
       });
+    }
+
+    if (this.submitStrategy === 'onFormChange') {
+      this.form.valueChanges
+        .pipe(
+          filter(() => this.form.valid),
+          debounceTime(300),
+        )
+        .subscribe(() => this.submit(new Event('submit')));
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dataFetcher'] && !changes['dataFetcher'].isFirstChange()) {
+      this.fetchDataIfProvided();
     }
   }
 

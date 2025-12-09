@@ -1,26 +1,24 @@
-import {computed, Injectable, signal} from '@angular/core';
-import {BoxGraph, BoxNodeDefinition} from '../../../shared/components/box-visualizer/box-visualizer.component';
+import {Injectable, Signal} from '@angular/core';
+import {ProjectService} from '../project.service';
+import {WipTemplateMngApi} from '../../../api';
+import {map, of, switchMap} from 'rxjs';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DesignerService {
 
-  selectedNodeId = signal<string | null>(null);
-  graph = signal<BoxGraph | null>(null);
+  sessionId: Signal<string | null>;
 
-  selectedNode = computed<BoxNodeDefinition | null>(() => {
-    const nodeId = this.selectedNodeId();
-    const graph = this.graph();
-
-    if (!graph || !nodeId) {
-      return null;
-    }
-
-    return graph.nodes.find(node => node.id === nodeId) ?? null;
-  });
-
-  setGraph(graph: BoxGraph | null): void {
-    this.graph.set(graph);
+  constructor(projectSvc: ProjectService,
+              api: WipTemplateMngApi) {
+    this.sessionId = toSignal(
+      toObservable(projectSvc.selectedProject).pipe(
+        switchMap(project => project ? api.getSession(project.id) : of(null)),
+        map(res => res?.value ?? null)
+      ),
+      { initialValue: null }
+    );
   }
 }

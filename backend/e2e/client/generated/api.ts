@@ -832,6 +832,12 @@ export interface WipStepListStep {
     'stepNumber': string;
     /**
      * 
+     * @type {TemplateStepPosition}
+     * @memberof WipStepListStep
+     */
+    'orderPosition': TemplateStepPosition;
+    /**
+     * 
      * @type {WipStepPosition}
      * @memberof WipStepListStep
      */
@@ -843,6 +849,8 @@ export interface WipStepListStep {
      */
     'nodeData': WipStepNodeData;
 }
+
+
 /**
  * 
  * @export

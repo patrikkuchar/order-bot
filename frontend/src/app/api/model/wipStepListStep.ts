@@ -9,13 +9,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { TemplateStepPosition } from './templateStepPosition';
 import { WipStepNodeData } from './wipStepNodeData';
 import { WipStepPosition } from './wipStepPosition';
 
 
 export interface WipStepListStep { 
     stepNumber: string;
+    orderPosition: TemplateStepPosition;
     nodePosition: WipStepPosition;
     nodeData: WipStepNodeData;
 }
+
+
 

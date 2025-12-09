@@ -26,7 +26,7 @@ export class CustomFormControl<T = any> extends FormControl implements CustomFor
     const current = this.value as T;
     this._initialValue = current ?? null;
     // Emit current value to valueChanges subscribers
-    this.setValue(current, { emitEvent: true });
+    this.setValue(current, { emitEvent: false });
     this.markAsPristine();
     this._previousValue = current ?? null;
   }
@@ -85,6 +85,7 @@ export class CustomFormControl<T = any> extends FormControl implements CustomFor
   }
 
   updateInitialValue(value: T): void {
+    console.log('CustomFormControl.updateInitialValue called', value);
     this.setValueAsInitial();
     this._previousValue = value ?? null;
   }

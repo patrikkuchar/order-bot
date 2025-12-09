@@ -33,6 +33,9 @@ public class WipStepDtos {
         private String stepNumber;
 
         @NotNull
+        private TemplateStepPosition orderPosition;
+
+        @NotNull
         @Valid
         private WipStepPosition nodePosition;
 
@@ -49,11 +52,9 @@ public class WipStepDtos {
         private String title;
 
         @NotNull
-        @Size(min = 1)
         private List<@Valid WipStepListConnectionNode> inputs;
 
         @NotNull
-        @Size(min = 1)
         private List<@Valid WipStepListConnectionNode> outputs;
     }
 

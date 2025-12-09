@@ -8,7 +8,6 @@ import kuhcorp.orderbot.domain.template.wip.WipSession;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnection;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionCreateReq;
-import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionData;
 import kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnectionRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -25,7 +24,7 @@ import static kuhcorp.orderbot.domain.template.wip.step.connection.WipStepConnec
 @RequiredArgsConstructor
 public class WipStepService {
 
-    private static final String STEP_NUMBER_PREFIX = "S";
+    private static final String STEP_NUMBER_PREFIX = "s";
     private static final WipStepPosition DEFAULT_STEP_POSITION = new WipStepPosition(100d, 100d);
 
     private final WipStepRepo repo;
@@ -44,8 +43,8 @@ public class WipStepService {
                 .question(step.getQuestion())
                 .orderPosition(step.getOrderPosition())
                 .data(step.getData())
-                .incomingConnections(getStepNumbers(step.getIncomingConnections()))
-                .outgoingConnections(getStepNumbers(step.getOutgoingConnections()))
+                .incomingConnections(getStepNumbersForIncoming(step.getIncomingConnections()))
+                .outgoingConnections(getStepNumbersForOutgoing(step.getOutgoingConnections()))
                 .build();
     }
 
@@ -77,8 +76,8 @@ public class WipStepService {
         step.update(req);
         return WipStepNodeData.builder()
                 .title(step.getTitle())
-                .inputs(step.getData().getInputNodes())
-                .outputs(step.getData().getOutputNodes())
+                .inputs(step.isFirstStep() ? List.of() : step.getData().getInputNodes())
+                .outputs(step.isLastStep() ? List.of() : step.getData().getOutputNodes())
                 .build();
     }
 
@@ -165,9 +164,15 @@ public class WipStepService {
         return STEP_NUMBER_PREFIX + (biggestNumber + 1);
     }
 
-    private List<String> getStepNumbers(List<WipStepConnection> connections) {
+    private List<String> getStepNumbersForIncoming(List<WipStepConnection> connections) {
         return connections.stream()
                 .map(conn -> conn.getSource().getStepNumber())
+                .toList();
+    }
+
+    private List<String> getStepNumbersForOutgoing(List<WipStepConnection> connections) {
+        return connections.stream()
+                .map(conn -> conn.getTarget().getStepNumber())
                 .toList();
     }
 

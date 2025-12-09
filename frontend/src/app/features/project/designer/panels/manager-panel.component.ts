@@ -1,60 +1,112 @@
-import {Component, Signal} from '@angular/core';
+import {Component, computed, Signal} from '@angular/core';
 import {Card} from 'primeng/card';
 import {NgClass, NgIf, NgFor} from '@angular/common';
 import {DesignerService} from '../designer.service';
 import {BoxNodeDefinition} from '../../../../shared/components/box-visualizer/box-visualizer.component';
+import {DesignerGraphService} from '../designer-graph.service';
+import {WipStepDetailRes, WipStepNodeData, WipStepUpdateReq, WipTemplateMngApi} from '../../../../api';
+import {InputTextComponent} from '../../../../shared/components/form/inputtext.component';
+import {buildForm} from '../../../../shared/form/openapi/openapi-form-builder';
+import {OPENAPI_SCHEMA} from '../../../../../assets/config/openapi.schema';
+import {InputTextareaComponent} from '../../../../shared/components/form/inputtextarea.component';
+import {FormComponent} from '../../../../shared/components/form/wrapper/form/form.component';
+import {map, Observable, Observer, tap} from 'rxjs';
+import {ApiHandlingService} from '../../../../core/services/api-handling.service';
 
 @Component({
   selector: 'app-manager-panel',
   imports: [
     Card,
     NgClass,
-    NgIf,
-    NgFor
+    InputTextComponent,
+    InputTextareaComponent,
+    FormComponent
   ],
   template: `
     <div class="h-full">
       <p-card title="Manager" ngClass="h-full min-h-full">
-        <ng-container *ngIf="selectedNode() as node; else noSelection" >
+        @if (selectedNode() && formContext(); as ctx) {
           <div class="flex flex-col gap-3">
             <div>
-              <div class="text-sm text-color-secondary">Name</div>
-              <div class="text-lg font-semibold">{{ node.label }}</div>
-              <div class="text-xs text-color-secondary">ID: {{ node.id }}</div>
-            </div>
-
-            <div *ngIf="node.inputs?.length">
-              <div class="font-medium mb-1">Inputs</div>
-              <ul class="list-disc list-inside text-sm text-color-secondary">
-                <li *ngFor="let input of node.inputs">
-                  {{ input.label || input.key }} ({{ input.key }})
-                </li>
-              </ul>
-            </div>
-
-            <div *ngIf="node.outputs?.length">
-              <div class="font-medium mb-1">Outputs</div>
-              <ul class="list-disc list-inside text-sm text-color-secondary">
-                <li *ngFor="let output of node.outputs">
-                  {{ output.label || output.key }} ({{ output.key }})
-                </li>
-              </ul>
+              @if (selectedStep) {
+                <div class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</div>
+              }
+              <app-form [form]="form"
+                        [onSubmit]="ctx.saveStep"
+                        submitStrategy="onFormChange"
+                        [dataFetcher]="ctx.fetcher"
+                        [submitHandler]="ctx.handler"
+                        [resetOnSubmit]="false">
+                <form-inputtext id="title"
+                                label="Title"
+                                [control]="form.controls.title" />
+                <form-inputtextarea id="question"
+                                    label="Question"
+                                    [control]="form.controls.question" />
+              </app-form>
             </div>
           </div>
-        </ng-container>
-
-        <ng-template #noSelection>
+        } @else {
           <p class="text-color-secondary">Select a node in the designer to see its details here.</p>
-        </ng-template>
+        }
       </p-card>
     </div>
   `
 })
 export class ManagerPanelComponent {
 
+  form = buildForm<WipStepUpdateReq>(OPENAPI_SCHEMA.WipStepUpdateReq);
+  handler?: Observer<WipStepNodeData>;
+  fetcher?: () => Observable<WipStepUpdateReq>;
+
+  selectedStep: WipStepDetailRes | null = null;
   selectedNode: Signal<BoxNodeDefinition | null>;
 
-  constructor(svc: DesignerService) {
-    this.selectedNode = svc.selectedNode;
+  saveStep?: (data: WipStepUpdateReq) => Observable<WipStepNodeData>;
+
+  readonly formContext = computed(() => {
+    const nodeId = this.graphSvc.selectedNodeId();
+    const sessionId = this.svc.sessionId();
+
+    if (!nodeId || !sessionId) {
+      this.selectedStep = null;
+      this.fetcher = undefined;
+      this.saveStep = undefined;
+      this.handler = undefined;
+      return null;
+    }
+
+    const fetcher = () => this.api.getStep(sessionId, nodeId).pipe(
+      tap(data => this.selectedStep = data),
+      map(d => ({
+        title: d.title,
+        question: d.question,
+        orderPosition: d.orderPosition,
+        data: d.data
+      }) as WipStepUpdateReq)
+    );
+
+    const saveStep = (data: WipStepUpdateReq) => this.api.updateStep(sessionId, nodeId, data);
+
+    const handler = this.apiHandler.handle({
+      onSuccess: (data: WipStepNodeData) => {
+        this.graphSvc.updateNode(nodeId, data);
+      },
+      silentSuccess: true
+    });
+
+    // Expose values for template binding
+    this.fetcher = fetcher;
+    this.saveStep = saveStep;
+    this.handler = handler;
+
+    return { fetcher, saveStep, handler };
+  });
+
+  constructor(private graphSvc: DesignerGraphService,
+              private svc: DesignerService,
+              private api: WipTemplateMngApi,
+              private apiHandler: ApiHandlingService) {
+    this.selectedNode = graphSvc.selectedNode;
   }
 }
