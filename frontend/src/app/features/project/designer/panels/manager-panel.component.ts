@@ -4,7 +4,13 @@ import {NgClass, NgIf, NgFor} from '@angular/common';
 import {DesignerService} from '../designer.service';
 import {BoxNodeDefinition} from '../../../../shared/components/box-visualizer/box-visualizer.component';
 import {DesignerGraphService} from '../designer-graph.service';
-import {WipStepDetailRes, WipStepNodeData, WipStepUpdateReq, WipTemplateMngApi} from '../../../../api';
+import {
+  TemplateStepPosition, TemplateStepType,
+  WipStepDetailRes,
+  WipStepNodeData,
+  WipStepUpdateReq,
+  WipTemplateMngApi
+} from '../../../../api';
 import {InputTextComponent} from '../../../../shared/components/form/inputtext.component';
 import {buildForm} from '../../../../shared/form/openapi/openapi-form-builder';
 import {OPENAPI_SCHEMA} from '../../../../../assets/config/openapi.schema';
@@ -12,6 +18,10 @@ import {InputTextareaComponent} from '../../../../shared/components/form/inputte
 import {FormComponent} from '../../../../shared/components/form/wrapper/form/form.component';
 import {map, Observable, Observer, tap} from 'rxjs';
 import {ApiHandlingService} from '../../../../core/services/api-handling.service';
+import {SelectComponent} from '../../../../shared/components/form/select.component';
+import {SelectButtonComponent} from '../../../../shared/components/form/selectbutton.component';
+import {RadioButtonComponent} from '../../../../shared/components/form/radiobutton.component';
+import {TransformUtils} from '../../../../shared/utils/transform.utils';
 
 @Component({
   selector: 'app-manager-panel',
@@ -20,7 +30,9 @@ import {ApiHandlingService} from '../../../../core/services/api-handling.service
     NgClass,
     InputTextComponent,
     InputTextareaComponent,
-    FormComponent
+    FormComponent,
+    SelectButtonComponent,
+    RadioButtonComponent,
   ],
   template: `
     <div class="h-full">
@@ -29,7 +41,7 @@ import {ApiHandlingService} from '../../../../core/services/api-handling.service
           <div class="flex flex-col gap-3">
             <div>
               @if (selectedStep) {
-                <div class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</div>
+                <h2 class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</h2>
               }
               <app-form [form]="form"
                         [onSubmit]="ctx.saveStep"
@@ -37,12 +49,28 @@ import {ApiHandlingService} from '../../../../core/services/api-handling.service
                         [dataFetcher]="ctx.fetcher"
                         [submitHandler]="ctx.handler"
                         [resetOnSubmit]="false">
-                <form-inputtext id="title"
-                                label="Title"
-                                [control]="form.controls.title" />
-                <form-inputtextarea id="question"
-                                    label="Question"
-                                    [control]="form.controls.question" />
+                <div class="flex flex-row gap-8">
+                  <div class="grow flex flex-col gap-4 h-full">
+                    <form-inputtext id="title"
+                                    label="Title"
+                                    [control]="form.controls.title" />
+                    <form-inputtextarea id="question"
+                                        label="Question"
+                                        [control]="form.controls.question" />
+                  </div>
+                  <div class="flex flex-col gap-4 h-full">
+                    <form-selectbutton id="orderPosition"
+                                       [control]="form.controls.orderPosition"
+                                       [options]="orderPositionOptions"
+                                       [emptyOption]="TemplateStepPosition.MIDDLE"
+                                       i18nPrefix="designer.managerPanel.orderPosition" />
+                    <form-radiobutton id="type"
+                                      label="Type"
+                                      [control]="form.controls.data.controls.type"
+                                      [options]="typeOptions"
+                                      i18nPrefix="designer.managerPanel.type" />
+                  </div>
+                </div>
               </app-form>
             </div>
           </div>
@@ -63,6 +91,11 @@ export class ManagerPanelComponent {
   selectedNode: Signal<BoxNodeDefinition | null>;
 
   saveStep?: (data: WipStepUpdateReq) => Observable<WipStepNodeData>;
+  readonly orderPositionOptions = [
+    TemplateStepPosition.FIRST,
+    TemplateStepPosition.LAST
+  ];
+  readonly typeOptions = TransformUtils.getEnumValuesAsEnum(TemplateStepType);
 
   readonly formContext = computed(() => {
     const nodeId = this.graphSvc.selectedNodeId();
@@ -109,4 +142,6 @@ export class ManagerPanelComponent {
               private apiHandler: ApiHandlingService) {
     this.selectedNode = graphSvc.selectedNode;
   }
+
+  protected readonly TemplateStepPosition = TemplateStepPosition;
 }

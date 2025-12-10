@@ -13,32 +13,8 @@ import {TemplateStepPosition, WipStepCreateData, WipStepListRes, WipStepNodeData
 export class DesignerGraphService {
 
   private readonly initialGraph: BoxGraph = {
-    nodes: [
-      {
-        id: 'n1',
-        label: 'Ingress',
-        position: {x: 80, y: 100},
-        outputs: [{key: 'next', label: 'Next'}]
-      },
-      {
-        id: 'n2',
-        label: 'Prepare order',
-        position: {x: 320, y: 140},
-        inputs: [{key: 'input', label: 'Input'}],
-        outputs: [{key: 'out', label: 'Out'}]
-      },
-      {
-        id: 'payment',
-        label: 'Payment',
-        position: {x: 560, y: 220},
-        inputs: [{key: 'in', label: 'In'}],
-        outputs: [{key: 'ok', label: 'OK'}, {key: 'fail', label: 'Fail'}]
-      }
-    ],
-    connections: [
-      {id: 'c1', source: 'n1', sourceOutput: 'next', target: 'n2', targetInput: 'input'},
-      {id: 'c2', source: 'n2', sourceOutput: 'out', target: 'payment', targetInput: 'in'}
-    ]
+    nodes: [],
+    connections: []
   };
 
   selectedNodeId = signal<string | null>(null);
