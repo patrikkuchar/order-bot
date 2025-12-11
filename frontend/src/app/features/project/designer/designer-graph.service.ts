@@ -3,14 +3,16 @@ import {
   BoxConnection,
   BoxGraph,
   BoxNodeDefinition,
-  BoxNodePositionChange
+  BoxNodePositionChange, BoxPort
 } from '../../../shared/components/box-visualizer/box-visualizer.component';
-import {TemplateStepPosition, WipStepCreateData, WipStepListRes, WipStepNodeData, WipStepPosition} from '../../../api';
+import {WipStepCreateData, WipStepListConnectionNode, WipStepListRes, WipStepNodeData} from '../../../api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DesignerGraphService {
+
+  private readonly invisibleIfOne = true;
 
   private readonly initialGraph: BoxGraph = {
     nodes: [],
@@ -40,16 +42,8 @@ export class DesignerGraphService {
           x: step.nodePosition.x,
           y: step.nodePosition.y
         },
-        inputs: step.nodeData.inputs.map(i => ({
-          key: i.key,
-          label: i.label,
-          multiple: true
-        })),
-        outputs: step.nodeData.outputs.map(o => ({
-          key: o.key,
-          label: o.label,
-          multiple: false
-        }))
+        inputs: this.mapInputConnections(step.nodeData.inputs),
+        outputs: this.mapOutputConnections(step.nodeData.outputs)
       })),
       connections: data.connections.map(conn => ({
         id: conn.id,
@@ -154,16 +148,8 @@ export class DesignerGraphService {
             x: node.gridPosition.x,
             y: node.gridPosition.y
           },
-          inputs: node.nodeData.inputs.map(i => ({
-            key: i.key,
-            label: i.label,
-            multiple: true
-          })),
-          outputs: node.nodeData.outputs.map(o => ({
-            key: o.key,
-            label: o.label,
-            multiple: false
-          }))
+          inputs: this.mapInputConnections(node.nodeData.inputs),
+          outputs: this.mapOutputConnections(node.nodeData.outputs)
         }
       ]
     });
@@ -180,16 +166,8 @@ export class DesignerGraphService {
           ? {
               ...n,
               label: node.title,
-              inputs: node.inputs.map(i => ({
-                key: i.key,
-                label: i.label,
-                multiple: true
-              })),
-              outputs: node.outputs.map(o => ({
-                key: o.key,
-                label: o.label,
-                multiple: false
-              }))
+              inputs: this.mapInputConnections(node.inputs),
+              outputs: this.mapOutputConnections(node.outputs)
             }
           : n
       )
@@ -202,4 +180,18 @@ export class DesignerGraphService {
     const hasNode = nodeId ? currentGraph.nodes.some(node => node.id === nodeId) : false;
     this.selectedNodeId.set(hasNode ? nodeId : null);
   }
+
+  private readonly mapInputConnections = (conns: WipStepListConnectionNode[]): BoxPort[] =>
+    conns.map(i => ({
+      key: i.key,
+      label: this.invisibleIfOne && conns.length === 1 ? '' : i.label,
+      multiple: true
+    }));
+
+  private readonly mapOutputConnections = (conns: WipStepListConnectionNode[]): BoxPort[] =>
+    conns.map(o => ({
+      key: o.key,
+      label: this.invisibleIfOne && conns.length === 1 ? '' : o.label,
+      multiple: false
+    }));
 }
