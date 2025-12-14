@@ -174,6 +174,27 @@ export class DesignerGraphService {
     });
   }
 
+  getOldConnectionsAndClear(): string[] {
+    const currentGraph = this.graph();
+    if (!currentGraph) return [];
+    const graphMap = this.graphMap;
+    const oldConnections = currentGraph.connections
+      .filter(conn => {
+        const sourceNodeOutputs = graphMap.get(conn.source)?.outputs?.map(c => c.key) || [];
+        const targetNodeInputs = graphMap.get(conn.target)?.inputs?.map(c => c.key) || [] ;
+        const isExisting = sourceNodeOutputs.includes(conn.sourceOutput) && targetNodeInputs.includes(conn.targetInput);
+        return !isExisting;
+      })
+      .map(conn => conn.id);
+
+    if (oldConnections.length === 0) return [];
+    this.graph.set({
+      ...currentGraph,
+      connections: currentGraph.connections.filter(conn => !oldConnections.includes(conn.id))
+    });
+    return oldConnections;
+  }
+
   public updateSelectedNode(nodeId: string | null): void {
     const currentGraph = this.graph();
     if (!currentGraph) return;
@@ -194,4 +215,10 @@ export class DesignerGraphService {
       label: this.invisibleIfOne && conns.length === 1 ? '' : o.label,
       multiple: false
     }));
+
+  private get graphMap(): Map<string, BoxNodeDefinition> {
+    const graph = this.graph();
+    if (!graph) return new Map();
+    return new Map(graph.nodes.map(node => [node.id, node]));
+  }
 }

@@ -44,6 +44,42 @@ type ManagerPanelSection = 'main' | 'options' | 'error-handlers';
     FormObjectArrayComponent,
   ],
   templateUrl: './manager-panel.component.html',
+  styles: [`
+    :host {
+      display: block;
+      height: 100%;
+      min-height: 0;
+    }
+
+    :host ::ng-deep .manager-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+    :host ::ng-deep .manager-card .p-card-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    :host ::ng-deep .manager-card .p-card-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    :host ::ng-deep .manager-form-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      overflow-y: auto;
+    }
+  `]
 })
 export class ManagerPanelComponent {
 
@@ -119,6 +155,7 @@ export class ManagerPanelComponent {
     const handler = this.apiHandler.handle({
       onSuccess: (data: WipStepNodeData) => {
         this.graphSvc.updateNode(nodeId, data);
+        this.updateConnections();
       },
       silentSuccess: true
     });
@@ -152,6 +189,11 @@ export class ManagerPanelComponent {
 
   get selectOptionsArray(): CustomFormArray<CustomFormGroup<WipStepTypeSelectOption>> | null {
     return this.form.controls.data.controls.selectTypeData?.controls.options ?? null;
+  }
+
+  private updateConnections(): void {
+    const oldConns = this.graphSvc.getOldConnectionsAndClear();
+    oldConns.forEach(conn => this.api.deleteConnection(this.svc.sessionId()!, conn).subscribe());
   }
 
   private selectDataMustHaveUniqueData(): ValidatorFn {
