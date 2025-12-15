@@ -1,15 +1,13 @@
-import {Component, effect, Signal, signal} from '@angular/core';
+import { Component, DestroyRef, effect, OnInit } from '@angular/core';
 import {Card} from 'primeng/card';
 import {ConnectionPanelComponent} from './panels/connection-panel.component';
 import {ManagerPanelComponent} from './panels/manager-panel.component';
 import {Button} from 'primeng/button';
 import {
   BoxConnection,
-  BoxGraph,
   BoxNodePositionChange,
   BoxVisualizerComponent
 } from '../../../shared/components/box-visualizer/box-visualizer.component';
-import {NgClass} from '@angular/common';
 import {DesignerService} from './designer.service';
 import {BaseRouteDirective} from '../../../shared/directives/base-route.directive';
 import {ProjectRoutes} from '../project.routes';
@@ -19,7 +17,7 @@ import {WipTemplateMngApi} from '../../../api';
 import {ApiHandlingService} from '../../../core/services/api-handling.service';
 import {ConfirmService} from '../../../core/services/confirm.service';
 import {ToastService} from '../../../core/services/toast.service';
-import {Observable} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   imports: [
@@ -96,7 +94,7 @@ import {Observable} from 'rxjs';
     </div>
   `
 })
-export class DesignerComponent extends BaseRouteDirective {
+export class DesignerComponent extends BaseRouteDirective implements OnInit {
   private readonly projectId = this.param('projectId');
   private readonly routeNodeId = this.param('nodeId');
 
@@ -127,12 +125,11 @@ export class DesignerComponent extends BaseRouteDirective {
               private toastSvc: ToastService,
               private api: WipTemplateMngApi,
               private apiHandler: ApiHandlingService,
-              private confirmSvc: ConfirmService) {
+              private confirmSvc: ConfirmService,
+              private destroyRef: DestroyRef) {
     super();
     effect(() => {
       if (svc.sessionId()) {
-        api.getSteps(svc.sessionId()!)
-          .subscribe(steps => this.graphSvc.updateGraph(steps));
         this.sessionId = svc.sessionId()!;
       }
     })
@@ -145,6 +142,12 @@ export class DesignerComponent extends BaseRouteDirective {
     });
   }
 
+  ngOnInit() {
+    this.svc.steps$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(steps => this.graphSvc.updateGraph(steps));
+  }
+
   createNode() {
     this.api.createStep(this.sessionId)
       .subscribe(this.apiHandler.handle({
@@ -153,7 +156,7 @@ export class DesignerComponent extends BaseRouteDirective {
           this.navigateToNode(node.stepNumber);
         },
         silentSuccess: true
-      }))
+      }));
   }
 
   deleteNode() {

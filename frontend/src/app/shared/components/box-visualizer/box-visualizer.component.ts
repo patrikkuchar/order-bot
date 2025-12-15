@@ -151,7 +151,7 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (!this.editor) return;
 
-    if (changes['graph']) {
+    if (changes['graph'] && !changes['graph'].firstChange) {
       const newGraphJson = JSON.stringify(changes['graph'].currentValue);
 
       if (newGraphJson === this.lastAppliedGraphJson) {

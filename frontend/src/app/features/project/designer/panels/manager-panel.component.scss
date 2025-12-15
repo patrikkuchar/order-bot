@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.step-cont {
+  background-color: var(--p-surface-menu);
+  display: inline-grid;
+  place-items: center;
+  padding: .4rem;
+  aspect-ratio: 1 / 1;
+  width: fit-content;
+  height: fit-content;
+  align-content: center;
+  border-bottom-right-radius: .4rem;
+  border-top-left-radius: .4rem;
+  margin-bottom: 1rem;
+  margin-left: -1.52rem;
+  margin-top: -1.52rem;
+
+  h2 {
+    margin: 0;
+    padding: .2rem;
+  }
+}
+
+:host ::ng-deep .manager-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+:host ::ng-deep .manager-card .p-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .manager-card .p-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:host ::ng-deep .manager-form-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.manager-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: max-content;
+}
+
+.section-tab {
+  position: relative;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem 0.45rem;
+  border-radius: 999px;
+  color: var(--p-text-color);
+  background: transparent;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 180ms ease, box-shadow 180ms ease, background-color 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.section-tab:hover,
+.section-tab:focus-visible {
+  color: var(--p-primary-color);
+  background: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+  box-shadow: 0 10px 30px -20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.section-tab--active {
+  color: var(--p-primary-color);
+  background: color-mix(in srgb, var(--p-primary-color) 18%, transparent);
+  box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--p-primary-color) 40%, transparent);
+  border-color: color-mix(in srgb, var(--p-primary-color) 40%, transparent);
+  border-bottom-color: var(--p-primary-color);
+}
+
+.section-tab__label {
+  white-space: nowrap;
+}
+
+.manager-divider {
+  align-self: stretch;
+}

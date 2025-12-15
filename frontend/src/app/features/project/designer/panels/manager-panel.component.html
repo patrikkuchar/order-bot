@@ -2,23 +2,24 @@
   <p-card title="Manager" styleClass="manager-card" ngClass="h-full min-h-full max-h-full">
     <div class="flex flex-col gap-4 h-full min-h-0">
     @if (selectedNode() && formContext(); as ctx) {
-      @if (selectedStep) {
-        <h2 class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</h2>
-      }
       <div class="flex h-full max-h-full gap-6 grow min-h-0">
-        <div class="flex flex-col gap-2 w-25 -ml-6 mr-2">
+        <div class="flex flex-col manager-menu">
+          @if (selectedStep) {
+            <div class="step-cont">
+              <h2 class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</h2>
+            </div>
+          }
           @for (section of visibleSections(); track section.key) {
             <button type="button"
-                    class="text-left px-3 py-2 rounded-r-md border shadow-sm transition-colors"
-                    [ngClass]="{
-                          'bg-primary-50 text-primary border-primary-200': activeSection() === section.key,
-                          'bg-surface-0 text-color-secondary border-surface-200': activeSection() !== section.key
-                        }"
+                    class="section-tab"
+                    [class.section-tab--active]="activeSection() === section.key"
+                    [attr.aria-pressed]="activeSection() === section.key"
                     (click)="selectSection(section.key)">
-              {{ section.label }}
+              <span class="section-tab__label">{{ section.label }}</span>
             </button>
           }
         </div>
+        <p-divider layout="vertical" class="manager-divider" />
         <div class="flex flex-col gap-3 grow min-h-0 h-auto">
           <div class="manager-form-scroll">
             <app-form [form]="form"

@@ -1,4 +1,4 @@
-import {Component, computed, effect, Signal, signal} from '@angular/core';
+import {Component, computed, DestroyRef, effect, Signal, signal} from '@angular/core';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {Card} from 'primeng/card';
 import {NgClass} from '@angular/common';
@@ -24,10 +24,11 @@ import {RadioButtonComponent} from '../../../../shared/components/form/radiobutt
 import {TransformUtils} from '../../../../shared/utils/transform.utils';
 import {FormObjectArrayComponent} from '../../../../shared/components/form/wrapper/form-object-array/form-object-array.component';
 import {MyStorage} from '../../../../shared/persistance/MyStorage';
-import {toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {CustomFormArray} from '../../../../shared/form/custom/custom-form-array';
 import {WipStepTypeSelectOption} from '../../../../api';
 import {CustomFormGroup} from '../../../../shared/form/custom/custom-form-group';
+import {DividerModule} from 'primeng/divider';
 
 type ManagerPanelSection = 'main' | 'options' | 'error-handlers';
 
@@ -42,44 +43,10 @@ type ManagerPanelSection = 'main' | 'options' | 'error-handlers';
     SelectButtonComponent,
     RadioButtonComponent,
     FormObjectArrayComponent,
+    DividerModule,
   ],
   templateUrl: './manager-panel.component.html',
-  styles: [`
-    :host {
-      display: block;
-      height: 100%;
-      min-height: 0;
-    }
-
-    :host ::ng-deep .manager-card {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 0;
-    }
-
-    :host ::ng-deep .manager-card .p-card-body {
-      display: flex;
-      flex-direction: column;
-      flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    :host ::ng-deep .manager-card .p-card-content {
-      display: flex;
-      flex-direction: column;
-      flex: 1 1 auto;
-      min-height: 0;
-    }
-
-    :host ::ng-deep .manager-form-scroll {
-      flex: 1 1 auto;
-      min-height: 0;
-      max-height: 100%;
-      overflow-y: auto;
-    }
-  `]
+  styleUrl: './manager-panel.component.scss'
 })
 export class ManagerPanelComponent {
 
@@ -140,7 +107,8 @@ export class ManagerPanelComponent {
       return null;
     }
 
-    const fetcher = () => this.api.getStep(sessionId, nodeId).pipe(
+    const fetcher = () => this.svc.step$.pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(data => this.selectedStep = data),
       map(d => ({
         title: d.title,
@@ -171,6 +139,7 @@ export class ManagerPanelComponent {
   constructor(private graphSvc: DesignerGraphService,
               private svc: DesignerService,
               private api: WipTemplateMngApi,
+              private destroyRef: DestroyRef,
               private apiHandler: ApiHandlingService) {
     this.selectedNode = graphSvc.selectedNode;
     effect(() => this.sectionStorage.save(this.activeSection()));

@@ -85,7 +85,6 @@ export class CustomFormControl<T = any> extends FormControl implements CustomFor
   }
 
   updateInitialValue(value: T): void {
-    console.log('CustomFormControl.updateInitialValue called', value);
     this.setValueAsInitial();
     this._previousValue = value ?? null;
   }
