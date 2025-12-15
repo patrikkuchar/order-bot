@@ -73,6 +73,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
           <div class="min-h-0 grow">
             <app-box-visualizer
               class="h-full block"
+              [name]="projectId() ?? 'graph'"
               [graph]="graphSvc.graph()"
               [selectedNodeId]="graphSvc.selectedNodeId()"
               (connectionCreated)="connectionCreated($event)"
@@ -95,7 +96,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   `
 })
 export class DesignerComponent extends BaseRouteDirective implements OnInit {
-  private readonly projectId = this.param('projectId');
+  readonly projectId = this.param('projectId');
   private readonly routeNodeId = this.param('nodeId');
 
   private sessionId: string;
