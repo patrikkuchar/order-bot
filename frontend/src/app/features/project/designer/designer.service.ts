@@ -23,6 +23,8 @@ export class DesignerService {
 
   private readonly loadSession: (projectId?: string) => void;
 
+  private loadSteps: (sessionId: string | null) => void;
+
   constructor(private projectSvc: ProjectService,
               api: WipTemplateMngApi,
               graphSvc: DesignerGraphService) {
@@ -34,10 +36,8 @@ export class DesignerService {
       api.getSession(projectId)
         .subscribe(res => this._sessionId.set(res.value));
     }
-
-    effect(() => this.loadSession(projectSvc.selectedProject()?.id));
-    effect(() => {
-      if (this.sessionId()) {
+    this.loadSteps = (sessionId: string | null) => {
+      if (sessionId) {
         api.getSteps(this.sessionId()!)
           .subscribe(steps => {
             this._syncSteps = steps;
@@ -46,13 +46,20 @@ export class DesignerService {
       } else {
         this._steps.next(EMPTY_STEPS);
       }
-    });
+    }
+
+    effect(() => this.loadSession(projectSvc.selectedProject()?.id));
+    effect(() => this.loadSteps(this.sessionId()));
     effect(() => {
       if (graphSvc.selectedNodeId() && this.sessionId() && projectSvc.projectCode()) {
         api.getStep(this.sessionId()!, graphSvc.selectedNodeId()!)
           .subscribe(step => this._step.next(step));
       }
     });
+  }
+
+  reloadSteps() {
+    this.loadSteps(this.sessionId());
   }
 
   stepName(stepId: string): string | null {

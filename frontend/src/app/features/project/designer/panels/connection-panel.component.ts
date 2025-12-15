@@ -51,7 +51,7 @@ type Node = {
     .connections {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.25rem;
+      gap: .5rem;
     }
 
     .connections-scroll {
@@ -105,7 +105,6 @@ type Node = {
     .connection-list {
       list-style: none;
       margin: 0;
-      padding: 0;
       display: flex;
       flex-direction: column;
       gap: 0.35rem;

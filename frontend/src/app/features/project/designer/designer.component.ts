@@ -147,6 +147,7 @@ export class DesignerComponent extends BaseRouteDirective implements OnInit {
     this.svc.steps$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(steps => this.graphSvc.updateGraph(steps));
+    this.svc.reloadSteps();
   }
 
   createNode() {
