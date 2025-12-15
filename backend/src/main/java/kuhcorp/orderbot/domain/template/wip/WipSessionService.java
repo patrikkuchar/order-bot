@@ -51,6 +51,12 @@ public class WipSessionService {
     }
 
     @Transactional
+    public Boolean isSessionChanged(String sessionId) {
+        var session = ensureSessionForUser(sessionId);
+        return session.isChanged();
+    }
+
+    @Transactional
     public WipStepListRes getSteps(String sessionId) {
         ensureSessionForUser(sessionId);
         return stepSvc.getList(sessionId);
@@ -117,6 +123,22 @@ public class WipSessionService {
         managerSvc.save(stepData, session.getOfTemplateInstance().getId());
 
         session.complete();
+    }
+
+    @Transactional
+    public String clearWipSessionAndGetNew(String sessionId) {
+        var session = ensureSessionForUser(sessionId);
+        if (!isSessionChanged(sessionId)) {
+            //TODO: better exception
+            throw new IllegalStateException("WIP session is not changed.");
+        }
+
+        var templateInstance = session.getOfTemplateInstance();
+        var user = userHolder.getUserOrThrow();
+
+        session.abandon();
+        var newSession = createNewSession(templateInstance, user);
+        return newSession.getId();
     }
 
     private void ensureSessionOfNewestTemplateInstance(WipSession session) {

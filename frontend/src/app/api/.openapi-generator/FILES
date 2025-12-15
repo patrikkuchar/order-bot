@@ -11,6 +11,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/booleanDto.ts
 model/configurationRes.ts
 model/decimalRange.ts
 model/loginReq.ts

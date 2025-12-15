@@ -2,6 +2,8 @@ package kuhcorp.orderbot.domain.template.wip;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import kuhcorp.orderbot.api.CommonDtos;
+import kuhcorp.orderbot.api.CommonDtos.BooleanDto;
 import kuhcorp.orderbot.api.CommonDtos.StringDto;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepDtos.*;
 import kuhcorp.orderbot.domain.template.wip.step.WipStepsValidator;
@@ -24,6 +26,11 @@ public class WipRestApi {
     @PostMapping("/session/{templateId}")
     public StringDto getSession(@PathVariable String templateId) {
         return StringDto.of(sessionSvc.getSessionIdForTemplate(templateId));
+    }
+
+    @GetMapping("/{sessionId}/changed")
+    public BooleanDto isChanged(@PathVariable String sessionId) {
+        return BooleanDto.of(sessionSvc.isSessionChanged(sessionId));
     }
 
     @GetMapping("/{sessionId}/steps")
@@ -69,6 +76,11 @@ public class WipRestApi {
     @GetMapping("/{sessionId}/validate")
     public WipStepValidationRes validateSteps(@PathVariable String sessionId) {
         return sessionSvc.validateSession(sessionId);
+    }
+
+    @DeleteMapping("/{sessionId}/clear")
+    public StringDto clearSession(@PathVariable String sessionId) {
+        return StringDto.of(sessionSvc.clearWipSessionAndGetNew(sessionId));
     }
 
     @PostMapping("/{sessionId}/complete")

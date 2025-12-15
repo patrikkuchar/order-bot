@@ -130,7 +130,7 @@ public class WipStepData implements WipStepTypeValidators {
         }
         switch (type) {
             case TEXT:
-                return selectTypeData == null;
+                return true;
             case SELECT:
                 return selectTypeData != null;
             default:

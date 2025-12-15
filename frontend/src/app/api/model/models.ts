@@ -1,3 +1,4 @@
+export * from './booleanDto';
 export * from './configurationRes';
 export * from './decimalRange';
 export * from './loginReq';

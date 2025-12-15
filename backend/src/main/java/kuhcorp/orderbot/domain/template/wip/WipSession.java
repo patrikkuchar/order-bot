@@ -40,6 +40,10 @@ public class WipSession extends EntityWithMetadataAndId implements EntityWithSta
         return wip;
     }
 
+    public boolean isChanged() {
+        return IN_PROGRESS.equals(status);
+    }
+
     public void update(TemplateInstance template) {
         if (this.status != NO_CHANGES) {
             throw new IllegalStateException("Cannot update a WIP session that is not in NO_CHANGES status.");

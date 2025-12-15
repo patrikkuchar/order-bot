@@ -562,6 +562,34 @@
         "tags" : [ "wipTemplateMng" ]
       }
     },
+    "/api/p/template/manager/wip/{sessionId}/changed" : {
+      "get" : {
+        "operationId" : "isChanged",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BooleanDto"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
     "/api/p/template/manager/list" : {
       "get" : {
         "operationId" : "listTemplates",
@@ -663,6 +691,34 @@
         } ],
         "responses" : {
           "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "wipTemplateMng" ]
+      }
+    },
+    "/api/p/template/manager/wip/{sessionId}/clear" : {
+      "delete" : {
+        "operationId" : "clearSession",
+        "parameters" : [ {
+          "explode" : false,
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StringDto"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -1270,6 +1326,15 @@
           }
         },
         "required" : [ "data", "incomingConnections", "orderPosition", "outgoingConnections", "stepNumber", "title" ],
+        "type" : "object"
+      },
+      "BooleanDto" : {
+        "properties" : {
+          "value" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "value" ],
         "type" : "object"
       },
       "TemplateListRes" : {

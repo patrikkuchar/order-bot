@@ -17,6 +17,9 @@ import {RedirectService} from '../../../core/services/redirect.service';
 import {DesignerGraphService} from './designer-graph.service';
 import {WipTemplateMngApi} from '../../../api';
 import {ApiHandlingService} from '../../../core/services/api-handling.service';
+import {ConfirmService} from '../../../core/services/confirm.service';
+import {ToastService} from '../../../core/services/toast.service';
+import {Observable} from 'rxjs';
 
 @Component({
   imports: [
@@ -59,75 +62,47 @@ import {ApiHandlingService} from '../../../core/services/api-handling.service';
     }
   `],
   template: `
-      <div class="flex flex-col gap-4 h-full min-h-0 max-w-full w-full min-w-full">
-        <p-card styleClass="designer-card" class="grow min-h-0">
-          <div class="grow flex flex-row min-h-0 gap-4">
-            <div class="flex flex-col gap-4 min-h-0">
-              <p-button icon="pi pi-plus" [rounded]="true" (onClick)="createNode()" />
-              <p-button icon="pi pi-trash" [rounded]="true" severity="danger" [disabled]="!graphSvc.selectedNodeId()" class="flex-auto" (onClick)="deleteNode()" />
-              <p-button icon="pi pi-save" [rounded]="true" severity="secondary" />
-            </div>
-            <div class="min-h-0 grow">
-              <app-box-visualizer
-                class="h-full block"
-                [graph]="graphSvc.graph()"
-                [selectedNodeId]="graphSvc.selectedNodeId()"
-                (connectionCreated)="connectionCreated($event)"
-                (connectionRemoved)="connectionRemoved($event)"
-                (nodePositionChanged)="nodePositionChanged($event)"
-                (selectedNodeIdChange)="onNodeSelected($event)"
-              ></app-box-visualizer>
-            </div>
+    <div class="flex flex-col gap-4 h-full min-h-0 max-w-full w-full min-w-full">
+      <p-card styleClass="designer-card" class="grow min-h-0">
+        <div class="grow flex flex-row min-h-0 gap-4">
+          <div class="flex flex-col gap-4 min-h-0">
+            <p-button icon="pi pi-plus" [rounded]="true" (onClick)="createNode()"/>
+            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" [disabled]="!graphSvc.selectedNodeId()"
+                      class="flex-auto" (onClick)="deleteNode()"/>
+            <p-button icon="pi pi-refresh" [rounded]="true" severity="secondary" (onClick)="reloadClicked()"/>
+            <p-button icon="pi pi-save" [rounded]="true" severity="primary" (onClick)="saveClicked()"/>
           </div>
-        </p-card>
-        <div class="flex flex-row gap-4 w-full min-h-[20rem] max-w-full">
-          <div class="grow min-h-full">
-            <app-manager-panel/>
-          </div>
-          <div class="min-h-full">
-            <app-connection-panel/>
+          <div class="min-h-0 grow">
+            <app-box-visualizer
+              class="h-full block"
+              [graph]="graphSvc.graph()"
+              [selectedNodeId]="graphSvc.selectedNodeId()"
+              (connectionCreated)="connectionCreated($event)"
+              (connectionRemoved)="connectionRemoved($event)"
+              (nodePositionChanged)="nodePositionChanged($event)"
+              (selectedNodeIdChange)="onNodeSelected($event)"
+            ></app-box-visualizer>
           </div>
         </div>
+      </p-card>
+      <div class="flex flex-row gap-4 w-full min-h-[20rem] max-w-full">
+        <div class="grow min-h-full">
+          <app-manager-panel/>
+        </div>
+        <div class="min-h-full">
+          <app-connection-panel/>
+        </div>
       </div>
+    </div>
   `
 })
 export class DesignerComponent extends BaseRouteDirective {
-  private readonly initialGraph: BoxGraph = {
-    nodes: [
-      {
-        id: 'n1',
-        label: 'Ingress',
-        position: {x: 80, y: 100},
-        outputs: [{key: 'next', label: 'Next'}]
-      },
-      {
-        id: 'n2',
-        label: 'Prepare order',
-        position: {x: 320, y: 140},
-        inputs: [{key: 'input', label: 'Input'}],
-        outputs: [{key: 'out', label: 'Out'}]
-      },
-      {
-        id: 'payment',
-        label: 'Payment',
-        position: {x: 560, y: 220},
-        inputs: [{key: 'in', label: 'In'}],
-        outputs: [{key: 'ok', label: 'OK'}, {key: 'fail', label: 'Fail'}]
-      }
-    ],
-    connections: [
-      {id: 'c1', source: 'n1', sourceOutput: 'next', target: 'n2', targetInput: 'input'},
-      {id: 'c2', source: 'n2', sourceOutput: 'out', target: 'payment', targetInput: 'in'}
-    ]
-  };
-
   private readonly projectId = this.param('projectId');
   private readonly routeNodeId = this.param('nodeId');
 
   private sessionId: string;
 
   onNodeSelected(nodeId: string | null): void {
-    console.log('Node selected:', nodeId);
     this.graphSvc.updateSelectedNode(nodeId);
 
     if (!nodeId) {
@@ -149,8 +124,10 @@ export class DesignerComponent extends BaseRouteDirective {
   constructor(protected svc: DesignerService,
               protected graphSvc: DesignerGraphService,
               private redirectSvc: RedirectService,
+              private toastSvc: ToastService,
               private api: WipTemplateMngApi,
-              private apiHandler: ApiHandlingService) {
+              private apiHandler: ApiHandlingService,
+              private confirmSvc: ConfirmService) {
     super();
     effect(() => {
       if (svc.sessionId()) {
@@ -198,6 +175,40 @@ export class DesignerComponent extends BaseRouteDirective {
       }));
   }
 
+  reloadClicked(): void {
+    if (!this.sessionId) {
+      return;
+    }
+
+    this.api.isChanged(this.sessionId)
+      .subscribe(isChanged => {
+        if (!isChanged.value) {
+          this.toastSvc.info('Template have no changes');
+          return;
+        }
+        this.confirmSvc.confirm({
+          message: 'Naozaj chcete odstrániť všetky zmeny?',
+          tone: 'danger',
+          accept: () => this.clearSession()
+        });
+      });
+  }
+
+  saveClicked(): void {
+    if (!this.sessionId) {
+      return;
+    }
+
+    this.api.isChanged(this.sessionId)
+      .subscribe(isChanged => {
+        if (!isChanged.value) {
+          this.toastSvc.info('Template have no changes');
+        } else {
+          this.validateAndSave();
+        }
+      })
+  }
+
   nodePositionChanged(change: BoxNodePositionChange) {
     this.api.updateStepLocation(this.sessionId, change.nodeId, {
       position: {
@@ -227,6 +238,37 @@ export class DesignerComponent extends BaseRouteDirective {
       .subscribe(this.apiHandler.handle({
         onSuccess: () => this.graphSvc.removeConnection(connection.id),
         silentSuccess: true
+      }));
+  }
+
+  private validateAndSave() {
+    this.api.validateSteps(this.sessionId)
+      .subscribe(this.apiHandler.handle({
+        onSuccess: (res) => {
+          if (res.isValid) {
+            this.saveSession();
+            return;
+          }
+          this.toastSvc.warn(res.errorMessage!, res.errorType);
+        },
+        silentSuccess: true
+      }))
+  }
+
+  private saveSession() {
+    this.api.completeTemplate(this.sessionId)
+      .subscribe(this.apiHandler.handle({
+        onSuccess: () => this.svc.reloadSession(),
+        successMsg: 'Template saved',
+      }));
+  }
+
+  private clearSession() {
+    this.api.clearSession(this.sessionId)
+      .subscribe(this.apiHandler.handle({
+        onSuccess: () => this.svc.reloadSession(),
+        successMsg: 'All changes cleared.',
+        redirect: () => ProjectRoutes.of(this.projectId()!).designer
       }));
   }
 }

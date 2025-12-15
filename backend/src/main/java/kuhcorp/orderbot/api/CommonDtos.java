@@ -12,4 +12,11 @@ public class CommonDtos {
         @NonNull
         String value;
     }
+
+    @Value(staticConstructor = "of")
+    public static class BooleanDto {
+        @NotNull
+        @NonNull
+        Boolean value;
+    }
 }

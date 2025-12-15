@@ -26,6 +26,19 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface BooleanDto
+ */
+export interface BooleanDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BooleanDto
+     */
+    'value': boolean;
+}
+/**
+ * 
+ * @export
  * @interface ConfigurationRes
  */
 export interface ConfigurationRes {
@@ -2018,6 +2031,39 @@ export const WipTemplateMngApiAxiosParamCreator = function (configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        clearSession: async (sessionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'sessionId' is not null or undefined
+            assertParamExists('clearSession', 'sessionId', sessionId)
+            const localVarPath = `/api/p/template/manager/wip/{sessionId}/clear`
+                .replace(`{${"sessionId"}}`, encodeURIComponent(String(sessionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         completeTemplate: async (sessionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'sessionId' is not null or undefined
             assertParamExists('completeTemplate', 'sessionId', sessionId)
@@ -2297,6 +2343,39 @@ export const WipTemplateMngApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 
          * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isChanged: async (sessionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'sessionId' is not null or undefined
+            assertParamExists('isChanged', 'sessionId', sessionId)
+            const localVarPath = `/api/p/template/manager/wip/{sessionId}/changed`
+                .replace(`{${"sessionId"}}`, encodeURIComponent(String(sessionId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} sessionId 
          * @param {string} stepId 
          * @param {WipStepUpdateReq} wipStepUpdateReq 
          * @param {*} [options] Override http request option.
@@ -2429,6 +2508,18 @@ export const WipTemplateMngApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async clearSession(sessionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StringDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.clearSession(sessionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['WipTemplateMngApi.clearSession']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async completeTemplate(sessionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.completeTemplate(sessionId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -2526,6 +2617,18 @@ export const WipTemplateMngApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async isChanged(sessionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BooleanDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.isChanged(sessionId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['WipTemplateMngApi.isChanged']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} sessionId 
          * @param {string} stepId 
          * @param {WipStepUpdateReq} wipStepUpdateReq 
          * @param {*} [options] Override http request option.
@@ -2573,6 +2676,15 @@ export const WipTemplateMngApiFp = function(configuration?: Configuration) {
 export const WipTemplateMngApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = WipTemplateMngApiFp(configuration)
     return {
+        /**
+         * 
+         * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clearSession(sessionId: string, options?: any): AxiosPromise<StringDto> {
+            return localVarFp.clearSession(sessionId, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @param {string} sessionId 
@@ -2652,6 +2764,15 @@ export const WipTemplateMngApiFactory = function (configuration?: Configuration,
         /**
          * 
          * @param {string} sessionId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        isChanged(sessionId: string, options?: any): AxiosPromise<BooleanDto> {
+            return localVarFp.isChanged(sessionId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} sessionId 
          * @param {string} stepId 
          * @param {WipStepUpdateReq} wipStepUpdateReq 
          * @param {*} [options] Override http request option.
@@ -2690,6 +2811,17 @@ export const WipTemplateMngApiFactory = function (configuration?: Configuration,
  * @extends {BaseAPI}
  */
 export class WipTemplateMngApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} sessionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WipTemplateMngApi
+     */
+    public clearSession(sessionId: string, options?: RawAxiosRequestConfig) {
+        return WipTemplateMngApiFp(this.configuration).clearSession(sessionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {string} sessionId 
@@ -2780,6 +2912,17 @@ export class WipTemplateMngApi extends BaseAPI {
      */
     public getSteps(sessionId: string, options?: RawAxiosRequestConfig) {
         return WipTemplateMngApiFp(this.configuration).getSteps(sessionId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} sessionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WipTemplateMngApi
+     */
+    public isChanged(sessionId: string, options?: RawAxiosRequestConfig) {
+        return WipTemplateMngApiFp(this.configuration).isChanged(sessionId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
