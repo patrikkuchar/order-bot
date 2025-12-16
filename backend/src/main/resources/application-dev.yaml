@@ -13,7 +13,7 @@ spring:
     username: admin
     password: heslo
   liquibase:
-    enabled: false
+    enabled: true
 
 #logging:
 #  level:
