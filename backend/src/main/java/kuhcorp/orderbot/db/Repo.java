@@ -1,6 +1,5 @@
 package kuhcorp.orderbot.db;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import kuhcorp.orderbot.api.PageReq;
@@ -21,6 +20,8 @@ public interface Repo<ENTITY, ID> extends JpaRepository<ENTITY, ID> {
     ENTITY getActiveById(ID id);
 
     ENTITY fetchExisting(JPAQuery<ENTITY> q);
+
+    ENTITY fetchActive(Predicate pred);
 
     Optional<ENTITY> fetchOneOptionalActive(JPAQuery<ENTITY> q);
 

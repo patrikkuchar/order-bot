@@ -65,7 +65,11 @@ export class CustomFormGroup<T> extends FormGroup<ControlsOf<T>> implements Cust
 
   // Custom function to update initial values recursively
   updateInitialValue(val: T): void {
+    console.log('CustomFormGroup.updateInitialValue called', val);
     this._initialValue = this.cloneValue(val);
+
+    // Update current value without emitting change events
+    this.updateValue(val, false);
 
     // Iterate children and call updateInitialValue only when implemented
     this.childForms.forEach(child => {

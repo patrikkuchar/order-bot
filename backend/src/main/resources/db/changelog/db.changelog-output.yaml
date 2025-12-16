@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1763890914151-1
+    id: 1765905482674-1
     author: patrik (generated)
     changes:
     - createTable:
@@ -54,7 +54,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: app_user
 - changeSet:
-    id: 1763890914151-2
+    id: 1765905482674-2
     author: patrik (generated)
     changes:
     - createTable:
@@ -73,11 +73,54 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: config_attributes
 - changeSet:
-    id: 1763890914151-3
+    id: 1765905482674-3
     author: patrik (generated)
     changes:
     - createTable:
         columns:
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: template_instance_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: parent_id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: VARCHAR(255)
+        tableName: template_instance
+- changeSet:
+    id: 1765905482674-4
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: connected
+            type: BOOLEAN
         - column:
             constraints:
               nullable: false
@@ -114,7 +157,69 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: template
 - changeSet:
-    id: 1763890914151-4
+    id: 1765905482674-5
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: is_first_step
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: is_last_step
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: question
+            type: VARCHAR(5000)
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: template_step_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: template_id
+            type: VARCHAR(255)
+        - column:
+            name: type
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: designer_data
+            type: JSONB
+        - column:
+            name: select_type_data
+            type: JSONB
+        - column:
+            name: text_type_data
+            type: JSONB
+        tableName: template_step
+- changeSet:
+    id: 1765905482674-6
     author: patrik (generated)
     changes:
     - createTable:
@@ -173,29 +278,11 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: test_entity
 - changeSet:
-    id: 1763890914151-5
-    author: patrik (generated)
-    changes:
-    - addUniqueConstraint:
-        columnNames: owner_id
-        constraintName: test_entity_owner_id_key
-        tableName: test_entity
-- changeSet:
-    id: 1763890914151-6
+    id: 1765905482674-7
     author: patrik (generated)
     changes:
     - createTable:
         columns:
-        - column:
-            constraints:
-              nullable: false
-            name: next_step_number
-            type: INTEGER
-        - column:
-            constraints:
-              nullable: false
-            name: step_number
-            type: INTEGER
         - column:
             constraints:
               nullable: false
@@ -211,7 +298,7 @@ databaseChangeLog:
             constraints:
               nullable: false
               primaryKey: true
-              primaryKeyName: template_step_pkey
+              primaryKeyName: wip_session_pkey
             name: id
             type: VARCHAR(255)
         - column:
@@ -220,16 +307,89 @@ databaseChangeLog:
         - column:
             constraints:
               nullable: false
-            name: question
+            name: of_template_instance_id
             type: VARCHAR(255)
         - column:
             constraints:
               nullable: false
-            name: template_id
+            name: status
             type: VARCHAR(255)
-        tableName: template_step
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: VARCHAR(255)
+        tableName: wip_session
 - changeSet:
-    id: 1763890914151-7
+    id: 1765905482674-8
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: x
+            type: FLOAT8
+        - column:
+            name: y
+            type: FLOAT8
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: question
+            type: VARCHAR(5000)
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: order_position
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: wip_step_pkey
+            name: session_id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: wip_step_pkey
+            name: step_number
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: title
+            type: VARCHAR(255)
+        - column:
+            name: type
+            type: VARCHAR(255)
+        - column:
+            name: select_type_data
+            type: JSONB
+        tableName: wip_step
+- changeSet:
+    id: 1765905482674-9
+    author: patrik (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: owner_id
+        constraintName: test_entity_owner_id_key
+        tableName: test_entity
+- changeSet:
+    id: 1765905482674-10
     author: patrik (generated)
     changes:
     - createTable:
@@ -247,13 +407,86 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: test_entity_borrows
 - changeSet:
-    id: 1763890914151-8
+    id: 1765905482674-11
+    author: patrik (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITH TIME ZONE
+        - column:
+            name: created_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: wip_step_connection_pkey
+            name: id
+            type: VARCHAR(255)
+        - column:
+            name: last_modified_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: source_output_key
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: source_session_id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: source_step_number
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: target_input_key
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: target_session_id
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: target_step_number
+            type: VARCHAR(255)
+        tableName: wip_step_connection
+- changeSet:
+    id: 1765905482674-12
     author: patrik (generated)
     changes:
     - addForeignKeyConstraint:
-        baseColumnNames: template_id
-        baseTableName: template_step
-        constraintName: fk8xonpqtwbwdkrt152182ttdeq
+        baseColumnNames: source_session_id,source_step_number
+        baseTableName: wip_step_connection
+        constraintName: fk3fe2hte4u0dtijksagxn7dkiy
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: session_id,step_number
+        referencedTableName: wip_step
+        validate: true
+- changeSet:
+    id: 1765905482674-13
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: parent_id
+        baseTableName: template_instance
+        constraintName: fk83p1ufnp0awpqfoeiuojd2cwf
         deferrable: false
         initiallyDeferred: false
         onDelete: NO ACTION
@@ -262,7 +495,67 @@ databaseChangeLog:
         referencedTableName: template
         validate: true
 - changeSet:
-    id: 1763890914151-9
+    id: 1765905482674-14
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: of_template_instance_id
+        baseTableName: wip_session
+        constraintName: fk9jcjnai6lxuxnyu4r6641k6ow
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: template_instance
+        validate: true
+- changeSet:
+    id: 1765905482674-15
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: session_id
+        baseTableName: wip_step
+        constraintName: fkap9297udx3st7jt1onyukyday
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: wip_session
+        validate: true
+- changeSet:
+    id: 1765905482674-16
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: template_id
+        baseTableName: template_step
+        constraintName: fkc0mcswslymslpjdy4koxtai9w
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: template_instance
+        validate: true
+- changeSet:
+    id: 1765905482674-17
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: target_session_id,target_step_number
+        baseTableName: wip_step_connection
+        constraintName: fkf54k6kngk4pg5mmoq6dneipvf
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: session_id,step_number
+        referencedTableName: wip_step
+        validate: true
+- changeSet:
+    id: 1765905482674-18
     author: patrik (generated)
     changes:
     - addForeignKeyConstraint:
@@ -277,7 +570,22 @@ databaseChangeLog:
         referencedTableName: test_entity
         validate: true
 - changeSet:
-    id: 1763890914151-10
+    id: 1765905482674-19
+    author: patrik (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: wip_session
+        constraintName: fkp6vg3t3koq9hg2uit1hxjieh9
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: app_user
+        validate: true
+- changeSet:
+    id: 1765905482674-20
     author: patrik (generated)
     changes:
     - addForeignKeyConstraint:

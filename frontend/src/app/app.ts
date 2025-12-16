@@ -9,10 +9,11 @@ import {TestApi} from './api';
 import {LoadingService} from './core/services/loading.service';
 import {ProgressSpinner} from 'primeng/progressspinner';
 import {SpinnerComponent} from './shared/components/spinner.component';
+import {ConfirmDialogComponent} from './shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CoreModule, Toast, ProgressSpinner, SpinnerComponent],
+  imports: [RouterOutlet, CoreModule, Toast, ProgressSpinner, SpinnerComponent, ConfirmDialogComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

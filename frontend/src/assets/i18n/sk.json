@@ -61,5 +61,17 @@
         "placeholder": "Zadajte svoje heslo"
       }
     }
+  },
+  "designer": {
+    "managerPanel": {
+      "orderPosition": {
+        "FIRST": "First step",
+        "LAST": "Last step"
+      },
+      "type": {
+        "TEXT": "Text",
+        "SELECT": "Select"
+      }
+    }
   }
 }

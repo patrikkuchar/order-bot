@@ -17,16 +17,13 @@ export class ProjectComponent extends BaseRouteDirective {
     super();
     effect(() => {
       const projectId = this.projectIdParam();
-      console.log('projectId', projectId);
       if (projectId) {
         svc.selectProject(projectId);
         return;
       }
       const projects = svc.projects();
       const firstProject = projects[0];
-      console.log('firstProject', firstProject);
       if (firstProject) {
-        console.log('firstProject', firstProject);
         svc.selectProject(firstProject.code);
       }
     });

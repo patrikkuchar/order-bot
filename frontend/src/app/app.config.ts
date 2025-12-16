@@ -16,6 +16,7 @@ import {AppErrorsHandler} from './core/handlers/AppErrorsHandler';
 import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {provideTranslateService} from '@ngx-translate/core';
 import {GlobalLoadingInterceptor} from './core/interceptors/global-loading.interceptor';
+import {ConfirmationService} from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -51,6 +52,7 @@ export const appConfig: ApplicationConfig = {
       defaultLanguage: 'sk'    // ak chceš mať default
     }),
 
-    MessageService
+    MessageService,
+    ConfirmationService
   ],
 };

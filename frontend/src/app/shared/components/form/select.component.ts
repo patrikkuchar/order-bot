@@ -5,6 +5,8 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {BaseFormInput} from './BaseFormInput';
 import {Select} from 'primeng/select';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {getTranslatedValuesForSelect, TranslatedValue} from './form-control.utils';
+import {MyTranslateService} from '../../../core/services/my-translate.service';
 
 @Component({
   selector: 'form-select',
@@ -32,29 +34,41 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
                 [loading]="loading"
                 [attr.placeholder]="placeholder | translate"
                 fluid
-                [options]="options"
-                [optionLabel]="optionLabel"
-                [optionValue]="optionValue"/>
+                [options]="formOptions"
+                optionLabel="label"
+                optionValue="value"/>
     </app-form-field>
   `
 })
 export class SelectComponent<T> extends BaseFormInput<T> implements OnInit {
 
   @Input() options: T[] = [];
-  @Input() optionLabel?: string;
-  @Input() optionValue?: string;
+
+  @Input() i18nPrefix?: string;
+
+  formOptions: TranslatedValue<T>[] = [];
 
   loading: boolean = false;
 
-  constructor(private destroyRef: DestroyRef) {
+  constructor(private destroyRef: DestroyRef,
+              private translationSvc: MyTranslateService) {
     super();
   }
 
   ngOnInit() {
+    this.computeOptions();
     if (this.loading$) {
       this.loading$
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(loading => this.loading = loading);
+    }
+  }
+
+  private computeOptions() {
+    if (this.i18nPrefix) {
+      this.formOptions = getTranslatedValuesForSelect(this.translationSvc, this.options, this.i18nPrefix);
+    } else {
+      this.formOptions = this.options.map(option => ({label: option as unknown as string, value: option}));
     }
   }
 }

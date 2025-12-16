@@ -6,6 +6,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -23,6 +24,7 @@ import {
 import { NodeEditor, ClassicPreset, GetSchemes } from 'rete';
 import { AreaPlugin, AreaExtensions } from 'rete-area-plugin';
 import { ConnectionPlugin, Presets as ConnectionPresets } from 'rete-connection-plugin';
+import { MyStorage } from '../../persistance/MyStorage';
 
 /* -------------------------------------------------------------------------------------
  * TYPE DEFINITIONS
@@ -33,6 +35,7 @@ type ConnectionData = ClassicPreset.Connection<ClassicPreset.Node, ClassicPreset
 type Schemes = GetSchemes<NodeData, ConnectionData>;
 type AreaExtra = AngularArea2D<Schemes>;
 type Position = { x: number; y: number };
+type ViewTransform = { x: number; y: number; k: number };
 
 export interface BoxPort {
   key: string;
@@ -49,11 +52,16 @@ export interface BoxNodeDefinition {
 }
 
 export interface BoxConnection {
-  id?: string;
+  id: string;
   source: string;
   target: string;
   sourceOutput: string;
   targetInput: string;
+}
+
+export interface BoxNodePositionChange {
+  nodeId: string;
+  position: Position;
 }
 
 export interface BoxGraph {
@@ -101,12 +109,15 @@ export interface BoxGraph {
     }
   `]
 })
-export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class BoxVisualizerComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   constructor(private injector: Injector) {}
 
+  @Input() name: string = 'graph';
   @Input() graph: BoxGraph | null = null;
-  @Output() graphChange = new EventEmitter<BoxGraph>();
+  @Output() connectionCreated = new EventEmitter<BoxConnection>();
+  @Output() connectionRemoved = new EventEmitter<BoxConnection>();
+  @Output() nodePositionChanged = new EventEmitter<BoxNodePositionChange>();
   @Input() selectedNodeId: string | null = null;
   @Output() selectedNodeIdChange = new EventEmitter<string | null>();
 
@@ -123,6 +134,9 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
   private currentSelectedNodeId: string | null = null;
   private nodeClickHandlers = new Map<string, { element: HTMLElement; down: (e: PointerEvent) => void; up: (e: PointerEvent) => void }>();
   private nodePointerStart = new Map<string, { x: number; y: number }>();
+  private nodePositionTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly nodePositionEmitDelay = 200;
+  private viewportStorage: MyStorage<ViewTransform> | null = null;
 
   /** Last graph to avoid infinite loop */
   private lastAppliedGraphJson = '';
@@ -131,18 +145,28 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
    * LIFECYCLE
    * ---------------------------------------------------------------------------------- */
 
+  ngOnInit(): void {
+    this.initViewportStorage(this.name);
+  }
+
   async ngAfterViewInit(): Promise<void> {
     await this.setupEditor();
     if (this.graph) {
       await this.applyGraph(this.graph);
     }
+    await this.restoreAreaTransform();
     this.setSelectedNode(this.selectedNodeId, false);
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (changes['name']) {
+      this.initViewportStorage(changes['name'].currentValue);
+      await this.restoreAreaTransform();
+    }
+
     if (!this.editor) return;
 
-    if (changes['graph']) {
+    if (changes['graph'] && !changes['graph'].firstChange) {
       const newGraphJson = JSON.stringify(changes['graph'].currentValue);
 
       if (newGraphJson === this.lastAppliedGraphJson) {
@@ -158,6 +182,7 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
   }
 
   ngOnDestroy(): void {
+    this.clearNodePositionTimers();
     this.detachNodeClickListeners();
     this.area?.destroy();
   }
@@ -194,19 +219,26 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
 
   private registerListeners(): void {
     this.editor.addPipe(ctx => {
-      if (
-        ctx.type === 'connectioncreated' ||
-        ctx.type === 'connectionremoved' ||
-        ctx.type === 'noderemoved'
-      ) {
-        this.emitGraph();
+      if (ctx.type === 'connectioncreated') {
+        this.emitConnectionCreated(ctx.data);
+      }
+
+      if (ctx.type === 'connectionremoved') {
+        this.emitConnectionRemoved(ctx.data);
+      }
+
+      if (ctx.type === 'noderemoved' && !this.syncing) {
+        this.syncSnapshotToCurrentGraph();
       }
       return ctx;
     });
 
     this.area.addPipe(ctx => {
       if (ctx.type === 'nodetranslated') {
-        this.emitGraph();
+        this.emitNodePositionChanged(ctx.data);
+      }
+      if (ctx.type === 'translated' || ctx.type === 'zoomed') {
+        this.persistAreaTransform();
       }
       return ctx;
     });
@@ -217,6 +249,7 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
    * ---------------------------------------------------------------------------------- */
 
   private async applyGraph(graph: BoxGraph): Promise<void> {
+    this.clearNodePositionTimers();
     this.syncing = true;
     this.detachNodeClickListeners();
 
@@ -256,10 +289,7 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
 
     this.syncing = false;
 
-    /** Update last-applied snapshot */
-    this.lastAppliedGraphJson = JSON.stringify(graph);
-
-    this.emitGraph();
+    this.syncSnapshotToCurrentGraph();
     this.hightlightNodeToggle(this.currentSelectedNodeId, true);
     this.attachNodeClickListeners();
   }
@@ -295,9 +325,53 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
     return node;
   }
 
-  private emitGraph(): void {
+  private emitConnectionCreated(connection: ConnectionData): void {
     if (this.syncing) return;
 
+    this.connectionCreated.emit(this.mapConnection(connection));
+    this.syncSnapshotToCurrentGraph();
+  }
+
+  private emitConnectionRemoved(connection: ConnectionData): void {
+    if (this.syncing) return;
+
+    this.connectionRemoved.emit(this.mapConnection(connection));
+    this.syncSnapshotToCurrentGraph();
+  }
+
+  private emitNodePositionChanged(event: { id: string; position: Position }): void {
+    if (this.syncing) return;
+
+    const latestPosition = this.area.nodeViews.get(event.id)?.position ?? event.position;
+
+    const existing = this.nodePositionTimers.get(event.id);
+    if (existing) {
+      clearTimeout(existing);
+    }
+
+    const timer = setTimeout(() => {
+      if (this.syncing) return;
+
+      const position = this.area.nodeViews.get(event.id)?.position ?? latestPosition;
+      this.nodePositionChanged.emit({ nodeId: event.id, position });
+      this.syncSnapshotToCurrentGraph();
+      this.nodePositionTimers.delete(event.id);
+    }, this.nodePositionEmitDelay);
+
+    this.nodePositionTimers.set(event.id, timer);
+  }
+
+  private mapConnection(connection: ConnectionData): BoxConnection {
+    return {
+      id: connection.id,
+      source: connection.source,
+      target: connection.target,
+      sourceOutput: connection.sourceOutput as string,
+      targetInput: connection.targetInput as string
+    };
+  }
+
+  private getCurrentGraph(): BoxGraph {
     const nodes = this.editor.getNodes().map(n => ({
       id: n.id,
       label: n.label,
@@ -316,23 +390,47 @@ export class BoxVisualizerComponent implements AfterViewInit, OnChanges, OnDestr
       }))
     }));
 
-    const connections = this.editor.getConnections().map(c => ({
-      id: c.id,
-      source: c.source,
-      target: c.target,
-      sourceOutput: c.sourceOutput as string,
-      targetInput: c.targetInput as string
-    }));
+    const connections = this.editor.getConnections().map(c => this.mapConnection(c));
 
-    const graph: BoxGraph = { nodes, connections };
-    const json = JSON.stringify(graph);
+    return { nodes, connections };
+  }
 
-    if (json === this.lastAppliedGraphJson) {
-      return; // prevent loops
+  private syncSnapshotToCurrentGraph(): void {
+    if (!this.editor || !this.area) return;
+    this.lastAppliedGraphJson = JSON.stringify(this.getCurrentGraph());
+  }
+
+  private clearNodePositionTimers(): void {
+    this.nodePositionTimers.forEach(timer => clearTimeout(timer));
+    this.nodePositionTimers.clear();
+  }
+
+  private initViewportStorage(name: string | null | undefined): void {
+    if (!name) {
+      this.viewportStorage = null;
+      return;
     }
 
-    this.lastAppliedGraphJson = json;
-    this.graphChange.emit(graph);
+    const key = `box-visualizer-${name}`;
+
+    this.viewportStorage = new MyStorage<ViewTransform>(key, sessionStorage);
+  }
+
+  private persistAreaTransform(): void {
+    if (!this.viewportStorage || !this.area) return;
+
+    const { x, y, k } = this.area.area.transform;
+    this.viewportStorage.save({ x, y, k });
+  }
+
+  private async restoreAreaTransform(): Promise<void> {
+    if (!this.viewportStorage || !this.area) return;
+
+    const saved = this.viewportStorage.get();
+    if (!saved) return;
+
+    await this.area.area.zoom(saved.k);
+    await this.area.area.translate(saved.x, saved.y);
   }
 
   private setSelectedNode(nodeId: string | null, emit = true): void {

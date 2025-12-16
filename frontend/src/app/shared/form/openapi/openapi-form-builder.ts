@@ -90,7 +90,14 @@ export const buildForm = <T>(
 
     // Handle nested or array
     if (propSpec.type === 'object' && propSpec.properties) {
-      control = buildForm(propSpec, {}, initialValue, trackFormChanges, definitions); // Recursive
+      const group = buildForm(propSpec, {}, initialValue, trackFormChanges, definitions); // Recursive
+      if (validatorParams.validators?.length) {
+        group.addValidators(validatorParams.validators);
+      }
+      if (validatorParams.asyncValidators?.length) {
+        group.addAsyncValidators(validatorParams.asyncValidators);
+      }
+      control = group;
     } else if (propSpec.type === 'array' && propSpec.items) {
       control = createArrayControl(propSpec.items);
     } else {

@@ -1,0 +1,93 @@
+<div class="h-full">
+  <p-card title="Manager" styleClass="manager-card" ngClass="h-full min-h-full max-h-full">
+    <div class="flex flex-col gap-4 h-full min-h-0">
+    @if (selectedNode() && formContext(); as ctx) {
+      <div class="flex h-full max-h-full gap-6 grow min-h-0">
+        <div class="flex flex-col manager-menu">
+          @if (selectedStep) {
+            <div class="step-cont">
+              <h2 class="text-xs text-color-secondary">{{ selectedStep.stepNumber }}</h2>
+            </div>
+          }
+          @for (section of visibleSections(); track section.key) {
+            <button type="button"
+                    class="section-tab"
+                    [class.section-tab--active]="activeSection() === section.key"
+                    [attr.aria-pressed]="activeSection() === section.key"
+                    (click)="selectSection(section.key)">
+              <span class="section-tab__label">{{ section.label }}</span>
+            </button>
+          }
+        </div>
+        <p-divider layout="vertical" class="manager-divider" />
+        <div class="flex flex-col gap-3 grow min-h-0 h-auto">
+          <div class="manager-form-scroll">
+            <app-form [form]="form"
+                      [onSubmit]="ctx.saveStep"
+                      submitStrategy="onFormChange"
+                      [dataFetcher]="ctx.fetcher"
+                      [submitHandler]="ctx.handler"
+                      [resetOnSubmit]="false">
+              <div class="flex flex-col gap-6 py-2 pr-3">
+                @switch (activeSection()) {
+                  @case ('main') {
+                    <div class="flex flex-row gap-8">
+                      <div class="grow flex flex-col gap-4 h-full">
+                        <form-inputtext id="title"
+                                        label="Title"
+                                        [control]="form.controls.title" />
+                        <form-inputtextarea id="question"
+                                            label="Question"
+                                            [control]="form.controls.question" />
+                      </div>
+                      <div class="flex flex-col gap-4 h-full">
+                        <form-selectbutton id="orderPosition"
+                                           [control]="form.controls.orderPosition"
+                                           [options]="orderPositionOptions"
+                                           [emptyOption]="TemplateStepPosition.MIDDLE"
+                                           i18nPrefix="designer.managerPanel.orderPosition" />
+                        <form-radiobutton id="type"
+                                          label="Type"
+                                          [control]="form.controls.data.controls.type"
+                                          [options]="typeOptions"
+                                          i18nPrefix="designer.managerPanel.type" />
+                      </div>
+                    </div>
+                  }
+                  @case ('options') {
+                    @if (selectOptionsArray; as optionsArray) {
+                      <app-form-object-array [array]="optionsArray"
+                                             layout="vertical"
+                                             itemsLayout="horizontal"
+                                             [layoutGap]="'1.5rem'"
+                                             [itemsGap]="'0.75rem'">
+                        <ng-template #itemTemplate let-group let-index="index" let-removeFn="removeFn">
+                          <form-inputtext [id]="'option-label-' + index"
+                                          class="w-full"
+                                          label="Label"
+                                          [control]="group.controls.label" />
+                          <form-inputtext [id]="'option-value-' + index"
+                                          class="w-full"
+                                          label="Value"
+                                          [control]="group.controls.value" />
+                        </ng-template>
+                      </app-form-object-array>
+                    } @else {
+                      <p class="text-color-secondary text-sm">Options are available only for Select steps.</p>
+                    }
+                  }
+                  @case ('error-handlers') {
+                    <p class="text-color-secondary text-sm">Error handlers configuration will appear here.</p>
+                  }
+                }
+              </div>
+            </app-form>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <p class="text-color-secondary">Select a node in the designer to see its details here.</p>
+    }
+    </div>
+  </p-card>
+</div>

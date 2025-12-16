@@ -1,6 +1,6 @@
 import {Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {BoxGraph} from '../../shared/components/box-visualizer/box-visualizer.component';
+import {BoxGraph, BoxNodePositionChange} from '../../shared/components/box-visualizer/box-visualizer.component';
 import {BoxVisualizerComponent} from '../../shared/components/box-visualizer/box-visualizer.component';
 import {Button} from 'primeng/button';
 import {Card} from 'primeng/card';
@@ -19,7 +19,8 @@ import {ToastService} from '../../core/services/toast.service';
     <p-card header="Box visualizer demo" class="demo-card">
       <p class="mb-3">
         Ukážka ako použiť <code>app-box-visualizer</code>. Zmeny (posun boxu, pripojenie/odpojenie) sa vracajú cez
-        <code>graphChange</code>. Klikni na šedé pozadie a ťahaj, aby si posunul canvas.
+        <code>connectionCreated</code>, <code>connectionRemoved</code> a <code>nodePositionChanged</code>.
+        Klikni na šedé pozadie a ťahaj, aby si posunul canvas.
       </p>
 
       <div class="mb-3 flex gap-2">
@@ -29,7 +30,9 @@ import {ToastService} from '../../core/services/toast.service';
       <app-box-visualizer
         [graph]="graph()"
         [selectedNodeId]="selectedNodeId()"
-        (graphChange)="graph.set($event)"
+        (connectionCreated)="onConnectionCreated($event)"
+        (connectionRemoved)="onConnectionRemoved($event)"
+        (nodePositionChanged)="onNodePositionChanged($event)"
         (selectedNodeIdChange)="onNodeSelected($event)"
       ></app-box-visualizer>
 
@@ -129,5 +132,59 @@ export class BoxVisualizerDemoComponent {
 
   constructor(private toastSvc: ToastService) {
     this.reset();
+  }
+
+  onConnectionCreated(connection: BoxGraph['connections'][number]): void {
+    this.graph.update(current => {
+      if (!current) return current;
+      const exists = current.connections.some(c =>
+        c.id === connection.id ||
+        (!connection.id &&
+          c.source === connection.source &&
+          c.target === connection.target &&
+          c.sourceOutput === connection.sourceOutput &&
+          c.targetInput === connection.targetInput)
+      );
+      if (exists) return current;
+
+      return {
+        ...current,
+        connections: [...current.connections, {...connection}]
+      };
+    });
+  }
+
+  onConnectionRemoved(connection: BoxGraph['connections'][number]): void {
+    this.graph.update(current => {
+      if (!current) return current;
+
+      return {
+        ...current,
+        connections: current.connections.filter(c => {
+          if (connection.id) {
+            return c.id !== connection.id;
+          }
+          return !(
+            c.source === connection.source &&
+            c.target === connection.target &&
+            c.sourceOutput === connection.sourceOutput &&
+            c.targetInput === connection.targetInput
+          );
+        })
+      };
+    });
+  }
+
+  onNodePositionChanged(change: BoxNodePositionChange): void {
+    this.graph.update(current => {
+      if (!current) return current;
+
+      return {
+        ...current,
+        nodes: current.nodes.map(node => node.id === change.nodeId
+          ? {...node, position: {...change.position}}
+          : node)
+      };
+    });
   }
 }

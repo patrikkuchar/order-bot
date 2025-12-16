@@ -41,19 +41,6 @@ import {ProjectService} from '../project.service';
           <form-inputtextarea id="description"
                               label="Description"
                               [control]="form.controls.description" />
-          <app-form-object-array [array]="form.controls.steps">
-            <ng-template #itemTemplate let-group let-index="index">
-              <form-inputtextarea id="question-{{index}}"
-                                  label="Step Question"
-                                  [control]="group.controls.question" />
-              <form-inputnumber id="stepNumber-{{index}}"
-                                label="Step Number"
-                                [control]="group.controls.stepNumber" />
-              <form-inputnumber id="nextStepNumber-{{index}}"
-                                label="Next Step Number"
-                                [control]="group.controls.nextStepNumber" />
-            </ng-template>
-          </app-form-object-array>
           <p-button label="Create" severity="primary" type="submit"></p-button>
         </app-form>
       </p-card>
