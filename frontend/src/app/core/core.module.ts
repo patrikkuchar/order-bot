@@ -7,6 +7,7 @@ import {ToggleSwitch} from 'primeng/toggleswitch';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe} from '@angular/common';
 import {Divider} from "primeng/divider";
+import {Popover} from 'primeng/popover';
 import {HeaderItemComponent} from './layout/header/header-item/header-item.component';
 import {ProjectSelectComponent} from './layout/header/project-select/project-select.component';
 
@@ -19,6 +20,7 @@ import {ProjectSelectComponent} from './layout/header/project-select/project-sel
     FormsModule,
     AsyncPipe,
     Divider,
+    Popover,
     HeaderItemComponent,
     ProjectSelectComponent
   ],

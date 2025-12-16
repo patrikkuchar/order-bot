@@ -1,7 +1,7 @@
 import {effect, Injectable, signal, Signal} from '@angular/core';
 import {ProjectService} from '../project.service';
 import {WipStepDetailRes, WipStepListRes, WipTemplateMngApi} from '../../../api';
-import {Observable, ReplaySubject} from 'rxjs';
+import {map, Observable, of, ReplaySubject, tap} from 'rxjs';
 import {DesignerGraphService} from './designer-graph.service';
 
 const EMPTY_STEPS: WipStepListRes = {steps: [], connections: []};
@@ -21,7 +21,7 @@ export class DesignerService {
   private _step = new ReplaySubject<WipStepDetailRes>(1);
   step$ = this._step.asObservable();
 
-  private readonly loadSession: (projectId?: string) => void;
+  private readonly loadSession: (projectId?: string) => Observable<void>;
 
   private loadSteps: (sessionId: string | null) => void;
 
@@ -31,10 +31,13 @@ export class DesignerService {
     this.loadSession = (projectId?: string) => {
       if (!projectId) {
         this._sessionId.set(null);
-        return;
+        return of(void 0);
       }
-      api.getSession(projectId)
-        .subscribe(res => this._sessionId.set(res.value));
+      return api.getSession(projectId)
+        .pipe(
+          tap(res => this._sessionId.set(res.value)),
+          map(() => void 0)
+        );
     }
     this.loadSteps = (sessionId: string | null) => {
       if (sessionId) {
@@ -48,7 +51,7 @@ export class DesignerService {
       }
     }
 
-    effect(() => this.loadSession(projectSvc.selectedProject()?.id));
+    effect(() => this.loadSession(projectSvc.selectedProject()?.id).subscribe());
     effect(() => this.loadSteps(this.sessionId()));
     effect(() => {
       if (graphSvc.selectedNodeId() && this.sessionId() && projectSvc.projectCode()) {
@@ -67,7 +70,7 @@ export class DesignerService {
     return step ? step.nodeData.title : null;
   }
 
-  reloadSession() {
-    this.loadSession(this.projectSvc.selectedProject()?.id);
+  reloadSession(): Observable<void> {
+    return this.loadSession(this.projectSvc.selectedProject()?.id);
   }
 }

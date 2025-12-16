@@ -263,7 +263,7 @@ export class DesignerComponent extends BaseRouteDirective implements OnInit {
   private saveSession() {
     this.api.completeTemplate(this.sessionId)
       .subscribe(this.apiHandler.handle({
-        onSuccess: () => this.svc.reloadSession(),
+        onSuccess: () => this.svc.reloadSession().subscribe(),
         successMsg: 'Template saved',
       }));
   }
@@ -271,9 +271,10 @@ export class DesignerComponent extends BaseRouteDirective implements OnInit {
   private clearSession() {
     this.api.clearSession(this.sessionId)
       .subscribe(this.apiHandler.handle({
-        onSuccess: () => this.svc.reloadSession(),
-        successMsg: 'All changes cleared.',
-        redirect: () => ProjectRoutes.of(this.projectId()!).designer
+        onSuccess: () =>
+          this.svc.reloadSession()
+            .subscribe(() => this.redirectSvc.to(ProjectRoutes.of(this.projectId()!).designer)),
+        successMsg: 'All changes cleared.'
       }));
   }
 }

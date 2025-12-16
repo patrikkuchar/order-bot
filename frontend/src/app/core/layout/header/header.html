@@ -22,13 +22,56 @@
       <span class="thumb" aria-hidden="true"></span>
       <span class="icon moon" aria-hidden="true"><i class="pi pi-moon"></i></span>
     </button>
-    <label class="ml-2 mode-label"><strong>{{ isEnabled() ? 'Dark mode' : 'Light mode' }}</strong></label>
   </div>
 
   @if (isLoggedIn | async) {
-    <div class="flex flex-row gap-4 items-center">
-      <p>Logged in as <strong>{{userName()}}</strong></p>
-      <p-button label="Logout" severity="contrast" (click)="logout()"></p-button>
-    </div>
+    <p-popover
+      #userMenu
+      appendTo="body"
+      styleClass="user-menu__panel"
+      [dismissable]="true"
+      [autoZIndex]="true"
+      (onShow)="userMenuOpen = true"
+      (onHide)="userMenuOpen = false"
+    >
+      <div class="user-menu__content">
+        <div class="user-menu__user">
+          <span class="user-menu__avatar" aria-hidden="true"><i class="pi pi-user"></i></span>
+          <div class="user-menu__details">
+            <div class="user-menu__name">{{ displayName() }}</div>
+            <div class="user-menu__hint">Prihlásený používateľ</div>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="user-menu__action"
+          (click)="handleLogout(userMenu)"
+        >
+          <i class="pi pi-sign-out" aria-hidden="true"></i>
+          <span>Odhlásiť sa</span>
+        </button>
+      </div>
+    </p-popover>
+
+    <a
+      class="user-menu__trigger"
+      [class.user-menu__trigger--active]="userMenuOpen"
+      href="#"
+      role="button"
+      (click)="toggleUserMenu(userMenu, $event)"
+      (keydown.enter)="toggleUserMenu(userMenu, $event)"
+      (keydown.space)="toggleUserMenu(userMenu, $event)"
+      [attr.aria-expanded]="userMenuOpen"
+      [attr.aria-haspopup]="'menu'"
+    >
+      <span class="user-menu__label">{{ displayName() }}</span>
+      <i class="pi" [class.pi-chevron-up]="userMenuOpen" [class.pi-chevron-down]="!userMenuOpen" aria-hidden="true"></i>
+    </a>
+  } @else {
+    <app-header-item
+      label="Login"
+      [route]="AppRoutes.login"
+      icon="pi pi-fw pi-sign-in"
+    />
   }
 </div>

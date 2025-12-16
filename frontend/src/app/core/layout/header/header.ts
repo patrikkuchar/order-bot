@@ -10,6 +10,7 @@ import {ProjectRelativeRoutes, ProjectRoutes} from '../../../features/project/pr
 import {NavigationEnd, Router} from '@angular/router';
 import {RedirectService} from '../../services/redirect.service';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {Popover} from 'primeng/popover';
 
 export type MenuItem = {
   route: RouteArgs<RoutePath> | RoutePath
@@ -40,6 +41,8 @@ export class Header {
 
   isLoggedIn: Observable<boolean>;
   userName: Signal<string | null>;
+  displayName: Signal<string>;
+  userMenuOpen = false;
 
   constructor(private svc: DarkModeService,
               private authSvc: AuthService,
@@ -50,6 +53,7 @@ export class Header {
     this.isEnabled = this.svc.isDarkModeEnabled;
     this.isLoggedIn = authSvc.isLoggedIn;
     this.userName = userProfileSvc.userName;
+    this.displayName = computed(() => this.userName() || 'Používateľ');
 
     this.projects = projectSvc.projects;
     this.selectedProject = projectSvc.selectedProject;
@@ -115,8 +119,18 @@ export class Header {
     this.svc.toggle();
   }
 
+  toggleUserMenu(popover: Popover, event: Event): void {
+    event.preventDefault();
+    popover.toggle(event);
+  }
+
   logout() {
     this.authSvc.logout();
+  }
+
+  handleLogout(popover: Popover): void {
+    popover.hide();
+    this.logout();
   }
 
   protected readonly AppRoutes = AppRoutes;
