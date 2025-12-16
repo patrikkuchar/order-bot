@@ -15,12 +15,12 @@ spring:
   liquibase:
     enabled: false
 
-logging:
-  level:
-    org.springframework.transaction: TRACE
-    org.springframework.orm.jpa: TRACE
-    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: TRACE
-    org.springframework.web: TRACE
+#logging:
+#  level:
+#    org.springframework.transaction: TRACE
+#    org.springframework.orm.jpa: TRACE
+#    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: TRACE
+#    org.springframework.web: TRACE
 auth:
   secret: secret_local_123456789101112131415
   session:
